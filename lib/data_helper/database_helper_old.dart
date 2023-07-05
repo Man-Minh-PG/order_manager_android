@@ -37,7 +37,7 @@ class DatabaseHelper {
           status     INTEGER,
           created_at TEXT NOT NULL
       )
-    """);// Để xuống dòng được mà khôgng bị sai thì dùng cặp dấu này nhá
+    """);// Để xuống dòng được mà không bị sai thì dùng cặp dấu này nhá
 
       await db.execute(""" CREATE TABLE orders (
           id          INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -47,15 +47,16 @@ class DatabaseHelper {
           status      INTEGER, 
           created_at  TEXT NOT NULL
       )
-    """);// Để xuống dòng được mà khôgng bị sai thì dùng cặp dấu này nhá
+    """);// Để xuống dòng được mà không bị sai thì dùng cặp dấu này nhá
 
     await db.execute(""" CREATE TABLE order_detail (
           id            INTEGER PRIMARY KEY AUTOINCREMENT,
           product_id    INTEGER,
           order_id      INTEGER,
           amount        INTEGER,
+          status        INTEGER, 
           created_at    TEXT NOT NULL,
-          FOREIGN KEY (product_id) REFERENCES 
+          FOREIGN KEY (FK_contact_category) REFERENCES products (id) 
       )
     """);// Để xuống dòng được mà khôgng bị sai thì dùng cặp dấu này nhá
 
@@ -66,16 +67,16 @@ class DatabaseHelper {
           status      INTEGER,
           created_at  TEXT NOT NULL
       )
-    """);// Để xuống dòng được mà khôgng bị sai thì dùng cặp dấu này nhá
+    """);// Để xuống dòng được mà không bị sai thì dùng cặp dấu này nhá
     
     await db.execute(""" CREATE TABLE generic(
           id         INTEGER PRIMARY KEY AUTOINCREMENT,
           name       TEXT NOT NULL,
-          value      TEXT  ,
-          status     TEXT,
+          value      TEXT,
+          status     INTEGER,
           created_at TEXT NOT NULL
       )
-    """);// Để xuống dòng được mà khôgng bị sai thì dùng cặp dấu này nhá
+    """);// Để xuống dòng được mà không bị sai thì dùng cặp dấu này nhá
     }
 
   // DatabaseHelper._privateConstructor();

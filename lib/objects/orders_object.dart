@@ -1,3 +1,4 @@
+// ignore: camel_case_types
 class orders {
   final int?      id;
   final String    total;
