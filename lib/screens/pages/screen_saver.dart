@@ -2,8 +2,6 @@
   * Yeal loading welcome in 3 seconds
 */
 
-
-
 import 'package:flutter/material.dart';
 
 class ListTileExample extends StatelessWidget {
@@ -38,12 +36,12 @@ class ListTileExample extends StatelessWidget {
         dense: true,
       ),
       const Divider(),
-      ListTile(
-        title: const Text('Tile5: tile with badge'),
-        subtitle: const Text('(This uses the badges package)'),
+      const ListTile(
+        title: Text('Tile5: tile with badge'),
+        subtitle: Text('(This uses the badges package)'),
         trailing: Badge(
-          label: const Text('3'),
-          child: const Icon(Icons.message),
+          label: Text('3'),
+          child: Icon(Icons.message),
         ),
       ),
     ];
