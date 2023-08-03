@@ -1,5 +1,5 @@
 // ignore: camel_case_types
-class payment {
+class Payment {
   final int?      id;
   final String    name;
   final String    note;
@@ -9,7 +9,7 @@ class payment {
   final DateTime  created_at;
 
   // create contructor
-  payment({
+  Payment({
     this.id,
     required this.name,
     required this.note,
@@ -20,7 +20,7 @@ class payment {
   });
 
 
-  factory payment.fromMap(Map<String, dynamic>json ) => payment(
+  factory Payment.fromMap(Map<String, dynamic>json ) => Payment(
     id:         json['id'],
     name:       json['name'],
     note:       json['note'], 

@@ -1,5 +1,5 @@
 import 'database_helper.dart';
-import 'package:order_manager/objects/products_object.dart';
+import 'package:order_manager/models/products.dart';
 
 class ProductOperations{ 
   late ProductOperations productOperations;

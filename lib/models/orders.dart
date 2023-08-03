@@ -1,5 +1,8 @@
+import 'package:order_manager/models/order_details.dart';
+import 'package:order_manager/models/orders.dart';
+
 // ignore: camel_case_types
-class orders {
+class Orders {
   final int?      id;
   final String    total;
   final double    note;
@@ -8,9 +11,10 @@ class orders {
   final int?      status;
   // ignore: non_constant_identifier_names
   final DateTime  created_at;
+  OrderDetails    orderDetail;
 
   // create contructor
-  orders({
+  Orders({
     this.id,
     required this.total,
     required this.note,
@@ -22,7 +26,7 @@ class orders {
   });
 
 
-  factory orders.fromMap(Map<String, dynamic>json ) => orders(
+  factory Orders.fromMap(Map<String, dynamic>json ) => Orders(
     id:         json['id'],
     total:      json['total'],
     note:       json['note'], 

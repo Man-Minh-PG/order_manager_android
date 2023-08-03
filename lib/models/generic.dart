@@ -1,5 +1,5 @@
 // ignore: camel_case_types
-class generic {
+class Generic {
   final int?      id;
   final String    name;
   final String    value;
@@ -9,7 +9,7 @@ class generic {
   final DateTime  created_at;
 
   // create contructor
-  generic({
+  Generic({
     this.id,
     required this.name,
     required this.value,
@@ -20,7 +20,7 @@ class generic {
   });
 
 
-  factory generic.fromMap(Map<String, dynamic>json ) => generic(
+  factory Generic.fromMap(Map<String, dynamic>json ) => Generic(
     id:         json['id'],
     name:       json['name'],
     value:      json['value'],
