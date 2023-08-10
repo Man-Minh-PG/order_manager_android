@@ -1,18 +1,18 @@
 // ignore: camel_case_types
-class generic {
+class Payment {
   final int?      id;
   final String    name;
-  final String    value;
+  final String    note;
   // ignore: non_constant_identifier_names
   final int?      status;
   // ignore: non_constant_identifier_names
   final DateTime  created_at;
 
   // create contructor
-  generic({
+  Payment({
     this.id,
     required this.name,
-    required this.value,
+    required this.note,
     // ignore: non_constant_identifier_names
     this.status,
     // ignore: non_constant_identifier_names
@@ -20,10 +20,10 @@ class generic {
   });
 
 
-  factory generic.fromMap(Map<String, dynamic>json ) => generic(
+  factory Payment.fromMap(Map<String, dynamic>json ) => Payment(
     id:         json['id'],
     name:       json['name'],
-    value:      json['value'],
+    note:       json['note'], 
     status:     json['status'],
     created_at: json['created_at'],
   );
@@ -33,7 +33,7 @@ class generic {
     return {
       'id'            : id,
       'name'          : name,
-      'value'         : value,
+      'note'          : note,
       'status'        : status,
       'created_at'    : created_at,
     };

@@ -1,29 +1,32 @@
 // ignore: camel_case_types
-class payment {
+class Order {
   final int?      id;
-  final String    name;
-  final String    note;
+  final String    total;
+  final double    note;
   // ignore: non_constant_identifier_names
+  final int?      payment_id;
   final int?      status;
   // ignore: non_constant_identifier_names
   final DateTime  created_at;
 
   // create contructor
-  payment({
+  Order({
     this.id,
-    required this.name,
+    required this.total,
     required this.note,
     // ignore: non_constant_identifier_names
+    this.payment_id,
     this.status,
     // ignore: non_constant_identifier_names
     required this.created_at
   });
 
 
-  factory payment.fromMap(Map<String, dynamic>json ) => payment(
+  factory Order.fromMap(Map<String, dynamic>json ) => Order(
     id:         json['id'],
-    name:       json['name'],
+    total:      json['total'],
     note:       json['note'], 
+    payment_id: json['payment_id'], 
     status:     json['status'],
     created_at: json['created_at'],
   );
@@ -32,8 +35,9 @@ class payment {
   Map<String, dynamic> toMap() {
     return {
       'id'            : id,
-      'name'          : name,
+      'total'         : total,
       'note'          : note,
+      'payment_id'    : payment_id,
       'status'        : status,
       'created_at'    : created_at,
     };

@@ -1,32 +1,29 @@
 // ignore: camel_case_types
-class orders {
+class Generic {
   final int?      id;
-  final String    total;
-  final double    note;
+  final String    name;
+  final String    value;
   // ignore: non_constant_identifier_names
-  final int?      payment_id;
   final int?      status;
   // ignore: non_constant_identifier_names
   final DateTime  created_at;
 
   // create contructor
-  orders({
+  Generic({
     this.id,
-    required this.total,
-    required this.note,
+    required this.name,
+    required this.value,
     // ignore: non_constant_identifier_names
-    this.payment_id,
     this.status,
     // ignore: non_constant_identifier_names
     required this.created_at
   });
 
 
-  factory orders.fromMap(Map<String, dynamic>json ) => orders(
+  factory Generic.fromMap(Map<String, dynamic>json ) => Generic(
     id:         json['id'],
-    total:      json['total'],
-    note:       json['note'], 
-    payment_id: json['payment_id'], 
+    name:       json['name'],
+    value:      json['value'],
     status:     json['status'],
     created_at: json['created_at'],
   );
@@ -35,9 +32,8 @@ class orders {
   Map<String, dynamic> toMap() {
     return {
       'id'            : id,
-      'total'         : total,
-      'note'          : note,
-      'payment_id'    : payment_id,
+      'name'          : name,
+      'value'         : value,
       'status'        : status,
       'created_at'    : created_at,
     };

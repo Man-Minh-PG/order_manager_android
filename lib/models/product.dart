@@ -1,4 +1,4 @@
-class Products {
+class Product {
   final int?      id;
   final String    name;
   final double    price;
@@ -7,7 +7,7 @@ class Products {
   final DateTime  created_at;
 
   // create contructor
-  Products({
+  Product({
     this.id,
     required this.name,
     required this.price,
@@ -17,7 +17,7 @@ class Products {
   });
 
 
-  factory Products.fromMap(Map<String, dynamic>json ) => Products(
+  factory Product.fromMap(Map<String, dynamic>json ) => Product(
     id:         json['id'],
     name:       json['name'], 
     price:      json['price'], 

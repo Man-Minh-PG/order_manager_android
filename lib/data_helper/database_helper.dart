@@ -32,7 +32,7 @@ class DatabaseRepository {
 
   // Create Database
   Future onCreate(Database db, int version) async {
-    await db.execute(""" CREATE TABLE products(
+    await db.execute(""" CREATE TABLE product(
           id         INTEGER PRIMARY KEY AUTOINCREMENT,
           name       STRING NOT NULL,
           price      REAL NOT NULL,
@@ -50,7 +50,7 @@ class DatabaseRepository {
       )
 
     """);// Để xuống dòng được mà khôgng bị sai thì dùng cặp dấu này nhá
-      await db.execute(""" CREATE TABLE orders (
+      await db.execute(""" CREATE TABLE order (
           id          INTEGER PRIMARY KEY AUTOINCREMENT,
           total       REAL NOT NULL,
           note        TEXT,

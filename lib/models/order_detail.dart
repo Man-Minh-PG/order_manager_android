@@ -1,5 +1,5 @@
 // ignore: camel_case_types
-class orders_detail {
+class OrderDetail {
   final int?      id;
   // ignore: non_constant_identifier_names
   final int       product_id;
@@ -12,7 +12,7 @@ class orders_detail {
   final DateTime  created_at;
 
   // create contructor
-  orders_detail({
+  OrderDetail({
     this.id,
     // ignore: non_constant_identifier_names
     required this.product_id,
@@ -26,7 +26,7 @@ class orders_detail {
   });
 
 
-  factory orders_detail.fromMap(Map<String, dynamic>json ) => orders_detail(
+  factory OrderDetail.fromMap(Map<String, dynamic>json ) => OrderDetail(
     id:              json['id'],
     product_id:      json['product_id'],
     order_id:        json['order_id'], 
