@@ -1,12 +1,27 @@
 import 'package:order_manager_android/data_helper/database_helper.dart';
-import 'package:order_manager_android/models/orders_detail_object.dart';
-import 'package:order_manager_android/models/orders_object.dart';
+import 'package:order_manager_android/models/order_detail.dart';
+import 'package:order_manager_android/models/order.dart';
+
+
+/**
+* Note: task flutter 5
+* branch master : add config package 
+* dependencies:
+*   intl: ^0.17.0
+* 
+* When testing add import 
+* import 'package:intl/intl.dart'; // Thêm import test convert Datetime now 
+*/
 
 class OrderOperations {
   OrderOperations orderOperations;
 
   final dbProvider = DatabaseRepository.instance;
 
+  /**
+  *  Process create order
+  *  With 3 steps
+  */
   // first step create order 
   Future<int> createOrder(Order order) async {
     final db = await dbProvider.database;
@@ -31,12 +46,34 @@ class OrderOperations {
       createOrderDetailWithOrderId(orderId, item);
     }
   }
-    // id          INTEGER PRIMARY KEY AUTOINCREMENT,
-    //       total       REAL NOT NULL,
-    //       note        TEXT,
-    //       payment_id  INTEGER,
-    //       status      INTEGER, 
-    //       created_at  TEXT NOT NULL,
-    //       FOREIGN KEY (payment_id) REFERENCES payment (id)
    
+  /**
+  *  Process get list order
+  *  1 order <=> n order detail
+  */
+
+
+  /**
+  *  Process update order
+  *  1. update status order
+  *  2. update amount item in order
+  *  3. update status cancel order
+  */
+
+  /**
+  *  Process delete order
+  *  delete not remove
+  */
+
+  /**
+  *  Note task flutter 02
+  *  
+  */
+  //  Future<int> getLastId() async {
+  //   final db = await database;
+  //   var result = await db.rawQuery('SELECT id FROM _detail ORDER BY id DESC LIMIT 1');
+  //   if (result.isEmpty) return -1; // No records found
+  //   return result.first['id'];
+  // }
+
 }
