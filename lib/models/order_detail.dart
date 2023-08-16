@@ -4,7 +4,7 @@ class OrderDetail {
   // ignore: non_constant_identifier_names
   final int       product_id;
   // ignore: non_constant_identifier_names
-  final int       order_id;
+  late final int       order_id;
   // ignore: non_constant_identifier_names
   final int?      amount;
   final int?      status;
