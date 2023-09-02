@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:order_manager/screens/layout/myapp.dart';
+
+import 'app.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
-  
