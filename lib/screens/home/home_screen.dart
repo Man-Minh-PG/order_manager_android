@@ -101,7 +101,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget getHorizontalItemSlider(List<GroceryItem> items) {
+  Widget getHorizontalItemSlider(List<GroceryItem> items) { // Get list product
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
       height: 250,

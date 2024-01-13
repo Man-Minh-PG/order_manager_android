@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:grocery_app/common_widgets/app_text.dart';
 import 'package:grocery_app/models/category_item.dart';
 
+// Process get item product in class
 class CategoryItemCardWidget extends StatelessWidget {
   CategoryItemCardWidget(
       {Key? key, required this.item, this.color = Colors.blue})
