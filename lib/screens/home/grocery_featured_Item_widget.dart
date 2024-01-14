@@ -22,7 +22,7 @@ class GroceryFeaturedCard extends StatelessWidget {
   final Color color;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {  // process show item data in home 
     return Container(
       width: 250,
       height: 105,

@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_app/models/grocery_item.dart';
+import 'package:grocery_app/models/grocery_item.dart'; // Load default item
 import 'package:grocery_app/screens/product_details/product_details_screen.dart';
-import 'package:grocery_app/styles/colors.dart';
+// import 'package:grocery_app/styles/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grocery_app/widgets/grocery_item_card_widget.dart';
 import 'package:grocery_app/widgets/search_bar_widget.dart';
 
-import 'grocery_featured_Item_widget.dart';
-import 'home_banner_widget.dart';
+// import 'grocery_featured_Item_widget.dart';
+// import 'home_banner_widget.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+// class HomeScreen extends StatelessWidget {
+class _HomeScreenState extends State<HomeScreen> {
+  List<GroceryItem> selectedItems = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,61 +38,63 @@ class HomeScreen extends StatelessWidget {
                   SizedBox(
                     height: 15,
                   ),
-                  padded(SearchBarWidget()),
+                  padded(SearchBarWidget()), // Khung search
                   SizedBox(
                     height: 25,
                   ),
-                  padded(HomeBanner()),
+                  // padded(HomeBanner()),
                   SizedBox(
                     height: 25,
                   ),
-                  padded(subTitle("Exclusive Order")),
-                  getHorizontalItemSlider(exclusiveOffers),
+                  padded(subTitle("Bánh")),
+                  getHorizontalItemSlider(exclusiveOffers), // Show list item1 
                   SizedBox(
                     height: 15,
                   ),
-                  padded(subTitle("Best Selling")),
-                  getHorizontalItemSlider(bestSelling),
+                  padded(subTitle("Món thêm")),
+                  getHorizontalItemSlider(bestSelling), // Show list item2
                   SizedBox(
                     height: 15,
                   ),
-                  padded(subTitle("Groceries")),
+                  // padded(subTitle("Groceries")), // manu sp khac
                   SizedBox(
                     height: 15,
                   ),
-                  Container(
-                    height: 105,
-                    child: ListView(
-                      padding: EdgeInsets.zero,
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        SizedBox(
-                          width: 20,
-                        ),
-                        GroceryFeaturedCard(
-                          groceryFeaturedItems[0],
-                          color: Color(0xffF8A44C),
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        GroceryFeaturedCard(
-                          groceryFeaturedItems[1],
-                          color: AppColors.primaryColor,
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  getHorizontalItemSlider(groceries),
-                  SizedBox(
-                    height: 15,
-                  ),
+                  // Add button order
+                  
+                  // Container(
+                  //   height: 105,
+                  //   child: ListView(
+                  //     padding: EdgeInsets.zero,
+                  //     scrollDirection: Axis.horizontal,
+                  //     children: [
+                  //       SizedBox(
+                  //         width: 20,
+                  //       ),
+                  //       GroceryFeaturedCard(
+                  //         groceryFeaturedItems[0],
+                  //         color: Color(0xffF8A44C),
+                  //       ),
+                  //       SizedBox(
+                  //         width: 20,
+                  //       ),
+                  //       GroceryFeaturedCard(
+                  //         groceryFeaturedItems[1],
+                  //         color: AppColors.primaryColor,
+                  //       ),
+                  //       SizedBox(
+                  //         width: 20,
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  // SizedBox(
+                  //   height: 15,
+                  // ),
+                  // getHorizontalItemSlider(groceries),
+                  // SizedBox(
+                  //   height: 15,
+                  // ),
                 ],
               ),
             ),
@@ -101,7 +111,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget getHorizontalItemSlider(List<GroceryItem> items) { // Get list product
+  Widget getHorizontalItemSlider(List<GroceryItem> items) { // Function get list product
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
       height: 250,
@@ -129,7 +139,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  void onItemClicked(BuildContext context, GroceryItem groceryItem) {
+  void onItemClicked(BuildContext context, GroceryItem groceryItem) { // Function on click -> pagination data to screen product detail
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -140,7 +150,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget subTitle(String text) {
+  Widget subTitle(String text) { // Funtion show infomation text order
     return Row(
       children: [
         Text(
@@ -148,19 +158,19 @@ class HomeScreen extends StatelessWidget {
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         Spacer(),
-        Text(
-          "See All",
-          style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: AppColors.primaryColor),
-        ),
+        // Text(
+        //   "See All",
+        //   style: TextStyle(
+        //       fontSize: 18,
+        //       fontWeight: FontWeight.bold,
+        //       color: AppColors.primaryColor),
+        // ),
       ],
     );
   }
 
-  Widget locationWidget() {
-    String locationIconPath = "assets/icons/location_icon.svg";
+  Widget locationWidget() { // Funtion show location data
+    String locationIconPath = "assets/icons/location_icon.svg"; 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -177,4 +187,5 @@ class HomeScreen extends StatelessWidget {
       ],
     );
   }
+
 }

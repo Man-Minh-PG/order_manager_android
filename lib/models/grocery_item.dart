@@ -12,6 +12,8 @@ class GroceryItem {
     required this.price,
     required this.imagePath,
   });
+
+
 }
 
 var demoItems = [
