@@ -61,40 +61,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 15,
                   ),
                   // Add button order
-                  
-                  // Container(
-                  //   height: 105,
-                  //   child: ListView(
-                  //     padding: EdgeInsets.zero,
-                  //     scrollDirection: Axis.horizontal,
-                  //     children: [
-                  //       SizedBox(
-                  //         width: 20,
-                  //       ),
-                  //       GroceryFeaturedCard(
-                  //         groceryFeaturedItems[0],
-                  //         color: Color(0xffF8A44C),
-                  //       ),
-                  //       SizedBox(
-                  //         width: 20,
-                  //       ),
-                  //       GroceryFeaturedCard(
-                  //         groceryFeaturedItems[1],
-                  //         color: AppColors.primaryColor,
-                  //       ),
-                  //       SizedBox(
-                  //         width: 20,
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-                  // SizedBox(
-                  //   height: 15,
-                  // ),
-                  // getHorizontalItemSlider(groceries),
-                  // SizedBox(
-                  //   height: 15,
-                  // ),
+                  ElevatedButton(
+                    onPressed: () {
+                    // Lọc danh sách các sản phẩm có orderQuantity > 0
+                      setState(() {
+                        List<GroceryItem> selectedItems = demoItems
+                      .where((item) => item.orderQuantity > 0)
+                      .toList();
+                      });
+                    }, 
+                    child: Text("Add to cart")
+                  )
                 ],
               ),
             ),

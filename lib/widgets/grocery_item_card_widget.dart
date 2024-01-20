@@ -25,13 +25,13 @@ class GroceryItemCardWidget extends StatefulWidget {
 
 // Create call back to chil children
 // https://chat.openai.com/c/4efb206e-b365-497b-8240-8969d9cb24e2
-typedef AddToCartCallback = void Function(GroceryItem item, int valueButton);
+typedef AddToCartCallback = void Function(GroceryItem item, int orderQuantity);
 
 class _GroceryItemCardWidget extends State<GroceryItemCardWidget> {
-  int valueButton = 0; // Value default for button
+  int orderQuantity = 0; // Value default for button
 
   double calculateTotalPrice() {
-    return widget.item.price * valueButton;
+    return widget.item.price * orderQuantity;
   }
 
   @override
@@ -133,11 +133,11 @@ class _GroceryItemCardWidget extends State<GroceryItemCardWidget> {
           onPressed: (){
             setState(() {
               // Increment value when the + button is pressed
-              valueButton++;
+              orderQuantity++;
             });
               // Gọi callback để thông báo về sự thay đổi
             if (widget.addToCartCallback != null) {
-              widget.addToCartCallback!(widget.item, valueButton);
+              widget.addToCartCallback!(widget.item, orderQuantity);
             }
           }, 
           icon: Icon(Icons.add)
@@ -150,7 +150,7 @@ class _GroceryItemCardWidget extends State<GroceryItemCardWidget> {
             color: Colors.blue // Change to your desired color
           ),
           child: Text(
-            valueButton.toString(),
+            orderQuantity.toString(),
             style: TextStyle(
               color: Colors.white,
               fontSize: 18
@@ -159,10 +159,10 @@ class _GroceryItemCardWidget extends State<GroceryItemCardWidget> {
         ),
         IconButton(
           onPressed: () {
-              if(valueButton > 0) {
+              if(orderQuantity > 0) {
                 setState(() {
                 // Decrement value when the - button is pressed (but not below 1)
-                valueButton--;
+                orderQuantity--;
               });   
             }
           }, 
