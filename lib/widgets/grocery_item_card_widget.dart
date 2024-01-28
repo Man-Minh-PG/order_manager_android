@@ -7,9 +7,7 @@ import 'package:grocery_app/styles/colors.dart';
 // Set up widget UI for product 
 class GroceryItemCardWidget extends StatefulWidget {
 
- final AddToCartCallback? addToCartCallback;
-
-  GroceryItemCardWidget({Key? key, required this.item, this.heroSuffix, this.addToCartCallback})
+  GroceryItemCardWidget({Key? key, required this.item, this.heroSuffix})
       : super(key: key);
   final GroceryItem item;
   final String? heroSuffix;
@@ -25,7 +23,7 @@ class GroceryItemCardWidget extends StatefulWidget {
 
 // Create call back to chil children
 // https://chat.openai.com/c/4efb206e-b365-497b-8240-8969d9cb24e2
-typedef AddToCartCallback = void Function(GroceryItem item, int orderQuantity);
+// typedef AddToCartCallback = void Function(GroceryItem item, int orderQuantity);
 
 class _GroceryItemCardWidget extends State<GroceryItemCardWidget> {
   int orderQuantity = 0; // Value default for button
@@ -93,7 +91,7 @@ class _GroceryItemCardWidget extends State<GroceryItemCardWidget> {
                 //   fontWeight: FontWeight.bold,
                 // ),
                 Spacer(),
-                addWidget()
+                addButtonOrder()
               ],
             )
           ],
@@ -136,25 +134,31 @@ class _GroceryItemCardWidget extends State<GroceryItemCardWidget> {
               orderQuantity++;
             });
               // Gọi callback để thông báo về sự thay đổi
-            if (widget.addToCartCallback != null) {
-              widget.addToCartCallback!(widget.item, orderQuantity);
-            }
+            // if (widget.addToCartCallback != null) {
+            //   widget.addToCartCallback!(widget.item, orderQuantity);
+            // }
           }, 
           icon: Icon(Icons.add)
-        ),
-        Container(
-          height: 45,
-          width: 45,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(17),
-            color: Colors.blue // Change to your desired color
-          ),
+        ),  
+        // Container(
+        //   height: 45,
+        //   width: 45,
+        //   decoration: BoxDecoration(
+        //     borderRadius: BorderRadius.circular(17),
+        //     color: Colors.blue // Change to your desired color
+        //   ),
+        //   child: Text(
+        //     orderQuantity.toString(),
+        //     style: TextStyle(
+        //       color: Colors.white,
+        //       fontSize: 18
+        //     ),
+        //   ),
+        // ),
+        Center(
           child: Text(
             orderQuantity.toString(),
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 18
-            ),
+            textAlign: TextAlign.center,
           ),
         ),
         IconButton(

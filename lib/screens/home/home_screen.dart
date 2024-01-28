@@ -51,15 +51,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(
                     height: 15,
                   ),
-                  padded(subTitle("Món thêm")),
-                  getHorizontalItemSlider(bestSelling), // Show list item2
-                  SizedBox(
-                    height: 15,
-                  ),
+                  // padded(subTitle("Món thêm")),
+                  // getHorizontalItemSlider(bestSelling), // Show list item2
+                  // SizedBox(
+                  //   height: 15,
+                  // ),
                   // padded(subTitle("Groceries")), // manu sp khac
-                  SizedBox(
-                    height: 15,
-                  ),
+                  // SizedBox(
+                  //   height: 15,
+                  // ),
                   // Add button order
                   ElevatedButton(
                     onPressed: () {
@@ -89,32 +89,38 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget getHorizontalItemSlider(List<GroceryItem> items) { // Function get list product
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      height: 250,
-      child: ListView.separated(
-        padding: EdgeInsets.symmetric(horizontal: 20),
-        itemCount: items.length,
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () {
-              onItemClicked(context, items[index]);
-            },
-            child: GroceryItemCardWidget(
-              item: items[index],
-              heroSuffix: "home_screen",
-            ),
+  return Container(
+    margin: EdgeInsets.symmetric(vertical: 10),
+    height: 500, // Set an appropriate height for your container
+    child: SingleChildScrollView(
+      child: Column( // Thay vì sử dụng Row, sử dụng Column
+        children: List.generate((items.length / 2).ceil(), (rowIndex) {
+          int startIndex = rowIndex * 2;
+          int endIndex = (rowIndex + 1) * 2;
+          if (endIndex > items.length) {
+            endIndex = items.length;
+          }
+
+          List<GroceryItem> rowItems = items.sublist(startIndex, endIndex);
+
+          return Row(
+            children: rowItems.map((item) {
+              return Expanded(
+                child: GestureDetector(
+                  child: GroceryItemCardWidget(
+                    item: item,
+                    heroSuffix: "home_screen",
+                  ),
+                ),
+              );
+            }).toList(),
           );
-        },
-        separatorBuilder: (BuildContext context, int index) {
-          return SizedBox(
-            width: 20,
-          );
-        },
+        }),
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   void onItemClicked(BuildContext context, GroceryItem groceryItem) { // Function on click -> pagination data to screen product detail
     Navigator.push(
