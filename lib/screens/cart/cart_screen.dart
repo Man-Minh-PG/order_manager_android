@@ -18,7 +18,7 @@ class CartScreen extends StatelessWidget {
                 height: 25,
               ),
               Text(
-                "My Cart",
+                "List Order",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               SizedBox(
