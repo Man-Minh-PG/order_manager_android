@@ -37,7 +37,7 @@ class DatabaseRepository {
           description TEXT,
           price       INTEGER NOT NULL,
           imagePath   TEXT,
-          status      INTEGER DEFAULT 0,
+          orderQuantity      INTEGER DEFAULT 0,
           createdAt   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
       )
     """);// Để xuống dòng được mà khôgng bị sai thì dùng cặp dấu này nhá
@@ -84,71 +84,71 @@ class DatabaseRepository {
     """);// Để xuống dòng được mà khôgng bị sai thì dùng cặp dấu này nhá
     
     // Sample product data
-    await db.insert('product', {
-        'name': 'Sieu Pham',
-        'price': 30,
-        'imagePath': 'assets/images/grocery_images/banana.png',
-      });
+    // await db.insert('product', {
+    //     'name': 'Sieu Pham',
+    //     'price': 30,
+    //     'imagePath': 'assets/images/grocery_images/banana.png',
+    //   });
 
-    await db.insert('product', {
-        'name': 'Pho Mai chuoi',
-        'price': 27,
-        'imagePath': 'assets/images/grocery_images/banana.png',
-      });
+    // await db.insert('product', {
+    //     'name': 'Pho Mai chuoi',
+    //     'price': 27,
+    //     'imagePath': 'assets/images/grocery_images/banana.png',
+    //   });
 
-    await db.insert('product', {
-        'name': 'Pho Mai trung',
-        'price': 27,
-        'imagePath': 'assets/images/grocery_images/banana.png',
-      });
+    // await db.insert('product', {
+    //     'name': 'Pho Mai trung',
+    //     'price': 27,
+    //     'imagePath': 'assets/images/grocery_images/banana.png',
+    //   });
 
-    await db.insert('product', {
-        'name': 'Pho Mai bap',
-        'price': 27,
-        'imagePath': 'assets/images/grocery_images/banana.png',
-      });
+    // await db.insert('product', {
+    //     'name': 'Pho Mai bap',
+    //     'price': 27,
+    //     'imagePath': 'assets/images/grocery_images/banana.png',
+    //   });
 
-    await db.insert('product', {
-        'name': 'Pho Mai',
-        'price': 24,
-        'imagePath': 'assets/images/grocery_images/banana.png',
-      });
+    // await db.insert('product', {
+    //     'name': 'Pho Mai',
+    //     'price': 24,
+    //     'imagePath': 'assets/images/grocery_images/banana.png',
+    //   });
 
-    await db.insert('product', {
-        'name': 'Trung chuoi',
-        'price': 22,
-        'imagePath': 'assets/images/grocery_images/banana.png',
-      });
+    // await db.insert('product', {
+    //     'name': 'Trung chuoi',
+    //     'price': 22,
+    //     'imagePath': 'assets/images/grocery_images/banana.png',
+    //   });
 
-    await db.insert('product', {
-        'name': 'Trung bap',
-        'price': 22,
-        'imagePath': 'assets/images/grocery_images/banana.png',
-      });    
+    // await db.insert('product', {
+    //     'name': 'Trung bap',
+    //     'price': 22,
+    //     'imagePath': 'assets/images/grocery_images/banana.png',
+    //   });    
 
-    await db.insert('product', {
-        'name': 'Dua',
-        'price': 22,
-        'imagePath': 'assets/images/grocery_images/banana.png',
-      });   
+    // await db.insert('product', {
+    //     'name': 'Dua',
+    //     'price': 22,
+    //     'imagePath': 'assets/images/grocery_images/banana.png',
+    //   });   
 
-    await db.insert('product', {
-        'name': 'Trung',
-        'price': 20,
-        'imagePath': 'assets/images/grocery_images/banana.png',
-      }); 
+    // await db.insert('product', {
+    //     'name': 'Trung',
+    //     'price': 20,
+    //     'imagePath': 'assets/images/grocery_images/banana.png',
+    //   }); 
 
-    await db.insert('product', {
-        'name': 'Chuoi',
-        'price': 20,
-        'imagePath': 'assets/images/grocery_images/banana.png',
-      }); 
+    // await db.insert('product', {
+    //     'name': 'Chuoi',
+    //     'price': 20,
+    //     'imagePath': 'assets/images/grocery_images/banana.png',
+    //   }); 
 
-    await db.insert('product', {
-        'name': 'Cacao',
-        'price': 17,
-        'imagePath': 'assets/images/grocery_images/banana.png',
-      });
+    // await db.insert('product', {
+    //     'name': 'Cacao',
+    //     'price': 17,
+    //     'imagePath': 'assets/images/grocery_images/banana.png',
+    //   });
 
     } // end function onCreate()
 

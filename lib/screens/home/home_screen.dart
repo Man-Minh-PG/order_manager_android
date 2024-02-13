@@ -4,6 +4,8 @@ import 'package:grocery_app/models/grocery_item.dart';
 import 'package:grocery_app/screens/product_details/product_details_screen.dart';
 import 'package:grocery_app/widgets/grocery_item_card_widget.dart';
 import 'package:grocery_app/widgets/search_bar_widget.dart';
+import 'package:grocery_app/models/product_model.dart';
+import 'package:grocery_app/repository/order_repository.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -55,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: () {
           setState(() {
             List<GroceryItem> selectedItems = demoItems.where((item) => item.orderQuantity > 0).toList();
+            onAddButtonSelected(selectedItems.first);
             print(selectedItems);
           });
         }, 
@@ -146,4 +149,27 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
+
+  // Assuming the selected grocery_item is available as groceryItem
+void onAddButtonSelected(GroceryItem groceryItem) {
+  if (groceryItem.orderQuantity > 0) {
+    // Collect the order id from the UI or create a new order
+    int orderId = // Collect orderId from UI or create a new order
+
+    // Create the product from the selected grocery_item
+   Product product = Product(
+      id : groceryItem.id,
+      description: groceryItem.description,
+      imagePath: groceryItem.imagePath,
+      orderQuantity: groceryItem.orderQuantity,
+      name: groceryItem.name,
+      price: groceryItem.price,
+      exclusiveOffers: groceryItem.exclusiveOffers, // Set the exclusiveOffers value
+    );
+    
+    // Insert the order detail into the database
+    OrderRepository orderRepository = OrderRepository();
+    orderRepository.insertOrderDetail(orderId, product.id);
+  }
+}
 }

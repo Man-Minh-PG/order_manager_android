@@ -1,5 +1,5 @@
 import 'package:grocery_app/helpers/database.dart';
-import 'package:grocery_app/models/product.dart';
+import 'package:grocery_app/models/product_model.dart';
 
 class ProductProvider {
 

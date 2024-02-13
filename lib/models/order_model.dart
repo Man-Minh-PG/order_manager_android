@@ -1,4 +1,8 @@
+import 'package:grocery_app/models/product_model.dart';
 class Order {
+  List<Product> _products = [];
+  List<Product> get products => _products;
+
   int id;
   int total;
   String note;
