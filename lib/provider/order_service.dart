@@ -1,3 +1,5 @@
+import 'dart:js_interop';
+
 import 'package:grocery_app/models/order_model.dart';
 import 'package:grocery_app/models/product_model.dart';
 import 'package:grocery_app/models/grocery_item.dart';
@@ -9,37 +11,55 @@ class OrderService {
   final OrderRepository _orderRepository = OrderRepository();
 
   // Future<void> addProductToOrder(Order order, GroceryItem groceryItem) async {
-  Future<void> addProductToOrder( GroceryItem groceryItem) async {
+  Future<void> createOrder(List<Product> groceryItem, String note) async {
+    int totalPrice = 0;
+    final db = await _databaseRepository.database;
+    
     // Set the exclusiveOffers value for the product based on the predefined value in the GroceryItem class
-    Product product = Product(
-      id : groceryItem.id,
-      description: groceryItem.description,
-      imagePath: groceryItem.imagePath,
-      orderQuantity: groceryItem.orderQuantity,
-      name: groceryItem.name,
-      price: groceryItem.price,
-      exclusiveOffers: groceryItem.exclusiveOffers, // Set the exclusiveOffers value
+    for (var item in groceryItem) {
+      totalPrice += item.price;
+    }
+
+    // Insert the order detail into the detail table
+   int insertedIdOrder = await db!.insert(
+      'order',
+      <String, dynamic>{
+        'total': totalPrice,
+        'note': note,
+        'paymentId' : 0, // cash payment
+      },
     );
 
-    // Logic to add the product to the order and insert into the detail table
+     for (var item in groceryItem) {
+      await db.insert(
+      'order_detail',
+      <String, dynamic>{
+        'productId': item.id,
+        'orderId': insertedIdOrder,
+        'amount' : item.orderQuantity, // cash payment
+      },
+    );
+    }
+  }
 
-
-    // For example:
-    // order.products.add(product); // Add the product to the order
-    // await _orderRepository.insertOrderDetail(order.id, product.id); // Insert into the detail table
+  Future<List<Map<String, dynamic>>> selectOrdersWithStatus0() async {
+    final db = await _databaseRepository.database;
+    return await db!.rawQuery('''
+      SELECT orders.*, order_detail.*
+      FROM orders
+      JOIN order_detail ON orders.id = order_detail.order_id
+      WHERE order_detail.status = 0
+    ''');
   }
 
 
-   Future<void> insertOrderDetail(int orderId, int productId) async {
+  Future<void> updateOrderStatus(int orderId, int newStatus) async {
     final db = await _databaseRepository.database;
-
-    // Insert the order detail into the detail table
-    await db!.insert(
-      'order_detail',
-      <String, dynamic>{
-        'order_id': orderId,
-        'product_id': productId,
-      },
+    await db!.update(
+      'order',
+      {'status': newStatus},
+      where: 'id = ?',
+      whereArgs: [orderId],
     );
   }
 }

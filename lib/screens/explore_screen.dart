@@ -52,7 +52,7 @@ class ExploreScreen extends StatelessWidget {
         ),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 10),
-          child: SearchBarWidget(),
+          // child: SearchBarWidget(),
         ),
       ],
     );

@@ -99,7 +99,7 @@ class _ChartItemWidgetState extends State<ChartItemWidget> {
     );
   }
 
-  double getPrice() {
+  int getPrice() {
     return widget.item.price * amount;
   }
 }

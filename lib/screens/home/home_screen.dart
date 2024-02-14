@@ -15,6 +15,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<GroceryItem> selectedItems = [];
+  String searchTerm = '';
+
+  // Hàm callback để nhận giá trị tìm kiếm từ SearchBarWidget
+  void updateSearchTerm(String value) {
+    setState(() {
+      searchTerm = value; // Cập nhật giá trị tìm kiếm
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +44,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(
                     height: 15,
                   ),
-                  padded(SearchBarWidget()), // Khung search
+                   padded(SearchBarWidget(
+                    onSearchChanged: updateSearchTerm, // Truyền hàm callback vào SearchBarWidget
+                  )),
                   SizedBox(
                     height: 25,
                   ),
@@ -58,7 +68,8 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: () {
           setState(() {
             List<GroceryItem> selectedItems = demoItems.where((item) => item.orderQuantity > 0).toList();
-            onAddButtonSelected(selectedItems.first); // call to function process add to cart
+            // onAddButtonSelected(selectedItems.first); // call to function process add to cart
+            onAddButtonSelected(selectedItems); // call to function process add to cart
             print(selectedItems);
           });
         }, 
@@ -150,27 +161,28 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
-
+ 
   // Assuming the selected grocery_item is available as groceryItem
-void onAddButtonSelected(GroceryItem groceryItem) {
-  if (groceryItem.orderQuantity > 0) {
-    // Collect the order id from the UI or create a new order
-   
-   Product product = Product( 
-      id : groceryItem.id,
-      description : groceryItem.description,
-      imagePath: groceryItem.imagePath,
-      orderQuantity: groceryItem.orderQuantity,
-      name: groceryItem.name,
-      price: groceryItem.price,
-      exclusiveOffers: groceryItem.exclusiveOffers, // Set the exclusiveOffers value
-    );
-    
-    // Insert the order detail into the database
-    // OrderRepository orderRepository = OrderRepository();
-    // orderRepository.insertOrderDetail(orderId, product.id);
-    OrderService orderService = OrderService();
-    
+// void onAddButtonSelected(GroceryItem groceryItem) {
+  void onAddButtonSelected(List<GroceryItem> groceryItem) {
+      List<Product> selectedProducts = []; // Danh sách các sản phẩm đã chọn
+
+      for (var item in groceryItem) {
+        if(item.orderQuantity > 0) {
+            Product product = Product( 
+              id : item.id,
+              description : item.description,
+              imagePath: item.imagePath,
+              orderQuantity: item.orderQuantity,
+              name: item.name,
+              price: item.price,
+              exclusiveOffers: item.exclusiveOffers, // Set the exclusiveOffers value
+            );
+            
+          selectedProducts.add(product); // Thêm sản phẩm vào danh sách đã chọn
+        }
+      }
+
+     OrderService orderService = OrderService();
   }
-}
 }
