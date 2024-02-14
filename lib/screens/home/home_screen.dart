@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grocery_app/models/grocery_item.dart';
+import 'package:grocery_app/provider/order_service.dart';
 import 'package:grocery_app/screens/product_details/product_details_screen.dart';
 import 'package:grocery_app/widgets/grocery_item_card_widget.dart';
 import 'package:grocery_app/widgets/search_bar_widget.dart';
@@ -57,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: () {
           setState(() {
             List<GroceryItem> selectedItems = demoItems.where((item) => item.orderQuantity > 0).toList();
-            onAddButtonSelected(selectedItems.first);
+            onAddButtonSelected(selectedItems.first); // call to function process add to cart
             print(selectedItems);
           });
         }, 
@@ -93,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: rowItems.map((item) {
                 return Expanded(
                   child: GestureDetector(
-                    child: GroceryItemCardWidget(
+                    child: GroceryItemCardWidget( // call to class - generate info product
                       item: item,
                       heroSuffix: "home_screen",
                     ),
@@ -154,12 +155,10 @@ class _HomeScreenState extends State<HomeScreen> {
 void onAddButtonSelected(GroceryItem groceryItem) {
   if (groceryItem.orderQuantity > 0) {
     // Collect the order id from the UI or create a new order
-    int orderId = // Collect orderId from UI or create a new order
-
-    // Create the product from the selected grocery_item
-   Product product = Product(
+   
+   Product product = Product( 
       id : groceryItem.id,
-      description: groceryItem.description,
+      description : groceryItem.description,
       imagePath: groceryItem.imagePath,
       orderQuantity: groceryItem.orderQuantity,
       name: groceryItem.name,
@@ -168,8 +167,10 @@ void onAddButtonSelected(GroceryItem groceryItem) {
     );
     
     // Insert the order detail into the database
-    OrderRepository orderRepository = OrderRepository();
-    orderRepository.insertOrderDetail(orderId, product.id);
+    // OrderRepository orderRepository = OrderRepository();
+    // orderRepository.insertOrderDetail(orderId, product.id);
+    OrderService orderService = OrderService();
+    
   }
 }
 }

@@ -186,7 +186,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     );
   }
 
-  double getTotalPrice() {
+  int getTotalPrice() {
     return amount * widget.groceryItem.price;
   }
 }

@@ -28,7 +28,7 @@ class GroceryItemCardWidget extends StatefulWidget {
 class _GroceryItemCardWidget extends State<GroceryItemCardWidget> {
   int orderQuantity = 0; // Value default for button
 
-  double calculateTotalPrice() {
+  int calculateTotalPrice() {
     return widget.item.price * orderQuantity;
   }
 
