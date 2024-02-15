@@ -101,12 +101,24 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:grocery_app/provider/order_service.dart';
 
 class CartScreen extends StatelessWidget {
   // const CartScreen({Key key}) : super(key: key);
+  OrderService orderService = OrderService();
+  
 
   @override 
    Widget build(BuildContext context) {
+    // Tại đây, bạn có thể gọi hàm và lấy kết quả trả về
+    Future<void> fetchOrders() async {
+      List<Map<String, dynamic>> orders = await orderService.selectOrdersWithStatus0();
+      print(orders); // In ra màn hình console
+    }
+
+    // Gọi hàm fetchOrders khi cần thiết, chẳng hạn khi màn hình được build
+    fetchOrders();
+
     final List<String> phoneNumber = <String>[
       '6666677897',
       '7777777777',

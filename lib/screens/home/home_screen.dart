@@ -6,7 +6,6 @@ import 'package:grocery_app/screens/product_details/product_details_screen.dart'
 import 'package:grocery_app/widgets/grocery_item_card_widget.dart';
 import 'package:grocery_app/widgets/search_bar_widget.dart';
 import 'package:grocery_app/models/product_model.dart';
-import 'package:grocery_app/repository/order_repository.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -162,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
  
-  // Assuming the selected grocery_item is available as groceryItem
+// Assuming the selected grocery_item is available as groceryItem
 // void onAddButtonSelected(GroceryItem groceryItem) {
   void onAddButtonSelected(List<GroceryItem> groceryItem) {
       List<Product> selectedProducts = []; // Danh sách các sản phẩm đã chọn
@@ -184,5 +183,6 @@ class _HomeScreenState extends State<HomeScreen> {
       }
 
      OrderService orderService = OrderService();
+     orderService.createOrder(selectedProducts, searchTerm);
   }
 }

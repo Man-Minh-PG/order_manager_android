@@ -1,5 +1,3 @@
-import 'dart:js_interop';
-
 import 'package:grocery_app/models/order_model.dart';
 import 'package:grocery_app/models/product_model.dart';
 import 'package:grocery_app/models/grocery_item.dart';
@@ -12,9 +10,9 @@ class OrderService {
 
   // Future<void> addProductToOrder(Order order, GroceryItem groceryItem) async {
   Future<void> createOrder(List<Product> groceryItem, String note) async {
-    int totalPrice = 0;
     final db = await _databaseRepository.database;
-    
+    int totalPrice = 0;
+   
     // Set the exclusiveOffers value for the product based on the predefined value in the GroceryItem class
     for (var item in groceryItem) {
       totalPrice += item.price;
@@ -22,7 +20,7 @@ class OrderService {
 
     // Insert the order detail into the detail table
    int insertedIdOrder = await db!.insert(
-      'order',
+      'orders',
       <String, dynamic>{
         'total': totalPrice,
         'note': note,
@@ -45,10 +43,10 @@ class OrderService {
   Future<List<Map<String, dynamic>>> selectOrdersWithStatus0() async {
     final db = await _databaseRepository.database;
     return await db!.rawQuery('''
-      SELECT orders.*, order_detail.*
-      FROM orders
-      JOIN order_detail ON orders.id = order_detail.order_id
-      WHERE order_detail.status = 0
+      SELECT order.*, order_detail.*
+      FROM order
+      JOIN order_detail ON order.id = order_detail.order_id
+      WHERE order.status = 0
     ''');
   }
 
