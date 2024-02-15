@@ -16,9 +16,9 @@ class DatabaseRepository {
 
   // Hàm xóa cơ sở dữ liệu cũ
     Future<void> deleteOldDatabase() async {
-    Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String databasePath = join(documentsDirectory.path, _databaseName);
-      File dbFile = File(databasePath);
+      Directory documentsDirectory = await getApplicationDocumentsDirectory();
+      String path = join(documentsDirectory.path, _databaseName);
+      File dbFile = File(path);
       if (await dbFile.exists()) {
         await dbFile.delete();
       }

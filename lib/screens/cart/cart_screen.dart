@@ -99,79 +99,86 @@
 //   }
 // }
 
-
 import 'package:flutter/material.dart';
 import 'package:grocery_app/provider/order_service.dart';
 
 class CartScreen extends StatelessWidget {
-  // const CartScreen({Key key}) : super(key: key);
   OrderService orderService = OrderService();
-  
 
-  @override 
-   Widget build(BuildContext context) {
-    // Tại đây, bạn có thể gọi hàm và lấy kết quả trả về
-    Future<void> fetchOrders() async {
-      List<Map<String, dynamic>> orders = await orderService.selectOrdersWithStatus0();
-      print(orders); // In ra màn hình console
+  @override
+  Widget build(BuildContext context) {
+    // Tạo hàm để fetch danh sách đơn hàng
+    Future<List<Map<String, dynamic>>> fetchOrders() async {
+      return await orderService.selectOrdersWithStatus0();
     }
 
     // Gọi hàm fetchOrders khi cần thiết, chẳng hạn khi màn hình được build
-    fetchOrders();
+    // và sử dụng kết quả để cập nhật ListView
+    return Scaffold(
+      body: SafeArea(child: 
+        FutureBuilder<List<Map<String, dynamic>>>(
+        future: fetchOrders(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // Nếu đang đợi kết quả, có thể hiển thị một tiêu đề hoặc tiến trình tải
+            return Center(child: CircularProgressIndicator());
+          } else {
+            // Nếu đã có kết quả, hiển thị danh sách các đơn hàng
+            if (snapshot.hasError) {
+              // Xử lý lỗi nếu có
+              return Center(child: Text("Error: ${snapshot.error}"));
+            } else {
+              // Hiển thị ListView với số lượng đơn hàng đã fetch về
+              List<Map<String, dynamic>> orders = snapshot.data ?? [];
+              return ListView.separated(
+              shrinkWrap: true,
+              padding: const EdgeInsets.all(8),
+              itemCount: orders.length,
+              itemBuilder: (BuildContext context, int index) {
+                // Xây dựng một item trong danh sách đơn hàng
+                // ở đây, bạn có thể sử dụng orders[index] để truy cập vào từng đơn hàng
+                // và hiển thị thông tin cần thiết
+                return Card(
+                  color: Colors.white,
+                  elevation: 2, // Giảm độ nâng của Card
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      ListTile(
+                        leading: Icon(Icons.call),
+                        title: Text("${orders[index]['total']}",
+                            style: TextStyle(color: Colors.green)),
+                        subtitle: Text(
+                          "${orders[index]['createdAt']}",
+                          style: TextStyle(color: Colors.orangeAccent),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          TextButton(
+                            child: const Text('Dial'),
+                            onPressed: () {/* ... */},
+                          ),
+                          const SizedBox(width: 8),
+                          TextButton(
+                            child: const Text('Call History'),
+                            onPressed: () {/* ... */},
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) => const Divider(),
+            );
 
-    final List<String> phoneNumber = <String>[
-      '6666677897',
-      '7777777777',
-      '3498789678',
-      '7897989780'
-    ];
-    final List<String> callType = <String>[
-      "Incoming",
-      "Outgoing",
-      "Incoming",
-      "Missed"
-    ];
- 
-    return ListView.separated(
-      shrinkWrap: true,
-      padding: const EdgeInsets.all(8),
-      itemCount: phoneNumber.length,
-      itemBuilder: (BuildContext context, int index) {
-        return Card(
-          color: Colors.white,
-          borderOnForeground: true,
-          elevation: 10,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              ListTile(
-                leading: Icon(Icons.call),
-                title: Text("${phoneNumber[index]}",
-                    style: TextStyle(color: Colors.green)),
-                subtitle: Text(
-                  "${callType[index]}",
-                  style: TextStyle(color: Colors.orangeAccent),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  TextButton(
-                    child: const Text('Dail'),
-                    onPressed: () {/* ... */},
-                  ),
-                  const SizedBox(width: 8),
-                  TextButton(
-                    child: const Text('Call History'),
-                    onPressed: () {/* ... */},
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
+          }
+        }
       },
-      separatorBuilder: (BuildContext context, int index) => const Divider(),
+    )
+      ),
     );
   }
 }
