@@ -28,7 +28,7 @@ class DatabaseRepository {
   Future<String?> getDatabasePath() async {
   // Lấy đường dẫn thư mục lưu trữ cơ sở dữ liệu
     Directory appDocDir = await getApplicationDocumentsDirectory();
-    String databasePath = join(appDocDir.path, 'your_database_name.db');
+    String databasePath = join(appDocDir.path, _databaseName);
     print(databasePath) ;
 }
 
