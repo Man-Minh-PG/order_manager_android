@@ -26,10 +26,10 @@ class GroceryItemCardWidget extends StatefulWidget {
 // typedef AddToCartCallback = void Function(GroceryItem item, int orderQuantity);
 
 class _GroceryItemCardWidget extends State<GroceryItemCardWidget> {
-  int orderQuantity = 0; // Value default for button
+  // int orderQuantity = 0; // Value default for button
 
   int calculateTotalPrice() {
-    return widget.item.price * orderQuantity;
+    return widget.item.price * widget.item.orderQuantity;
   }
 
   @override
@@ -131,7 +131,8 @@ class _GroceryItemCardWidget extends State<GroceryItemCardWidget> {
           onPressed: (){
             setState(() {
               // Increment value when the + button is pressed
-              orderQuantity++;
+              widget.item.orderQuantity++;  // Update value product
+              // orderQuantity = widget.item.orderQuantity; // update value UI
             });
               // Gọi callback để thông báo về sự thay đổi
             // if (widget.addToCartCallback != null) {
@@ -157,16 +158,17 @@ class _GroceryItemCardWidget extends State<GroceryItemCardWidget> {
         // ),
         Center(
           child: Text(
-            orderQuantity.toString(),
+             widget.item.orderQuantity.toString(),
             textAlign: TextAlign.center,
           ),
         ),
         IconButton(
           onPressed: () {
-              if(orderQuantity > 0) {
+              if(widget.item.orderQuantity > 0) {
                 setState(() {
                 // Decrement value when the - button is pressed (but not below 1)
-                orderQuantity--;
+                widget.item.orderQuantity--;
+                // orderQuantity = widget.item.orderQuantity; // update value UI
               });   
             }
           }, 

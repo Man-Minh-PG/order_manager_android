@@ -63,17 +63,23 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            List<GroceryItem> selectedItems = exclusiveOffers.where((item) => item.orderQuantity > 0).toList();
-            // onAddButtonSelected(selectedItems.first); // call to function process add to cart
-            onAddButtonSelected(selectedItems); // call to function process add to cart
-            // print(selectedItems);
-          });
-        }, 
-        child: Text("Add")
-      ),
+     floatingActionButton: FloatingActionButton(
+      onPressed: () {
+        setState(() {
+          // Lấy danh sách các sản phẩm được chọn
+          List<GroceryItem> selectedItems = exclusiveOffers.where((item) => item.orderQuantity > 0).toList();
+          
+          // Gọi hàm xử lý khi nút được nhấn, truyền vào danh sách các sản phẩm đã chọn
+          onAddButtonSelected(selectedItems); 
+
+          // Đặt tất cả các giá trị orderQuantity về 0 cho các sản phẩm trong exclusiveOffers
+          for (var item in exclusiveOffers) {
+            item.orderQuantity = 0;
+          }
+        });
+      }, 
+      child: Text("Add")
+    ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
@@ -163,26 +169,41 @@ class _HomeScreenState extends State<HomeScreen> {
  
 // Assuming the selected grocery_item is available as groceryItem
 // void onAddButtonSelected(GroceryItem groceryItem) {
-  void onAddButtonSelected(List<GroceryItem> groceryItem) {
+    void onAddButtonSelected(List<GroceryItem> groceryItem) async {
       List<Product> selectedProducts = []; // Danh sách các sản phẩm đã chọn
 
       for (var item in groceryItem) {
         if(item.orderQuantity > 0) {
-            Product product = Product( 
-              id : item.id,
-              description : item.description,
-              imagePath: item.imagePath,
-              orderQuantity: item.orderQuantity,
-              name: item.name,
-              price: item.price,
-              exclusiveOffers: item.exclusiveOffers, // Set the exclusiveOffers value
-            );
-            
+          Product product = Product( 
+            id : item.id,
+            description : item.description,
+            imagePath: item.imagePath,
+            orderQuantity: item.orderQuantity,
+            name: item.name,
+            price: item.price,
+            exclusiveOffers: item.exclusiveOffers, // Set the exclusiveOffers value
+          );
+          
           selectedProducts.add(product); // Thêm sản phẩm vào danh sách đã chọn
         }
       }
 
-     OrderService orderService = OrderService();
-     orderService.createOrder(selectedProducts, searchTerm);
-  }
+      OrderService orderService = OrderService();
+      bool success = await orderService.createOrder(selectedProducts, searchTerm); // Chờ cho hàm createOrder hoàn thành
+      
+      if (success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Đã tạo đơn hàng thành công!'),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Tạo đơn hàng thất bại!'),
+            ),
+          );
+        }
+    }
+
 }

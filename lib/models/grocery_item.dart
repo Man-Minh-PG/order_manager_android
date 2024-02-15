@@ -4,7 +4,7 @@ class GroceryItem {
   final String description;
   final int price;
   final String imagePath;
-  final int orderQuantity;
+  late  int orderQuantity;
   final bool exclusiveOffers;
 
   GroceryItem({

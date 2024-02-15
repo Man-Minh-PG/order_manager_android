@@ -13,6 +13,18 @@ class DatabaseRepository {
   final _databaseName    = 'bachutha';
   final _databaseVersion = 1;  
 
+
+  // Hàm xóa cơ sở dữ liệu cũ
+    Future<void> deleteOldDatabase() async {
+    Directory documentsDirectory = await getApplicationDocumentsDirectory();
+    String databasePath = join(documentsDirectory.path, _databaseName);
+      File dbFile = File(databasePath);
+      if (await dbFile.exists()) {
+        await dbFile.delete();
+      }
+    }
+
+
   Future<String?> getDatabasePath() async {
   // Lấy đường dẫn thư mục lưu trữ cơ sở dữ liệu
     Directory appDocDir = await getApplicationDocumentsDirectory();
@@ -23,6 +35,7 @@ class DatabaseRepository {
 
 
   Future<Database?> get database async { // function check isset db
+  // deleteOldDatabase();
   if (_database != null) {
     return _database;
   } else {

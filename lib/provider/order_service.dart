@@ -9,57 +9,71 @@ class OrderService {
   final OrderRepository _orderRepository = OrderRepository();
 
   // Future<void> addProductToOrder(Order order, GroceryItem groceryItem) async {
-  Future<void> createOrder(List<Product> groceryItem, String note) async {
-    final db = await _databaseRepository.database;
+  Future<bool> createOrder(List<Product> groceryItem, String note) async {
+  final db = await _databaseRepository.database;
 
+  if (db == null) {
+    // Xử lý khi db là null, ví dụ: thông báo lỗi hoặc kết thúc hàm
+    print('Error: Database is null');
+    return false; // Trả về false để chỉ ra rằng insert thất bại
+  }
 
-    if (db == null) {
-      // Xử lý khi db là null, ví dụ: thông báo lỗi hoặc kết thúc hàm
-      print('Error: Database is null');
-      return;
-    }
+  int totalPrice = 0;
+  int insertedIdOrder = 0;
 
+  // Tính tổng giá tiền của đơn hàng
+  for (var item in groceryItem) {
+    totalPrice += item.price;
+  }
 
-    int totalPrice = 0;
-    int insertedIdOrder = 0;
-   
-    // Set the exclusiveOffers value for the product based on the predefined value in the GroceryItem class
-    for (var item in groceryItem) {
-      totalPrice += item.price;
-    }
+  // Insert thông tin đơn hàng vào bảng orders
+  insertedIdOrder = await db.insert(
+    'orders',
+    <String, dynamic>{
+      'total': totalPrice,
+      'note': note,
+      'paymentId' : 0, // Phương thức thanh toán bằng tiền mặt
+    },
+  );
 
-    // Insert the order detail into the detail table
-   insertedIdOrder = await db!.insert(
-      'orders',
-      <String, dynamic>{
-        'total': totalPrice,
-        'note': note,
-        'paymentId' : 0, // cash payment
-      },
-    );
+  // Kiểm tra xem insert vào bảng orders có thành công hay không
+  if (insertedIdOrder == 0) {
+    print('Error: Insert order failed');
+    return false; // Trả về false để chỉ ra rằng insert thất bại
+  }
 
-     for (var item in groceryItem) {
-      await db.insert(
+  // Insert thông tin chi tiết đơn hàng vào bảng order_detail
+  for (var item in groceryItem) {
+    int result = await db.insert(
       'order_detail',
       <String, dynamic>{
         'productId': item.id,
         'orderId': insertedIdOrder,
-        'amount' : item.orderQuantity, // cash payment
+        'amount' : item.orderQuantity,
       },
     );
+    
+    // Kiểm tra xem insert vào bảng order_detail có thành công hay không
+    if (result == 0) {
+      print('Error: Insert order detail failed');
+      return false; // Trả về false để chỉ ra rằng insert thất bại
     }
   }
+
+  // Trả về true để chỉ ra rằng insert thành công
+  return true;
+}
+
 
   Future<List<Map<String, dynamic>>> selectOrdersWithStatus0() async {
     final db = await _databaseRepository.database;
     return await db!.rawQuery('''
-      SELECT order.*, order_detail.*
-      FROM order
-      JOIN order_detail ON order.id = order_detail.order_id
-      WHERE order.status = 0
+      SELECT orders.*, order_detail.*
+      FROM orders
+      JOIN order_detail ON orders.id = order_detail.orderId
+      WHERE orders.status = 0
     ''');
   }
-
 
   Future<void> updateOrderStatus(int orderId, int newStatus) async {
     final db = await _databaseRepository.database;
