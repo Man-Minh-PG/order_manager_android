@@ -13,14 +13,24 @@ class DatabaseRepository {
   final _databaseName    = 'bachutha';
   final _databaseVersion = 1;  
 
-  Future<Database?> get database async {
-    if (_database != null) {
-      return _database;
-    } else {
-      _database = await _initDatabase();
-    }
-    return null;
-  } 
+  Future<String?> getDatabasePath() async {
+  // Lấy đường dẫn thư mục lưu trữ cơ sở dữ liệu
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    String databasePath = join(appDocDir.path, 'your_database_name.db');
+    print(databasePath) ;
+}
+
+
+
+  Future<Database?> get database async { // function check isset db
+  if (_database != null) {
+    return _database;
+  } else {
+      // getDatabasePath();
+    _database = await _initDatabase();
+    return _database;
+  }
+}
 
   _initDatabase() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();

@@ -11,7 +11,17 @@ class OrderService {
   // Future<void> addProductToOrder(Order order, GroceryItem groceryItem) async {
   Future<void> createOrder(List<Product> groceryItem, String note) async {
     final db = await _databaseRepository.database;
+
+
+    if (db == null) {
+      // Xử lý khi db là null, ví dụ: thông báo lỗi hoặc kết thúc hàm
+      print('Error: Database is null');
+      return;
+    }
+
+
     int totalPrice = 0;
+    int insertedIdOrder = 0;
    
     // Set the exclusiveOffers value for the product based on the predefined value in the GroceryItem class
     for (var item in groceryItem) {
@@ -19,7 +29,7 @@ class OrderService {
     }
 
     // Insert the order detail into the detail table
-   int insertedIdOrder = await db!.insert(
+   insertedIdOrder = await db!.insert(
       'orders',
       <String, dynamic>{
         'total': totalPrice,

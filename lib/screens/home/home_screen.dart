@@ -66,10 +66,10 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
-            List<GroceryItem> selectedItems = demoItems.where((item) => item.orderQuantity > 0).toList();
+            List<GroceryItem> selectedItems = exclusiveOffers.where((item) => item.orderQuantity > 0).toList();
             // onAddButtonSelected(selectedItems.first); // call to function process add to cart
             onAddButtonSelected(selectedItems); // call to function process add to cart
-            print(selectedItems);
+            // print(selectedItems);
           });
         }, 
         child: Text("Add")
