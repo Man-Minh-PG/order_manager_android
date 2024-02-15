@@ -29,7 +29,9 @@ class OrderService {
   // Insert thông tin đơn hàng vào bảng orders
   insertedIdOrder = await db.insert(
     'orders',
-    <String, dynamic>{
+    <String, dynamic>
+    
+    {
       'total': totalPrice,
       'note': note,
       'paymentId' : 0, // Phương thức thanh toán bằng tiền mặt
@@ -65,13 +67,24 @@ class OrderService {
 }
 
 
-  Future<List<Map<String, dynamic>>> selectOrdersWithStatus0() async {
+  // Future<List<Map<String, dynamic>>> selectOrdersWithStatus0() async {
+  //   final db = await _databaseRepository.database;
+  //   return await db!.rawQuery('''
+  //     SELECT orders.*, order_detail.*
+  //     FROM orders
+  //     JOIN order_detail ON orders.id = order_detail.orderId
+  //     WHERE orders.status = 0
+  //   ''');
+  // }
+
+   Future<List<Map<String, dynamic>>> selectOrdersWithStatus0() async {
     final db = await _databaseRepository.database;
     return await db!.rawQuery('''
-      SELECT orders.*, order_detail.*
-      FROM orders
-      JOIN order_detail ON orders.id = order_detail.orderId
+      SELECT order_detail.*, orders.*, order_detail.id AS order_detail_id
+      FROM order_detail
+      JOIN orders ON orders.id = order_detail.orderID
       WHERE orders.status = 0
+     
     ''');
   }
 

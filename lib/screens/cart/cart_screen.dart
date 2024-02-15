@@ -103,81 +103,119 @@ import 'package:flutter/material.dart';
 import 'package:grocery_app/provider/order_service.dart';
 
 class CartScreen extends StatelessWidget {
-  OrderService orderService = OrderService();
+  final OrderService orderService = OrderService();
 
   @override
   Widget build(BuildContext context) {
     // Tạo hàm để fetch danh sách đơn hàng
     Future<List<Map<String, dynamic>>> fetchOrders() async {
-      return await orderService.selectOrdersWithStatus0();
+      return orderService.selectOrdersWithStatus0();
     }
 
     // Gọi hàm fetchOrders khi cần thiết, chẳng hạn khi màn hình được build
     // và sử dụng kết quả để cập nhật ListView
     return Scaffold(
-      body: SafeArea(child: 
-        FutureBuilder<List<Map<String, dynamic>>>(
-        future: fetchOrders(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            // Nếu đang đợi kết quả, có thể hiển thị một tiêu đề hoặc tiến trình tải
-            return Center(child: CircularProgressIndicator());
-          } else {
-            // Nếu đã có kết quả, hiển thị danh sách các đơn hàng
-            if (snapshot.hasError) {
-              // Xử lý lỗi nếu có
-              return Center(child: Text("Error: ${snapshot.error}"));
+      body: SafeArea(
+        child: FutureBuilder<List<Map<String, dynamic>>>(
+          future: fetchOrders(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              // Nếu đang đợi kết quả, có thể hiển thị một tiêu đề hoặc tiến trình tải
+              return Center(child: CircularProgressIndicator());
             } else {
-              // Hiển thị ListView với số lượng đơn hàng đã fetch về
-              List<Map<String, dynamic>> orders = snapshot.data ?? [];
-              return ListView.separated(
-              shrinkWrap: true,
-              padding: const EdgeInsets.all(8),
-              itemCount: orders.length,
-              itemBuilder: (BuildContext context, int index) {
-                // Xây dựng một item trong danh sách đơn hàng
-                // ở đây, bạn có thể sử dụng orders[index] để truy cập vào từng đơn hàng
-                // và hiển thị thông tin cần thiết
-                return Card(
-                  color: Colors.white,
-                  elevation: 2, // Giảm độ nâng của Card
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      ListTile(
-                        leading: Icon(Icons.call),
-                        title: Text("${orders[index]['total']}",
-                            style: TextStyle(color: Colors.green)),
-                        subtitle: Text(
-                          "${orders[index]['createdAt']}",
-                          style: TextStyle(color: Colors.orangeAccent),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          TextButton(
-                            child: const Text('Dial'),
-                            onPressed: () {/* ... */},
-                          ),
-                          const SizedBox(width: 8),
-                          TextButton(
-                            child: const Text('Call History'),
-                            onPressed: () {/* ... */},
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
-              separatorBuilder: (BuildContext context, int index) => const Divider(),
-            );
+              // Nếu đã có kết quả, hiển thị danh sách các đơn hàng
+              if (snapshot.hasError) {
+                // Xử lý lỗi nếu có
+                return Center(child: Text("Error: ${snapshot.error}"));
+              } else {
+                // Hiển thị ListView với số lượng đơn hàng đã fetch về
+                List<Map<String, dynamic>> orders = snapshot.data ?? [];
+                
+                // Tạo danh sách mới để nhóm sản phẩm theo ID đơn hàng
+                Map<int, List<Map<String, dynamic>>> groupedOrders = {};
 
-          }
-        }
-      },
-    )
+                // Nhóm sản phẩm theo ID đơn hàng
+                for (var order in orders) {
+                  int orderId = order['orderId'];
+                  if (!groupedOrders.containsKey(orderId)) {
+                    groupedOrders[orderId] = [order];
+                  } else {
+                    groupedOrders[orderId]!.add(order);
+                  }
+                }
+
+                  return ListView.separated(
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.all(8),
+                  itemCount: groupedOrders.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    // Lấy danh sách sản phẩm của một đơn hàng
+                    List<Map<String, dynamic>> products = groupedOrders.values.elementAt(index);
+
+                    // Lấy giá trị total của đơn hàng từ cơ sở dữ liệu
+                    int totalAmount = products[0]['total'];
+
+                    // Hiển thị thông tin của đơn hàng
+                    return Card(
+                    color: Colors.white,
+                    elevation: 2,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        ListTile(
+                          leading: Icon(Icons.shopping_cart),
+                          title: Text("Order ID: ${products[0]['orderId']}",
+                            style: TextStyle(color: Colors.green)),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Total Amount: $totalAmount",
+                                style: TextStyle(color: Colors.orangeAccent),
+                              ),
+                              SizedBox(height: 8),
+                              Text("Note: ${products[0]['note'] ?? ''}",
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // Hiển thị danh sách sản phẩm trong đơn hàng
+                        ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: products.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return ListTile(
+                              title: Text("Product ID: ${products[index]['productId']}"),
+                              subtitle: Text("Amount: ${products[index]['amount']}"),
+                            );
+                          },
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            TextButton(
+                              child: const Text('Dial'),
+                              onPressed: () {/* ... */},
+                            ),
+                            const SizedBox(width: 8),
+                            TextButton(
+                              child: const Text('Call History'),
+                              onPressed: () {/* ... */},
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+
+                  },
+                  separatorBuilder: (BuildContext context, int index) => const Divider(),
+                );
+
+              }
+            }
+          },
+        ),
       ),
     );
   }
