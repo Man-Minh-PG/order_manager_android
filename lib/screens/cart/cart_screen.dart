@@ -185,7 +185,7 @@ class CartScreen extends StatelessWidget {
                           itemCount: products.length,
                           itemBuilder: (BuildContext context, int index) {
                             return ListTile(
-                              title: Text("Product ID: ${products[index]['productId']}"),
+                              title: Text("Name: ${products[index]['product_name']}"),
                               subtitle: Text("Amount: ${products[index]['amount']}"),
                             );
                           },

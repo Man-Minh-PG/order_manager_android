@@ -69,12 +69,12 @@ class _GroceryItemCardWidget extends State<GroceryItemCardWidget> {
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
-            AppText(
-              text: widget.item.description,
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF7C7C7C),
-            ),
+            // AppText(
+            //   text: widget.item.description,
+            //   fontSize: 14,
+            //   fontWeight: FontWeight.w600,
+            //   color: Color(0xFF7C7C7C),
+            // ),
             AppText(
                   text: "\$${calculateTotalPrice().toStringAsFixed(2)}",
                   fontSize: 14,

@@ -30,7 +30,7 @@ class DatabaseRepository {
     Directory appDocDir = await getApplicationDocumentsDirectory();
     String databasePath = join(appDocDir.path, _databaseName);
     print(databasePath) ;
-}
+  }
 
 
 
@@ -112,15 +112,89 @@ class DatabaseRepository {
     ''');
 
     // Sample product data
-    // await db.insert('product', {
-    //   'name': 'Sieu Pham',
-    //   'price': 30,
-    //   'imagePath': 'assets/images/grocery_images/banana.png',
-    // });
-
+    insertProduct(db);
     // Các lệnh insert khác ở đây...
 
   } // end function onCreate()
+
+  Future<void> insertProduct(Database db) async {
+    await db.insert('product', {
+      'name': 'Sieu_Pham',
+      'description': 'PM-TR-C',
+      'price': 30,
+      'imagePath': 'assets/images/grocery_images/banana.png',
+    });
+
+    await db.insert('product', {
+      'name': 'PM_Chui',
+      'description': 'PM-C',
+      'price': 27,
+      'imagePath': 'assets/images/grocery_images/banana.png',
+    });   
+
+    await db.insert('product', {
+      'name': 'PM_Trung',
+      'description': 'PM-TR',
+      'price': 27,
+      'imagePath': 'assets/images/grocery_images/banana.png',
+    });
+
+     await db.insert('product', {
+      'name': 'PM_Bap',
+      'description': 'PM-Bap',
+      'price': 27,
+      'imagePath': 'assets/images/grocery_images/banana.png',
+    });
+
+    await db.insert('product', {
+      'name': 'Pho_Mai',
+      'description': 'Pho Mai',
+      'price': 24,
+      'imagePath': 'assets/images/grocery_images/banana.png',
+    });
+
+    await db.insert('product', {
+      'name': 'Tr_Chui',
+      'description': 'TR + C',
+      'price': 22,
+      'imagePath': 'assets/images/grocery_images/banana.png',
+    });
+
+    await db.insert('product', {
+      'name': 'Tr_Bap',
+      'description': 'TR + Bap',
+      'price': 22,
+      'imagePath': 'assets/images/grocery_images/banana.png',
+    });
+
+    await db.insert('product', {
+      'name': 'Chui',
+      'description': 'C',
+      'price': 20,
+      'imagePath': 'assets/images/grocery_images/banana.png',
+    });
+
+    await db.insert('product', {
+      'name': 'Trung',
+      'description': 'TR',
+      'price': 20,
+      'imagePath': 'assets/images/grocery_images/banana.png',
+    });
+
+    await db.insert('product', {
+      'name': 'Ca_Cao',
+      'description': 'CC',
+      'price': 17,
+      'imagePath': 'assets/images/grocery_images/banana.png',
+    });
+
+     await db.insert('product', {
+      'name': 'Pho_Mai_them',
+      'description': 'Topping +',
+      'price': 8,
+      'imagePath': 'assets/images/grocery_images/banana.png',
+    });
+  }
 
   // Create function insert - update - delete
      Future<int> insert(String table, Map<String, dynamic> values) async {

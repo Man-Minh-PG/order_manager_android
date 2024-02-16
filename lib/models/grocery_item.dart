@@ -23,38 +23,68 @@ var demoItems = [
   GroceryItem(
       id: 1,
       name: "Sieu_Pham",
-      description: "7pcs, Priceg",
+      description: "PM-TR-C",
       price: 30,
       imagePath: "assets/images/grocery_images/banana.png", orderQuantity: 0, exclusiveOffers: false),
   GroceryItem(
       id: 2,
       name: "PM_Chui",
-      description: "1kg, Priceg",
+      description: "PM-C",
       price: 27,
       imagePath: "assets/images/grocery_images/apple.png", orderQuantity: 0, exclusiveOffers: false),
   GroceryItem(
       id: 3,
       name: "PM_Trung",
-      description: "1kg, Priceg",
+      description: "PM_Trung",
+      price: 27,
+      imagePath: "assets/images/grocery_images/pepper.png", orderQuantity: 0, exclusiveOffers: false),
+   GroceryItem(
+      id: 4,
+      name: "PM_Bap",
+      description: "PM_Bap",
       price: 27,
       imagePath: "assets/images/grocery_images/pepper.png", orderQuantity: 0, exclusiveOffers: false),
   GroceryItem(
-      id: 4,
-      name: "PM",
-      description: "250gm, Priceg",
+      id: 5,
+      name: "Pho_Mai",
+      description: "Pho Mai",
       price: 24,
       imagePath: "assets/images/grocery_images/ginger.png", orderQuantity: 0, exclusiveOffers: false),
   GroceryItem(
-      id: 5,
-      name: "TC",
-      description: "250gm, Priceg",
+      id: 6,
+      name: "Tr_Chui",
+      description: "TR + C",
       price: 22,
       imagePath: "assets/images/grocery_images/beef.png", orderQuantity: 0, exclusiveOffers: false),
   GroceryItem(
-      id: 6,
-      name: "TB",
-      description: "250gm, Priceg",
+      id: 7,
+      name: "Tr_Bap",
+      description: "TR + Bap",
       price: 22,
+      imagePath: "assets/images/grocery_images/chicken.png", orderQuantity: 0, exclusiveOffers: false),
+    GroceryItem(
+      id: 8,
+      name: "Chui",
+      description: "C",
+      price: 20,
+      imagePath: "assets/images/grocery_images/chicken.png", orderQuantity: 0, exclusiveOffers: false),
+    GroceryItem(
+      id: 9,
+      name: "Trung",
+      description: "TR",
+      price: 20,
+      imagePath: "assets/images/grocery_images/chicken.png", orderQuantity: 0, exclusiveOffers: false),
+    GroceryItem(
+      id: 10,
+      name: "Ca_Cao",
+      description: "CC",
+      price: 17,
+      imagePath: "assets/images/grocery_images/chicken.png", orderQuantity: 0, exclusiveOffers: false),
+    GroceryItem(
+      id: 11,
+      name: "Pho_Mai_them",
+      description: "Topping +",
+      price: 8,
       imagePath: "assets/images/grocery_images/chicken.png", orderQuantity: 0, exclusiveOffers: false),
 ];
 
@@ -101,4 +131,5 @@ var beverages = [
       description: "330ml, Price",
       price: 4,
       imagePath: "assets/images/beverages_images/pepsi.png", orderQuantity: 0, exclusiveOffers: false),
+  
 ];

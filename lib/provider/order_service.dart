@@ -1,12 +1,12 @@
-import 'package:grocery_app/models/order_model.dart';
+// import 'package:grocery_app/models/order_model.dart';
 import 'package:grocery_app/models/product_model.dart';
-import 'package:grocery_app/models/grocery_item.dart';
-import 'package:grocery_app/repository/order_repository.dart'; // Import the order repository
+// import 'package:grocery_app/models/grocery_item.dart';
+// import 'package:grocery_app/repository/order_repository.dart'; // Import the order repository
 import 'package:grocery_app/helpers/database.dart'; // Import the database helper
 
 class OrderService {
   final DatabaseRepository _databaseRepository = DatabaseRepository.instance;
-  final OrderRepository _orderRepository = OrderRepository();
+  // final OrderRepository _orderRepository = OrderRepository();
 
   // Future<void> addProductToOrder(Order order, GroceryItem groceryItem) async {
   Future<bool> createOrder(List<Product> groceryItem, String note) async {
@@ -80,18 +80,18 @@ class OrderService {
    Future<List<Map<String, dynamic>>> selectOrdersWithStatus0() async {
     final db = await _databaseRepository.database;
     return await db!.rawQuery('''
-      SELECT order_detail.*, orders.*, order_detail.id AS order_detail_id
+      SELECT order_detail.*, orders.*, order_detail.id AS order_detail_id, product.name AS product_name
       FROM order_detail
       JOIN orders ON orders.id = order_detail.orderID
+      JOIN product ON product.id = order_detail.productId 
       WHERE orders.status = 0
-     
     ''');
   }
 
   Future<void> updateOrderStatus(int orderId, int newStatus) async {
     final db = await _databaseRepository.database;
     await db!.update(
-      'order',
+      'orders',
       {'status': newStatus},
       where: 'id = ?',
       whereArgs: [orderId],
