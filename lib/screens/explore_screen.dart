@@ -1,97 +1,100 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:grocery_app/common_widgets/app_text.dart';
-import 'package:grocery_app/models/category_item.dart';
-import 'package:grocery_app/widgets/category_item_card_widget.dart';
-import 'package:grocery_app/widgets/search_bar_widget.dart';
+import 'package:grocery_app/provider/order_service.dart';
 
-import 'category_items_screen.dart';
+class ExploreScreen extends StatefulWidget {
+  @override
+  _ExploreScreenState createState() => _ExploreScreenState();
+}
 
-List<Color> gridColors = [
-  Color(0xff53B175),
-  Color(0xffF8A44C),
-  Color(0xffF7A593),
-  Color(0xffD3B0E0),
-  Color(0xffFDE598),
-  Color(0xffB7DFF5),
-  Color(0xff836AF6),
-  Color(0xffD73B77),
-];
+class _ExploreScreenState extends State<ExploreScreen> {
+  final OrderService orderService = OrderService();
+  final int cashPayment = 1;
+  final int momoPayment = 2;
+  final int transferPayment = 3;
 
-class ExploreScreen extends StatelessWidget {
+  Map<int, List<Map<String, dynamic>>> groupedOrders = {};
+
+  @override
+  void initState() {
+    super.initState();
+    fetchOrders();
+  }
+
+  Future<void> fetchOrders() async {
+    List<Map<String, dynamic>> orders = await orderService.selectOrdersWithStatus1();
+    setState(() {
+      groupedOrders.clear();
+      for (var order in orders) {
+        int orderId = order['orderId'];
+        if (!groupedOrders.containsKey(orderId)) {
+          groupedOrders[orderId] = [order];
+        } else {
+          groupedOrders[orderId]!.add(order);
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SafeArea(
-      child: Column(
-        children: [
-          getHeader(),
-          Expanded(
-            child: getStaggeredGridView(context),
-          ),
-        ],
+      appBar: AppBar(
+        title: Text('History order'), // Tiêu đề của AppBar
+        // Các thuộc tính khác của AppBar như backgroundColor, actions, v.v...
       ),
-    ));
-  }
-
-  Widget getHeader() {
-    return Column(
-      children: [
-        SizedBox(
-          height: 20,
-        ),
-        Center(
-          child: AppText(
-            text: "Find Products",
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(
-          height: 20,
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          // child: SearchBarWidget(),
-        ),
-      ],
-    );
-  }
-
-  Widget getStaggeredGridView(BuildContext context) {
-    return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(
-        vertical: 10,
-      ),
-      child: StaggeredGrid.count(
-        crossAxisCount: 2,
-        children: categoryItemsDemo.asMap().entries.map<Widget>((e) {
-          int index = e.key;
-          CategoryItem categoryItem = e.value;
-          return GestureDetector(
-            onTap: () {
-              onCategoryItemClicked(context, categoryItem);
-            },
-            child: Container(
-              padding: EdgeInsets.all(10),
-              child: CategoryItemCardWidget(
-                item: categoryItem,
-                color: gridColors[index % gridColors.length],
+      body: SafeArea(
+        child: ListView.separated(
+          shrinkWrap: true,
+          padding: const EdgeInsets.all(8),
+          itemCount: groupedOrders.length,
+          itemBuilder: (BuildContext context, int index) {
+            List<Map<String, dynamic>> products = groupedOrders.values.elementAt(index);
+            int totalAmount = products[0]['total'];
+            return Card(
+              color: Colors.white,
+              elevation: 2,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  ListTile(
+                    leading: Icon(Icons.shopping_cart),
+                    title: Text("Order ID: ${products[0]['orderId']}", style: TextStyle(color: Colors.green)),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Total Amount: $totalAmount", style: TextStyle(color: Colors.orangeAccent)),
+                        SizedBox(height: 8),
+                        Text("payment: ${products[0]['paymentName'] ?? ''}", style: TextStyle(color: Colors.blue)),
+                        SizedBox(height: 8),
+                        Text("Status: ${products[0]['orderStatus'] == 1 ? 'Thành công' : 'Hủy đơn'}", style: TextStyle(color: Color.fromARGB(255, 23, 150, 31))),
+                      ],
+                    ),
+                  ),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: products.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(
+                        title: Text("Name: ${products[index]['product_name']}"),
+                        subtitle: Text("Amount: ${products[index]['amount']}"),
+                      );
+                    },
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                       Text("Time: ${products[0]['createdAt'] ?? ''}", style: TextStyle(color: Colors.blue)),
+                    ]
+                  )
+                ],
               ),
-            ),
-          );
-        }).toList(),
-        mainAxisSpacing: 3.0,
-        crossAxisSpacing: 4.0, // add some space
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) => const Divider(),
+        ),
       ),
     );
-  }
-
-  void onCategoryItemClicked(BuildContext context, CategoryItem categoryItem) {
-    Navigator.of(context).push(new MaterialPageRoute(
-      builder: (BuildContext context) {
-        return CategoryItemsScreen();
-      },
-    ));
   }
 }
+
+

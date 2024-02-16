@@ -1,14 +1,12 @@
 class Payment {
   int id;
   String name;
-  String note;
   int status;
   String createdAt;
 
   Payment({
     required this.id,
     required this.name,
-    this.note = '',
     this.status = 0,
     required this.createdAt,
   });
@@ -17,7 +15,6 @@ class Payment {
     return Payment(
       id: map['id'],
       name: map['name'],
-      note: map['note'],
       status: map['status'],
       createdAt: map['createdAt'],
     );
@@ -27,7 +24,6 @@ class Payment {
     return {
       'id': id,
       'name': name,
-      'note': note,
       'status': status,
       'createdAt': createdAt,
     };
