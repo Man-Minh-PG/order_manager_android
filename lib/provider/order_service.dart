@@ -119,52 +119,59 @@ class OrderService {
   }
 
   // Lấy tổng số sản phẩm bán được trong ngày
-  Future<Object> getTotalProductsSoldToday() async {
-    final db = await _databaseRepository.database;
-    final result = await db!.rawQuery('''
-      SELECT SUM(amount) as totalProductsSold
-      FROM order_detail
-      JOIN orders ON orders.id = order_detail.orderId
-      WHERE DATE(orders.createdAt) = DATE('now')
-    ''');
-    return result.isNotEmpty ? result.first['totalProductsSold'] ?? 0 : 0;
-  }
+  // Lấy tổng số lượng sản phẩm được bán trong ngày
+Future<int> getTotalProductsSoldToday() async {
+  final db = await _databaseRepository.database;
+  final result = await db!.rawQuery('''
+    SELECT SUM(amount) as totalProductsSold
+    FROM order_detail
+    JOIN orders ON orders.id = order_detail.orderId
+    WHERE DATE(orders.createdAt) = DATE('now')
+  ''');
+  return result.isNotEmpty ? result.first['totalProductsSold'] as int ?? 0 : 0;
+}
 
-  // Lấy tổng doanh thu trong ngày
-  Future<Object> getTotalRevenueToday() async {
-    final db = await _databaseRepository.database;
-    final result = await db!.rawQuery('''
-      SELECT SUM(total) as totalRevenue
-      FROM orders
-      WHERE DATE(createdAt) = DATE('now')
-    ''');
-    return result.isNotEmpty ? result.first['totalRevenue'] ?? 0 : 0;
-  }
+// Lấy tổng doanh thu trong ngày
+    Future<int> getTotalRevenueToday() async {
+      final db = await _databaseRepository.database;
+      final result = await db!.rawQuery('''
+        SELECT SUM(total) as totalRevenue
+        FROM orders
+        WHERE DATE(createdAt) = DATE('now')
+      ''');
+      return result.isNotEmpty ? result.first['totalRevenue'] as int ?? 0 : 0;
+    }
 
-  // Lấy tổng số đơn hàng bị hủy trong ngày
-  Future<Object> getTotalCancelledOrdersToday() async {
-    final db = await _databaseRepository.database;
-    final result = await db!.rawQuery('''
-      SELECT COUNT(*) as totalCancelledOrders
-      FROM orders
-      WHERE status = 2 AND DATE(createdAt) = DATE('now')
-    ''');
-    return result.isNotEmpty ? result.first['totalCancelledOrders'] ?? 0 : 0;
-  }
+    // Lấy tổng số đơn hàng bị hủy trong ngày
+    Future<int> getTotalCancelledOrdersToday() async {
+      final db = await _databaseRepository.database;
+      final result = await db!.rawQuery('''
+        SELECT COUNT(*) as totalCancelledOrders
+        FROM orders
+        WHERE status = 2 AND DATE(createdAt) = DATE('now')
+      ''');
+      return result.isNotEmpty ? result.first['totalCancelledOrders'] as int ?? 0 : 0;
+    }
 
   // Lấy tổng số tiền thanh toán bằng mỗi phương thức (tiền mặt, Momo, chuyển khoản) trong ngày
-  Future<Object> getTotalPaymentToday(String paymentMethod) async {
+  Future<int> getTotalPaymentToday(String paymentMethod) async {
     final db = await _databaseRepository.database;
-    final result = await db!.rawQuery('''
-      SELECT SUM(total) as totalPayment
+    var result = await db!.rawQuery('''
+      SELECT SUM(orders.total) as totalPayment
       FROM orders
-      WHERE paymentId = (
-        SELECT id
-        FROM payment
-        WHERE name = ?
-      ) AND DATE(createdAt) = DATE('now')
+      JOIN payment ON orders.paymentId = payment.id
+      WHERE DATE(orders.createdAt) = DATE('now')
+      AND payment.name = ?
     ''', [paymentMethod]);
-    return result.isNotEmpty ? result.first['totalPayment'] ?? 0 : 0;
+
+    // Kiểm tra nếu result.isEmpty trước khi truy cập dữ liệu từ kết quả truy vấn
+    if (result.isNotEmpty) {
+      int totalPayment = result.first['totalPayment'] as int;
+      return totalPayment;
+    } else {
+      // Trả về 0 nếu không có dữ liệu trả về từ truy vấn
+      return 0;
+    }
   }
 
   // Lấy số lượng bán được của từng sản phẩm trong ngày
@@ -184,5 +191,4 @@ class OrderService {
       value: (item) => item['quantitySold'] as int,
     );
   }
-
 }
