@@ -88,13 +88,20 @@ class OrderService {
     ''');
   }
 
-  Future<void> updateOrderStatus(int orderId, int newStatus) async {
+  Future<int> updateOrderStatus(int orderId, int newStatus, int paymentId) async {
     final db = await _databaseRepository.database;
-    await db!.update(
+    int resultUpdate = 0;
+
+    resultUpdate = await db!.update(
       'orders',
-      {'status': newStatus},
+      {
+        'status': newStatus,
+        'paymentId': paymentId
+      },
       where: 'id = ?',
       whereArgs: [orderId],
     );
+
+    return resultUpdate;
   }
 }

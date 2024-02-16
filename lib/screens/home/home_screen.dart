@@ -68,13 +68,31 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() {
           // Lấy danh sách các sản phẩm được chọn
           List<GroceryItem> selectedItems = exclusiveOffers.where((item) => item.orderQuantity > 0).toList();
-          
-          // Gọi hàm xử lý khi nút được nhấn, truyền vào danh sách các sản phẩm đã chọn
-          onAddButtonSelected(selectedItems); 
+          if (selectedItems.isNotEmpty) {
+            // Gọi hàm xử lý khi nút được nhấn, truyền vào danh sách các sản phẩm đã chọn
+            onAddButtonSelected(selectedItems); 
 
-          // Đặt tất cả các giá trị orderQuantity về 0 cho các sản phẩm trong exclusiveOffers
-          for (var item in exclusiveOffers) {
-            item.orderQuantity = 0;
+            // Đặt tất cả các giá trị orderQuantity về 0 cho các sản phẩm trong exclusiveOffers
+            for (var item in exclusiveOffers) {
+              item.orderQuantity = 0;
+            }
+          }  else {
+            // Nếu không có dữ liệu, bạn có thể hiển thị một thông báo hoặc thực hiện một hành động khác ở đây
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text('Thông báo'),
+                content: Text('Bạn chưa chọn sản phẩm nào.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('Đóng'),
+                  ),
+                ],
+              ),
+            );
           }
         });
       }, 
