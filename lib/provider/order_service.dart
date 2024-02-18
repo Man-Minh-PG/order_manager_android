@@ -123,10 +123,11 @@ class OrderService {
 Future<int> getTotalProductsSoldToday() async {
   final db = await _databaseRepository.database;
   final result = await db!.rawQuery('''
-    SELECT SUM(amount) as totalProductsSold
-    FROM order_detail
-    JOIN orders ON orders.id = order_detail.orderId
-    WHERE DATE(orders.createdAt) = DATE('now')
+    SELECT IFNULL(SUM(order_detail.amount), 0) AS totalProductsSold
+    FROM orders
+    JOIN order_detail ON order_detail.orderId = orders.id
+    JOIN product ON product.id = order_detail.productId
+    WHERE orders.status = 1;
   ''');
   return result.isNotEmpty ? result.first['totalProductsSold'] as int ?? 0 : 0;
 }
@@ -135,7 +136,7 @@ Future<int> getTotalProductsSoldToday() async {
     Future<int> getTotalRevenueToday() async {
       final db = await _databaseRepository.database;
       final result = await db!.rawQuery('''
-        SELECT SUM(total) as totalRevenue
+        SELECT IFNULL(SUM(total), 0) AS totalRevenue
         FROM orders
         WHERE DATE(createdAt) = DATE('now')
       ''');
@@ -157,7 +158,7 @@ Future<int> getTotalProductsSoldToday() async {
   Future<int> getTotalPaymentToday(String paymentMethod) async {
     final db = await _databaseRepository.database;
     var result = await db!.rawQuery('''
-      SELECT SUM(orders.total) as totalPayment
+      SELECT IFNULL(SUM(orders.total), 0) AS totalPayment
       FROM orders
       JOIN payment ON orders.paymentId = payment.id
       WHERE DATE(orders.createdAt) = DATE('now')
@@ -178,13 +179,14 @@ Future<int> getTotalProductsSoldToday() async {
   Future<Map<String, int>> getProductSalesToday() async {
     final db = await _databaseRepository.database;
     final result = await db!.rawQuery('''
-      SELECT product.name, SUM(order_detail.amount) as quantitySold
-      FROM order_detail
+      SELECT product.name AS name,  IFNULL(SUM(order_detail.amount), 0) AS quantitySold
+      FROM orders
+      JOIN order_detail ON order_detail.orderId = orders.id
       JOIN product ON product.id = order_detail.productId
-      JOIN orders ON orders.id = order_detail.orderId
-      WHERE DATE(orders.createdAt) = DATE('now')
-      GROUP BY product.name
+      WHERE orders.status = 0
+      GROUP BY product.id
     ''');
+    print(result);
     return Map.fromIterable(
       result,
       key: (item) => item['name'] as String,

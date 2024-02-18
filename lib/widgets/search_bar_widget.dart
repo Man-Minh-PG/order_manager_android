@@ -25,7 +25,7 @@ class SearchBarWidget extends StatelessWidget {
             child: TextField(
               onChanged: onSearchChanged, // Gọi hàm callback khi giá trị thay đổi
               decoration: InputDecoration(
-                hintText: "Search...",
+                hintText: "Note...",
                 border: InputBorder.none,
               ),
             ),

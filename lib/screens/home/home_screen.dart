@@ -178,7 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
           width: 8,
         ),
         Text(
-          "Khartoum, Sudan",
+          "Note here",
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         )
       ],
