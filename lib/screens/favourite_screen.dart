@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+
 import 'package:grocery_app/provider/order_service.dart';
+import 'package:grocery_app/helpers/database.dart';
 
 class FavouriteScreen extends StatefulWidget {
   @override
@@ -7,6 +11,7 @@ class FavouriteScreen extends StatefulWidget {
 }
 
 class _FavouriteScreenState extends State<FavouriteScreen> {
+  final DatabaseRepository _databaseRepository = DatabaseRepository.instance;
   final OrderService orderService = OrderService();
 
   int? totalProductsSold;
@@ -31,7 +36,9 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
     totalMomoPayment = await orderService.getTotalPaymentToday('Momo');
     totalTransferPayment = await orderService.getTotalPaymentToday('Chuyen_Khoan');
     productSales = await orderService.getProductSalesToday();
-    setState(() {});
+   setState(() {
+     
+   });
   }
 
    @override
@@ -97,6 +104,81 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _confirmDeleteOrder(context);
+        }, 
+        child: Icon(Icons.delete)
+      ),
     );
+    
+  }
+  Future<void> _confirmDeleteOrder(BuildContext context) async {
+  // Hiển thị hộp thoại xác nhận
+  bool confirmDelete = await showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text("Notification"),
+        content: Text("Bạn có chắc chắn muốn xóa đơn hàng này không?"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(false); // Đóng hộp thoại và trả về giá trị false
+            },
+            child: Text("Không"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(true); // Đóng hộp thoại và trả về giá trị true
+            },
+            child: Text("Có"),
+          ),
+        ],
+      );
+    },
+  );
+
+  // Nếu người dùng xác nhận muốn xóa đơn hàng
+  if (confirmDelete == true) {
+    final db = await _databaseRepository.deleteOldDatabase();
+    if (db == true) {
+      await _databaseRepository.database;
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Notification'),
+          content: Text('Xóa thành công'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                exit(0);
+              },
+              child: Text('Đóng'),
+            ),
+          ],
+        ),
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Notification'),
+          content: Text('Có lỗi xảy ra khi xóa đơn hàng - vui lòng thử lại sau.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                fetchDailySummary();
+              },
+              child: Text('Đóng'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 }
+
+  }
+

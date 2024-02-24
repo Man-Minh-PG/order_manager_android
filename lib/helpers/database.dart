@@ -15,13 +15,15 @@ class DatabaseRepository {
 
 
   // Hàm xóa cơ sở dữ liệu cũ
-    Future<void> deleteOldDatabase() async {
+    Future<bool> deleteOldDatabase() async {
       Directory documentsDirectory = await getApplicationDocumentsDirectory();
       String path = join(documentsDirectory.path, _databaseName);
       File dbFile = File(path);
       if (await dbFile.exists()) {
         await dbFile.delete();
+        return true;
       }
+      return false;
     }
 
 
@@ -194,6 +196,13 @@ class DatabaseRepository {
         'price': 8,
         'imagePath': 'assets/images/grocery_images/banana.png',
       });
+
+      //   await db.insert('product', {
+      //   'name': 'Mon_Khac',
+      //   'description': 'Topping +',
+      //   'price': 3,
+      //   'imagePath': 'assets/images/grocery_images/banana.png',
+      // });
     }
 
     Future<void> insertPayment(Database db) async {

@@ -62,7 +62,7 @@ class _CartScreenState extends State<CartScreen> {
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Tổng số tiền: $totalAmount", style: TextStyle(color: Colors.orangeAccent)),
+                        Text("Tổng: $totalAmount K", style: TextStyle(color: Colors.orangeAccent, fontSize: 16)),
                         SizedBox(height: 8),
                         Text("Ghi chú: ${products[0]['note'] ?? ''}", style: TextStyle(color: Colors.blue)),
                       ],

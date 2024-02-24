@@ -102,7 +102,11 @@ class _GroceryItemCardWidget extends State<GroceryItemCardWidget> {
 
   Widget imageWidget() {
     return Container(
-      child: Image.asset(widget.item.imagePath),
+      child: Image.asset(
+        widget.item.imagePath,
+        height: 350,
+        fit: BoxFit.contain, // hoặc BoxFit.cover tùy thuộc vào nhu cầu
+      ),
     );
   }
 
@@ -134,28 +138,11 @@ class _GroceryItemCardWidget extends State<GroceryItemCardWidget> {
               widget.item.orderQuantity++;  // Update value product
               // orderQuantity = widget.item.orderQuantity; // update value UI
             });
-              // Gọi callback để thông báo về sự thay đổi
-            // if (widget.addToCartCallback != null) {
-            //   widget.addToCartCallback!(widget.item, orderQuantity);
-            // }
+        
           }, 
           icon: Icon(Icons.add)
         ),  
-        // Container(
-        //   height: 45,
-        //   width: 45,
-        //   decoration: BoxDecoration(
-        //     borderRadius: BorderRadius.circular(17),
-        //     color: Colors.blue // Change to your desired color
-        //   ),
-        //   child: Text(
-        //     orderQuantity.toString(),
-        //     style: TextStyle(
-        //       color: Colors.white,
-        //       fontSize: 18
-        //     ),
-        //   ),
-        // ),
+     
         Center(
           child: Text(
              widget.item.orderQuantity.toString(),

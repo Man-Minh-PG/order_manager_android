@@ -138,7 +138,7 @@ Future<int> getTotalProductsSoldToday() async {
       final result = await db!.rawQuery('''
         SELECT IFNULL(SUM(total), 0) AS totalRevenue
         FROM orders
-        WHERE DATE(createdAt) = DATE('now')
+        WHERE orders.status = 1
       ''');
       return result.isNotEmpty ? result.first['totalRevenue'] as int ?? 0 : 0;
     }
@@ -149,7 +149,7 @@ Future<int> getTotalProductsSoldToday() async {
       final result = await db!.rawQuery('''
         SELECT COUNT(*) as totalCancelledOrders
         FROM orders
-        WHERE status = 2 AND DATE(createdAt) = DATE('now')
+        WHERE status = 2
       ''');
       return result.isNotEmpty ? result.first['totalCancelledOrders'] as int ?? 0 : 0;
     }
@@ -161,7 +161,7 @@ Future<int> getTotalProductsSoldToday() async {
       SELECT IFNULL(SUM(orders.total), 0) AS totalPayment
       FROM orders
       JOIN payment ON orders.paymentId = payment.id
-      WHERE DATE(orders.createdAt) = DATE('now')
+      WHERE orders.status = 1
       AND payment.name = ?
     ''', [paymentMethod]);
 
@@ -183,14 +183,16 @@ Future<int> getTotalProductsSoldToday() async {
       FROM orders
       JOIN order_detail ON order_detail.orderId = orders.id
       JOIN product ON product.id = order_detail.productId
-      WHERE orders.status = 0
+      WHERE orders.status = 1
       GROUP BY product.id
     ''');
-    print(result);
+    // print(result);
     return Map.fromIterable(
       result,
       key: (item) => item['name'] as String,
       value: (item) => item['quantitySold'] as int,
     );
   }
+
+
 }

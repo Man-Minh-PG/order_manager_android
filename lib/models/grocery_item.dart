@@ -31,64 +31,65 @@ var demoItems = [
       name: "PM_Chui",
       description: "PM-C",
       price: 27,
-      imagePath: "assets/images/grocery_images/apple.png", orderQuantity: 0, exclusiveOffers: false),
+      imagePath: "assets/images/grocery_images/banana.png", orderQuantity: 0, exclusiveOffers: false),
   GroceryItem(
       id: 3,
       name: "PM_Trung",
       description: "PM_Trung",
       price: 27,
-      imagePath: "assets/images/grocery_images/pepper.png", orderQuantity: 0, exclusiveOffers: false),
+      imagePath: "assets/images/grocery_images/banana.png", orderQuantity: 0, exclusiveOffers: false),
    GroceryItem(
       id: 4,
       name: "PM_Bap",
       description: "PM_Bap",
       price: 27,
-      imagePath: "assets/images/grocery_images/pepper.png", orderQuantity: 0, exclusiveOffers: false),
+      imagePath: "assets/images/grocery_images/banana.png", orderQuantity: 0, exclusiveOffers: false),
   GroceryItem(
       id: 5,
       name: "Pho_Mai",
       description: "Pho Mai",
       price: 24,
-      imagePath: "assets/images/grocery_images/ginger.png", orderQuantity: 0, exclusiveOffers: false),
+      imagePath: "assets/images/grocery_images/banana.png", orderQuantity: 0, exclusiveOffers: false),
   GroceryItem(
       id: 6,
       name: "Tr_Chui",
       description: "TR + C",
       price: 22,
-      imagePath: "assets/images/grocery_images/beef.png", orderQuantity: 0, exclusiveOffers: false),
+      imagePath: "assets/images/grocery_images/banana.png", orderQuantity: 0, exclusiveOffers: false),
   GroceryItem(
       id: 7,
       name: "Tr_Bap",
       description: "TR + Bap",
       price: 22,
-      imagePath: "assets/images/grocery_images/chicken.png", orderQuantity: 0, exclusiveOffers: false),
+      imagePath: "assets/images/grocery_images/banana.png", orderQuantity: 0, exclusiveOffers: false),
     GroceryItem(
       id: 8,
       name: "Chui",
       description: "C",
       price: 20,
-      imagePath: "assets/images/grocery_images/chicken.png", orderQuantity: 0, exclusiveOffers: false),
+      imagePath: "assets/images/grocery_images/banana.png", orderQuantity: 0, exclusiveOffers: false),
     GroceryItem(
       id: 9,
       name: "Trung",
       description: "TR",
       price: 20,
-      imagePath: "assets/images/grocery_images/chicken.png", orderQuantity: 0, exclusiveOffers: false),
+      imagePath: "assets/images/grocery_images/banana.png", orderQuantity: 0, exclusiveOffers: false),
     GroceryItem(
       id: 10,
       name: "Ca_Cao",
       description: "CC",
       price: 17,
-      imagePath: "assets/images/grocery_images/chicken.png", orderQuantity: 0, exclusiveOffers: false),
+      imagePath: "assets/images/grocery_images/banana.png", orderQuantity: 0, exclusiveOffers: false),
     GroceryItem(
       id: 11,
       name: "Pho_Mai_them",
       description: "Topping +",
       price: 8,
-      imagePath: "assets/images/grocery_images/chicken.png", orderQuantity: 0, exclusiveOffers: false),
+      imagePath: "assets/images/grocery_images/banana.png", orderQuantity: 0, exclusiveOffers: false),
+ 
 ];
 
-var exclusiveOffers = [demoItems[0], demoItems[1],demoItems[3], demoItems[4] ];
+var exclusiveOffers = [demoItems[0], demoItems[1], demoItems[2],demoItems[3], demoItems[4], demoItems[5], demoItems[6], demoItems[7], demoItems[8], demoItems[9], demoItems[10],  ];
 
 var bestSelling = [demoItems[2], demoItems[3]];
 
