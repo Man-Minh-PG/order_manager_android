@@ -134,7 +134,8 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
           }
         });
       }, 
-      child: Text("Edit")
+      // child: Text("Edit")
+      child: Icon(Icons.edit)
     ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );

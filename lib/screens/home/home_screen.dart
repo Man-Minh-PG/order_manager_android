@@ -96,7 +96,8 @@ class _HomeScreenState extends State<HomeScreen> {
           }
         });
       }, 
-      child: Text("Add")
+      // child: Text("Add")
+      child: Icon(Icons.add)
     ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
