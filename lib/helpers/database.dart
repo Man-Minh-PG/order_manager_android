@@ -197,12 +197,12 @@ class DatabaseRepository {
         'imagePath': 'assets/images/grocery_images/banana.png',
       });
 
-      //   await db.insert('product', {
-      //   'name': 'Mon_Khac',
-      //   'description': 'Topping +',
-      //   'price': 3,
-      //   'imagePath': 'assets/images/grocery_images/banana.png',
-      // });
+        await db.insert('product', {
+        'name': 'Mon_Khac',
+        'description': 'Topping +',
+        'price': 3,
+        'imagePath': 'assets/images/grocery_images/banana.png',
+      });
     }
 
     Future<void> insertPayment(Database db) async {

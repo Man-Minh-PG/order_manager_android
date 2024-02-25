@@ -67,6 +67,71 @@ class OrderService {
 }
 
 
+  Future<bool> editOrder(List<Product> groceryItem, String note, List<int> orderDetailId) async {
+    final db = await _databaseRepository.database;
+    
+    if (db == null) {
+      // Xử lý khi db là null, ví dụ: thông báo lỗi hoặc kết thúc hàm
+      print('Error: Database is null');
+      return false; // Trả về false để chỉ ra rằng insert thất bại
+    }
+
+    int totalPrice = 0;
+    int insertedIdOrder = 0;
+
+    for (var id in orderDetailId) {
+      await db.delete(
+        'order_detail', 
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+    }
+
+    // Tính tổng giá tiền của đơn hàng
+    for (var item in groceryItem) {
+      totalPrice += item.price;
+    }
+
+    // Insert thông tin đơn hàng vào bảng orders
+    insertedIdOrder = await db.insert(
+      'orders',
+      <String, dynamic>
+      
+      {
+        'total': totalPrice,
+        'note': note,
+        'paymentId' : 0, // Phương thức thanh toán bằng tiền mặt
+      },
+    );
+
+    // Kiểm tra xem insert vào bảng orders có thành công hay không
+    if (insertedIdOrder == 0) {
+      print('Error: Insert order failed');
+      return false; // Trả về false để chỉ ra rằng insert thất bại
+    }
+
+    // Insert thông tin chi tiết đơn hàng vào bảng order_detail
+    for (var item in groceryItem) {
+      int result = await db.insert(
+        'order_detail',
+        <String, dynamic>{
+          'productId': item.id,
+          'orderId': insertedIdOrder,
+          'amount' : item.orderQuantity,
+        },
+      );
+      
+      // Kiểm tra xem insert vào bảng order_detail có thành công hay không
+      if (result == 0) {
+        print('Error: Insert order detail failed');
+        return false; // Trả về false để chỉ ra rằng insert thất bại
+      }
+    }
+
+    // Trả về true để chỉ ra rằng insert thành công
+    return true;
+  }
+
   // Future<List<Map<String, dynamic>>> selectOrdersWithStatus0() async {
   //   final db = await _databaseRepository.database;
   //   return await db!.rawQuery('''
@@ -197,7 +262,7 @@ Future<int> getTotalProductsSoldToday() async {
   Future<List<Map<String, dynamic>>> selectOrderWithID(int idOrder) async { // Status = 1 means paid
   final db = await _databaseRepository.database;
   return await db!.rawQuery('''
-    SELECT *
+    SELECT orders.id as orderId, order_detail.id as orderDetailId, product.id as productId, order_detail.amount
     FROM orders
     JOIN order_detail ON order_detail.orderId = orders.id
     JOIN product ON product.id = order_detail.productId

@@ -86,10 +86,15 @@ var demoItems = [
       description: "Topping +",
       price: 8,
       imagePath: "assets/images/grocery_images/banana.png", orderQuantity: 0, exclusiveOffers: false),
- 
+     GroceryItem(
+      id: 12,
+      name: "Khac",
+      description: "Topping +",
+      price: 8,
+      imagePath: "assets/images/grocery_images/banana.png", orderQuantity: 0, exclusiveOffers: false),
 ];
 
-var exclusiveOffers = [demoItems[0], demoItems[1], demoItems[2],demoItems[3], demoItems[4], demoItems[5], demoItems[6], demoItems[7], demoItems[8], demoItems[9], demoItems[10],  ];
+var exclusiveOffers = [demoItems[0], demoItems[1], demoItems[2],demoItems[3], demoItems[4], demoItems[5], demoItems[6], demoItems[7], demoItems[8], demoItems[9], demoItems[10], demoItems[11] ];
 
 var bestSelling = [demoItems[2], demoItems[3]];
 

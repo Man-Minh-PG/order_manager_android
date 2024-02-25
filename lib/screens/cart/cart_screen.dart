@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_app/provider/order_service.dart';
+import 'package:grocery_app/screens/cart/edit_order_screen.dart';
 
 class CartScreen extends StatefulWidget {
   @override
@@ -202,6 +203,9 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   void _editOrder(BuildContext context, int orderId) {
-    // Thực hiện hành động chỉnh sửa đơn hàng
+      Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => EditOrderScreen( orderId: orderId,)),
+      );
   }
 }

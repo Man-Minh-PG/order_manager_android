@@ -1,10 +1,10 @@
-import 'dart:io';
+
 
 import 'package:flutter/material.dart';
 
 import 'package:grocery_app/provider/order_service.dart';
 import 'package:grocery_app/helpers/database.dart';
-import 'package:grocery_app/screens/cart/cart_screen.dart';
+import 'dashboard/dashboard_screen.dart';
 
 class FavouriteScreen extends StatefulWidget {
   @override
@@ -155,7 +155,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => CartScreen()),
+                  MaterialPageRoute(builder: (context) => DashboardScreen()),
                 );
               },
               child: Text('Đóng'),
