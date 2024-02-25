@@ -14,6 +14,7 @@ class FavouriteScreen extends StatefulWidget {
 class _FavouriteScreenState extends State<FavouriteScreen> {
   final DatabaseRepository _databaseRepository = DatabaseRepository.instance;
   final OrderService orderService = OrderService();
+  bool _isLoading = true; // Mặc định đang tải dữ liệu
 
   int? totalProductsSold;
   int? totalRevenue;
@@ -30,6 +31,10 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
   }
 
   Future<void> fetchDailySummary() async {
+    setState(() {
+    _isLoading = true; // Bắt đầu tải dữ liệu
+  });
+
     totalProductsSold = await orderService.getTotalProductsSoldToday();
     totalRevenue = await orderService.getTotalRevenueToday();
     totalCancelledOrders = await orderService.getTotalCancelledOrdersToday();
@@ -37,9 +42,10 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
     totalMomoPayment = await orderService.getTotalPaymentToday('Momo');
     totalTransferPayment = await orderService.getTotalPaymentToday('Chuyen_Khoan');
     productSales = await orderService.getProductSalesToday();
-   setState(() {
-     
-   });
+
+     setState(() {
+    _isLoading = false; // Hoàn thành tải dữ liệu
+    });
   }
 
    @override
@@ -48,8 +54,9 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
       appBar: AppBar(
         title: Text('Tổng kết doanh thu hôm nay'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: _isLoading
+        ? Center(child: CircularProgressIndicator()) // Hiển thị loader khi đang tải dữ liệu Padding(
+        : Padding( padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
