@@ -150,33 +150,52 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
   Widget getHorizontalItemSlider(List<GroceryItem> items) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
-      height: 500, // Set an appropriate height for your container
-      child: SingleChildScrollView(
-        child: Column(
-          children: List.generate((items.length / 2).ceil(), (rowIndex) {
-            int startIndex = rowIndex * 2;
-            int endIndex = (rowIndex + 1) * 2;
-            if (endIndex > items.length) {
-              endIndex = items.length;
-            }
-
-            List<GroceryItem> rowItems = items.sublist(startIndex, endIndex);
-
-            return Row(
-              children: rowItems.map((item) {
-                return Expanded(
-                  child: GestureDetector(
-                    child: GroceryItemCardWidget( // call to class - generate info product
-                      item: item,
-                      heroSuffix: "home_screen",
-                    ),
-                  ),
-                );
-              }).toList(),
-            );
-          }),
+      // height: 500, // Set an appropriate height for your container
+      child: GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
         ),
+        itemCount: items.length,
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemBuilder: (BuildContext context, int index) {
+          return GestureDetector(
+            onTap: () => onItemClicked(context, items[index]),
+            child: GroceryItemCardWidget(
+              item: items[index],
+              heroSuffix: "home_screen",
+            ),
+          );
+        },
       ),
+      // child: SingleChildScrollView(
+      //   child: Column(
+      //     children: List.generate((items.length / 2).ceil(), (rowIndex) {
+      //       int startIndex = rowIndex * 2;
+      //       int endIndex = (rowIndex + 1) * 2;
+      //       if (endIndex > items.length) {
+      //         endIndex = items.length;
+      //       }
+
+      //       List<GroceryItem> rowItems = items.sublist(startIndex, endIndex);
+
+      //       return Row(
+      //         children: rowItems.map((item) {
+      //           return Expanded(
+      //             child: GestureDetector(
+      //               child: GroceryItemCardWidget( // call to class - generate info product
+      //                 item: item,
+      //                 heroSuffix: "home_screen",
+      //               ),
+      //             ),
+      //           );
+      //         }).toList(),
+      //       );
+      //     }),
+      //   ),
+      // ),
     );
   }
 
