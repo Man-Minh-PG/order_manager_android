@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:grocery_app/provider/order_service.dart';
 import 'package:grocery_app/helpers/database.dart';
+import 'package:grocery_app/screens/cart/cart_screen.dart';
 
 class FavouriteScreen extends StatefulWidget {
   @override
@@ -152,7 +153,10 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                exit(0);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CartScreen()),
+                );
               },
               child: Text('Đóng'),
             ),
