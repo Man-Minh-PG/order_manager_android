@@ -194,5 +194,16 @@ Future<int> getTotalProductsSoldToday() async {
     );
   }
 
+  Future<List<Map<String, dynamic>>> selectOrderWithID(int idOrder) async { // Status = 1 means paid
+  final db = await _databaseRepository.database;
+  return await db!.rawQuery('''
+    SELECT *
+    FROM orders
+    JOIN order_detail ON order_detail.orderId = orders.id
+    JOIN product ON product.id = order_detail.productId
+      WHERE 
+      orders.id = ?
+    ''', [idOrder]);
+}
 
 }

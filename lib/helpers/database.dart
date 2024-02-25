@@ -64,7 +64,7 @@ class DatabaseRepository {
         price INTEGER NOT NULL,
         imagePath TEXT,
         orderQuantity INTEGER DEFAULT 0,
-        createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        createdAt TIMESTAMP NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime')) 
       )
     ''');
 
@@ -84,7 +84,7 @@ class DatabaseRepository {
         note TEXT,
         paymentId INTEGER,
         status INTEGER DEFAULT 0,
-        createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        createdAt TIMESTAMP NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime')) ,
         FOREIGN KEY (paymentId) REFERENCES payment (id)
       )
     ''');
@@ -96,7 +96,7 @@ class DatabaseRepository {
         orderId INTEGER,
         amount INTEGER,
         status INTEGER DEFAULT 0,
-        createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        createdAt TIMESTAMP NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime')) ,
         FOREIGN KEY (productId) REFERENCES product (id),
         FOREIGN KEY (orderId) REFERENCES orders (id)
       )
