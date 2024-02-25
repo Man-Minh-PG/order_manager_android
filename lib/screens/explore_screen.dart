@@ -11,6 +11,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   final int cashPayment = 1;
   final int momoPayment = 2;
   final int transferPayment = 3;
+  bool _isLoading = true; // Mặc định đang tải dữ liệu
 
   Map<int, List<Map<String, dynamic>>> groupedOrders = {};
 
@@ -32,6 +33,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
           groupedOrders[orderId]!.add(order);
         }
       }
+
+      _isLoading = false; // load xong
     });
   }
 
@@ -42,7 +45,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
         title: Text('History order'), // Tiêu đề của AppBar
         // Các thuộc tính khác của AppBar như backgroundColor, actions, v.v...
       ),
-      body: SafeArea(
+      body: _isLoading 
+      ? Center(child: CircularProgressIndicator()) // Hiển thị loader khi đang tải dữ liệu 
+      : SafeArea(
         child: ListView.separated(
           shrinkWrap: true,
           padding: const EdgeInsets.all(8),

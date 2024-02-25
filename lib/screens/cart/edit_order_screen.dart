@@ -162,7 +162,7 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
         physics: NeverScrollableScrollPhysics(),
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
-            onTap: () => onItemClicked(context, items[index]),
+            // onTap: () => onItemClicked(context, items[index]),
             child: GroceryItemCardWidget(
               item: items[index],
               heroSuffix: "home_screen",

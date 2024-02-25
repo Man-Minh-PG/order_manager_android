@@ -12,6 +12,7 @@ class _CartScreenState extends State<CartScreen> {
   final int cashPayment = 1;
   final int momoPayment = 2;
   final int transferPayment = 3;
+  bool _isLoading = true; // Mặc định đang tải dữ liệu
 
   Map<int, List<Map<String, dynamic>>> groupedOrders = {};
 
@@ -34,16 +35,22 @@ class _CartScreenState extends State<CartScreen> {
         }
       }
     });
+
+    setState(() {
+      _isLoading = false; // load xong
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Danh sách đơn hàng'), // Tiêu đề của AppBar
+        title: Text('List order'), // Tiêu đề của AppBar
         // Các thuộc tính khác của AppBar như backgroundColor, actions, v.v...
       ),
-      body: SafeArea(
+      body: _isLoading
+       ? Center(child: CircularProgressIndicator()) // Hiển thị loader khi đang tải dữ liệu 
+       : SafeArea(
         child: ListView.separated(
           shrinkWrap: true,
           padding: const EdgeInsets.all(8),

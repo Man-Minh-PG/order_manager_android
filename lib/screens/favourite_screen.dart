@@ -1,5 +1,7 @@
 
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:grocery_app/provider/order_service.dart';
@@ -55,7 +57,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
         title: Text('Tổng kết doanh thu hôm nay'),
       ),
       body: _isLoading
-        ? Center(child: CircularProgressIndicator()) // Hiển thị loader khi đang tải dữ liệu Padding(
+        ? Center(child: CircularProgressIndicator()) // Hiển thị loader khi đang tải dữ liệu 
         : Padding( padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -160,10 +162,11 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => DashboardScreen()),
-                );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => DashboardScreen()),
+                // );
+                exit(0);
               },
               child: Text('Đóng'),
             ),
