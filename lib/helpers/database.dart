@@ -169,6 +169,13 @@ class DatabaseRepository {
         'imagePath': 'assets/images/grocery_images/banana.png',
       });
 
+       await db.insert('product', {
+        'name': 'Dua',
+        'description': 'D',
+        'price': 22,
+        'imagePath': 'assets/images/grocery_images/banana.png',
+      });
+
       await db.insert('product', {
         'name': 'Chui',
         'description': 'C',
@@ -201,6 +208,34 @@ class DatabaseRepository {
         'name': 'Mon_Khac',
         'description': 'Topping +',
         'price': 3,
+        'imagePath': 'assets/images/grocery_images/banana.png',
+      });
+      
+        await db.insert('product', {
+        'name': 'Now',
+        'description': 'Pre order',
+        'price': 0,
+        'imagePath': 'assets/images/grocery_images/banana.png',
+      });
+
+        await db.insert('product', {
+        'name': 'Grab',
+        'description': 'Pre order',
+        'price': 0,
+        'imagePath': 'assets/images/grocery_images/banana.png',
+      });
+
+      await db.insert('product', {
+        'name': 'Go',
+        'description': 'Pre order',
+        'price': 0,
+        'imagePath': 'assets/images/grocery_images/banana.png',
+      });
+
+      await db.insert('product', {
+        'name': 'Bee',
+        'description': 'Pre order',
+        'price': 0,
         'imagePath': 'assets/images/grocery_images/banana.png',
       });
     }

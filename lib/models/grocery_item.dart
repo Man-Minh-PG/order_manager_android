@@ -62,41 +62,75 @@ var demoItems = [
       description: "TR + Bap",
       price: 22,
       imagePath: "assets/images/grocery_images/egg.jpg", orderQuantity: 0, exclusiveOffers: false),
-    GroceryItem(
+   GroceryItem(
       id: 8,
+      name: "Dua",
+      description: "Dua",
+      price: 27,
+      imagePath: "assets/images/grocery_images/coconut.jpg", orderQuantity: 0, exclusiveOffers: false),
+    GroceryItem(
+      id: 9,
       name: "Chui",
       description: "C",
       price: 20,
       imagePath: "assets/images/grocery_images/banana.png", orderQuantity: 0, exclusiveOffers: false),
     GroceryItem(
-      id: 9,
+      id: 10,
       name: "Trung",
       description: "TR",
       price: 20,
       imagePath: "assets/images/grocery_images/egg.jpg", orderQuantity: 0, exclusiveOffers: false),
     GroceryItem(
-      id: 10,
+      id: 11,
       name: "Ca_Cao",
       description: "CC",
       price: 17,
       imagePath: "assets/images/grocery_images/cacao.jpg", orderQuantity: 0, exclusiveOffers: false),
     GroceryItem(
-      id: 11,
+      id: 12,
       name: "Pho_Mai_them",
       description: "Topping +",
       price: 8,
       imagePath: "assets/images/grocery_images/cheese.png", orderQuantity: 0, exclusiveOffers: false),
      GroceryItem(
-      id: 12,
+      id: 13,
       name: "Khac",
       description: "Topping +",
-      price: 8,
+      price: 3,
       imagePath: "assets/images/grocery_images/banana.png", orderQuantity: 0, exclusiveOffers: false),
+
+      // Pre-Order
+    GroceryItem(
+      id: 14,
+      name: "Now",
+      description: "Now",
+      price: 0,
+      imagePath: "assets/images/grocery_images/now.png", orderQuantity: 0, exclusiveOffers: false),
+    GroceryItem(
+      id: 15,
+      name: "Grab",
+      description: "grab",
+      price: 0,
+      imagePath: "assets/images/grocery_images/grab.png", orderQuantity: 0, exclusiveOffers: false),
+    GroceryItem(
+      id: 16,
+      name: "Gojeck",
+      description: "Gojeck",
+      price: 0,
+      imagePath: "assets/images/grocery_images/gojeck.png", orderQuantity: 0, exclusiveOffers: false),
+    GroceryItem(
+      id: 17,
+      name: "Bee",
+      description: "Bee",
+      price: 0,
+      imagePath: "assets/images/grocery_images/bee.png", orderQuantity: 0, exclusiveOffers: false),
 ];
 
-var exclusiveOffers = [demoItems[0], demoItems[1], demoItems[2],demoItems[3], demoItems[4], demoItems[5], demoItems[6], demoItems[7], demoItems[8], demoItems[9], demoItems[10], demoItems[11] ];
+var exclusiveOffers = [demoItems[0], demoItems[1], demoItems[2],demoItems[3], demoItems[4], demoItems[5], demoItems[6], demoItems[7], demoItems[8], demoItems[9], demoItems[10], demoItems[11], demoItems[12], ];
 
 var bestSelling = [demoItems[2], demoItems[3]];
+
+var preOrders = [demoItems[13], demoItems[14], demoItems[15], demoItems[16]];
 
 var groceries = [demoItems[4], demoItems[5]];
 

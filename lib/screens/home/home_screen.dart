@@ -57,6 +57,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(
                     height: 15,
                   ),
+
+                  padded(subTitle("Đơn Hàng")),
+                  getHorizontalItemSlider(preOrders), // Show list pre order
+                  SizedBox(
+                    height: 15,
+                  ),
                 ],
               ),
             ),
@@ -68,6 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() {
           // Lấy danh sách các sản phẩm được chọn
           List<GroceryItem> selectedItems = exclusiveOffers.where((item) => item.orderQuantity > 0).toList();
+          List<GroceryItem> preOrderItems = preOrders.where((item) => item.orderQuantity > 0).toList();
           if (selectedItems.isNotEmpty) {
             // Gọi hàm xử lý khi nút được nhấn, truyền vào danh sách các sản phẩm đã chọn
             onAddButtonSelected(selectedItems); 
@@ -76,7 +83,16 @@ class _HomeScreenState extends State<HomeScreen> {
             for (var item in exclusiveOffers) {
               item.orderQuantity = 0;
             }
-          }  else {
+          }else if(preOrderItems.isNotEmpty){
+            // Gọi hàm xử lý khi nút được nhấn, truyền vào danh sách các sản phẩm đã chọn
+            onAddButtonSelected(preOrderItems); 
+
+            // Đặt tất cả các giá trị orderQuantity về 0 cho các sản phẩm trong exclusiveOffers
+            for (var item in preOrderItems) {
+              item.orderQuantity = 0;
+            }
+          }
+          else {
             // Nếu không có dữ liệu, bạn có thể hiển thị một thông báo hoặc thực hiện một hành động khác ở đây
             showDialog(
               context: context,

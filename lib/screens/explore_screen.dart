@@ -33,7 +33,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
           groupedOrders[orderId]!.add(order);
         }
       }
+    });
 
+    setState(() {
       _isLoading = false; // load xong
     });
   }
