@@ -218,7 +218,7 @@ class _HomeScreenState extends State<HomeScreen> {
             imagePath: item.imagePath,
             orderQuantity: item.orderQuantity,
             name: item.name,
-            price: item.price,
+            price: (item.price * item.orderQuantity),
             exclusiveOffers: item.exclusiveOffers, // Set the exclusiveOffers value
           );
           

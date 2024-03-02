@@ -35,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       // backgroundColor: AppColors.primaryColor, // SET COLOR BACKGROUND
-      backgroundColor: Color.fromARGB(255, 240, 234, 137), // SET COLOR BACKGROUND
+      backgroundColor: Color.fromARGB(255, 140, 137, 240), // SET COLOR BACKGROUND
       body: Center(
         child: splashScreenIcon(),
       ),
@@ -51,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen> {
 //   );
 // }
 Widget splashScreenIcon() {
-  String iconPath = "assets/images/1.png";
+  String iconPath = "assets/images/flashscreen.png";
   return Image.asset(
     iconPath,
     // Bạn cũng có thể đặt chiều rộng và chiều cao cho hình ảnh theo nhu cầu của bạn.
