@@ -13,13 +13,22 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  TextEditingController _searchBarController = TextEditingController(); // Tạo controller
   List<GroceryItem> selectedItems = [];
   String searchTerm = '';
 
   // Hàm callback để nhận giá trị tìm kiếm từ SearchBarWidget
   void updateSearchTerm(String value) {
+  setState(() {
+    searchTerm = value; // Cập nhật giá trị tìm kiếm
+    // value = '';
+    // Xóa giá trị của ô tìm kiếm bằng cách gán giá trị rỗng cho controller
+  });
+}
+
+  void clearSearchBar() {
     setState(() {
-      searchTerm = value; // Cập nhật giá trị tìm kiếm
+      _searchBarController.clear(); 
     });
   }
 
@@ -45,6 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                    padded(SearchBarWidget(
                     onSearchChanged: updateSearchTerm, // Truyền hàm callback vào SearchBarWidget
+                    controller: _searchBarController, // Gọi biến sử dụng giữa 2 class 
                   )),
                   SizedBox(
                     height: 25,
@@ -251,6 +261,9 @@ class _HomeScreenState extends State<HomeScreen> {
               content: Text('Đã tạo đơn hàng thành công!'),
             ),
           );
+          setState(() {
+            clearSearchBar();
+          });
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

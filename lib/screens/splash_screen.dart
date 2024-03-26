@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 // import 'package:grocery_app/screens/welcome_screen.dart';
-import 'package:grocery_app/styles/colors.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:grocery_app/styles/colors.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
 // import 'package:grocery_app/screens/home/home_screen.dart';
 
 import 'dashboard/dashboard_screen.dart';

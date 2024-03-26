@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-class SearchBarWidget extends StatelessWidget {
-  final String searchIcon = "assets/icons/search_icon.svg";
+class SearchBarWidget extends StatefulWidget {
+  final String searchIcon = 'assets/icons/search_icon.svg';
   final Function(String) onSearchChanged;
+  final TextEditingController controller; // Thêm trường controller
 
-  SearchBarWidget({required this.onSearchChanged});
+  const SearchBarWidget({required this.onSearchChanged, required this.controller}); // Nhận controller
 
+  @override
+  _StateBarWidget createState() => _StateBarWidget();
+}
+
+class _StateBarWidget extends State<SearchBarWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -19,11 +25,12 @@ class SearchBarWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          SvgPicture.asset(searchIcon),
+          SvgPicture.asset(widget.searchIcon),
           SizedBox(width: 8),
           Expanded(
             child: TextField(
-              onChanged: onSearchChanged, // Gọi hàm callback khi giá trị thay đổi
+              controller: widget.controller, // Sử dụng controller
+              onChanged: widget.onSearchChanged,
               decoration: InputDecoration(
                 hintText: "Note...",
                 border: InputBorder.none,

@@ -1,3 +1,7 @@
+/*
+Class extends from home screen
+*/ 
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:grocery_app/models/grocery_item.dart';
@@ -19,6 +23,7 @@ class EditOrderScreen extends StatefulWidget {
 }
 
 class _EditOrderScreenState extends State<EditOrderScreen> {
+  TextEditingController _searchBarController = TextEditingController(); // Tạo controller
   final OrderService orderService = OrderService();
   List<GroceryItem> listProduct = exclusiveOffers;
   List<int> orderDetailId = [];
@@ -31,6 +36,12 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
   void updateSearchTerm(String value) {
     setState(() {
       searchTerm = value; // Cập nhật giá trị tìm kiếm
+    });
+  }
+
+  void clearSearchBar() {
+    setState(() {
+      _searchBarController.clear(); 
     });
   }
 
@@ -83,6 +94,7 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
                   ),
                    padded(SearchBarWidget(
                     onSearchChanged: updateSearchTerm, // Truyền hàm callback vào SearchBarWidget
+                    controller: _searchBarController, // Gọi biến sử dụng giữa 2 class 
                   )),
                   SizedBox(
                     height: 25,
@@ -92,6 +104,12 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
                   ),
                   padded(subTitle("Bánh")),
                   getHorizontalItemSlider(listProduct), // Show list item1 
+                  SizedBox(
+                    height: 15,
+                  ),
+
+                  padded(subTitle("Đơn Hàng")),
+                  getHorizontalItemSlider(preOrders), // Show list pre order
                   SizedBox(
                     height: 15,
                   ),
