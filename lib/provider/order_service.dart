@@ -155,13 +155,15 @@ class OrderService {
 
   Future<List<Map<String, dynamic>>> selectOrdersWithStatus1() async { // Status = 1 means paid
   final db = await _databaseRepository.database;
-  return await db!.rawQuery('''
-    SELECT order_detail.*, orders.*, order_detail.id AS order_detail_id, product.name AS product_name, payment.name AS paymentName, orders.status AS orderStatus
+   return await db!.rawQuery('''
+    SELECT order_detail.*, orders.*, order_detail.id AS order_detail_id,
+    product.name AS product_name, payment.name AS paymentName,
+    orders.status AS orderStatus
     FROM order_detail
     JOIN orders ON orders.id = order_detail.orderID
     JOIN product ON product.id = order_detail.productId
     JOIN payment ON payment.id = orders.paymentId
-    WHERE orders.status = 1 OR orders.status = 2
+    WHERE orders.status IN (1, 2)
   ''');
 }
 
