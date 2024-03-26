@@ -12,10 +12,18 @@ class _ExploreScreenState extends State<ExploreScreen> {
   final int momoPayment = 2;
   final int transferPayment = 3;
   bool _isLoading = true; // Mặc định đang tải dữ liệu
-  int selectedPaymentMethod = 0; // 0 là tất cả, 1 là thanh toán bằng tiền mặt, 2 là thanh toán bằng momo, 3 là chuyển khoản
+  int optionFilter = 0; // 0 là tất cả, 1 là thanh toán bằng tiền mặt, 2 là thanh toán bằng momo, 3 là chuyển khoản
   Map<int, List<Map<String, dynamic>>> groupedOrders = {};
   Map<int, List<Map<String, dynamic>>> tempData = {};
   List<Map<String, dynamic>> orders = [];
+
+  List<String> paymentMethods = ['Tiền mặt', 'Momo', 'Chuyển khoản']; // Danh sách phương thức thanh toán
+
+  // Function để xử lý sự kiện khi người dùng thay đổi phương thức thanh toán
+  void onPaymentMethodChanged(String? newValue) {
+    // Thực hiện xử lý dữ liệu tùy thuộc vào phương thức thanh toán đã chọn
+    // newValue chính là giá trị mới được chọn từ DropdownButton
+  }
 
   @override
   void initState() {
@@ -75,7 +83,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
       : Column(
         children: [
            DropdownButton<int>(
-            value: selectedPaymentMethod,
+            value: optionFilter,
             items: [
               DropdownMenuItem<int>(
                 value: 0,
@@ -125,7 +133,25 @@ class _ExploreScreenState extends State<ExploreScreen> {
                           children: <Widget>[
                             ListTile(
                               leading: Icon(Icons.shopping_cart),
-                              title: Text("Order ID: $orderId", style: TextStyle(color: Colors.green)),
+                               title: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text("Order ID: $orderId", style: TextStyle(color: Colors.green)),
+                                      DropdownButton<String>(
+                                        value: paymentMethods.first, // Giá trị mặc định là phương thức thanh toán đầu tiên trong danh sách
+                                        onChanged: onPaymentMethodChanged, // Gán hàm xử lý sự kiện khi thay đổi giá trị
+                                        items: paymentMethods.map<DropdownMenuItem<String>>((String value) {
+                                          return DropdownMenuItem<String>(
+                                            value: value,
+                                            child: Text(value),
+                                          );
+                                        }).toList(),
+                                      )
+                                    ],
+                                  )]),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
