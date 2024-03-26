@@ -8,6 +8,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: themeData,
+      // theme: ThemeData(
+      //   scaffoldBackgroundColor: Colors.white, // Set background color to white
+      // ),
       home: SplashScreen(),
     );
   }
