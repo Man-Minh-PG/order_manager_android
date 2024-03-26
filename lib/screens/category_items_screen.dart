@@ -63,9 +63,9 @@ class CategoryItemsScreen extends StatelessWidget {
           children: beverages.asMap().entries.map<Widget>((e) {
             GroceryItem groceryItem = e.value;
             return GestureDetector(
-              onTap: () {
-                onItemClicked(context, groceryItem);
-              },
+              // onTap: () {
+              //   onItemClicked(context, groceryItem);
+              // },
               child: Container(
                 padding: EdgeInsets.all(10),
                 child: GroceryItemCardWidget(
