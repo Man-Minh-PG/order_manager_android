@@ -66,7 +66,7 @@ var demoItems = [
       id: 8,
       name: "Dua",
       description: "Dua",
-      price: 27,
+      price: 22,
       imagePath: "assets/images/grocery_images/coconut.jpg", orderQuantity: 0, exclusiveOffers: false),
     GroceryItem(
       id: 9,
