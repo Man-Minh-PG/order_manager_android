@@ -8,4 +8,5 @@ ThemeData themeData = ThemeData(
   visualDensity: VisualDensity.adaptivePlatformDensity,
   colorScheme:
       ColorScheme.fromSwatch().copyWith(secondary: AppColors.primaryColor),
+      scaffoldBackgroundColor: Colors.white
 );
