@@ -160,6 +160,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                   Text("payment: ${products[0]['paymentName'] ?? ''}", style: TextStyle(color: Colors.blue)),
                                   SizedBox(height: 8),
                                   Text("Status: ${products[0]['orderStatus'] == 1 ? 'Thành công' : 'Hủy đơn'}", style: TextStyle(color: Color.fromARGB(255, 23, 150, 31))),
+                                   SizedBox(height: 8),
+                                  Text("Note: ${products[index]['note']}")
                                 ],
                               ),
                             ),
