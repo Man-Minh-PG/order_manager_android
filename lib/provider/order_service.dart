@@ -143,14 +143,47 @@ class OrderService {
   // }
 
    Future<List<Map<String, dynamic>>> selectOrdersWithStatus0() async { // Status = 0 means a new order has not been paid
-    final db = await _databaseRepository.database;
-    return await db!.rawQuery('''
-      SELECT order_detail.*, orders.*, order_detail.id AS order_detail_id, product.name AS product_name
-      FROM order_detail
-      JOIN orders ON orders.id = order_detail.orderID
-      JOIN product ON product.id = order_detail.productId 
-      WHERE orders.status = 0
-    ''');
+    // final db = await _databaseRepository.database;
+    //   List<Map<String, dynamic>> ordersFromDB = await db!.rawQuery('''
+    //     SELECT order_detail.*, orders.*, order_detail.id AS order_detail_id, product.name AS product_name
+    //     FROM order_detail
+    //     JOIN orders ON orders.id = order_detail.orderID
+    //     JOIN product ON product.id = order_detail.productId 
+    //     WHERE orders.status = 0
+    //   ''');
+
+    //   // Tạo danh sách mới để lưu trữ các đơn hàng với thuộc tính paymentMethod
+    //   List<Map<String, dynamic>> orders = [];
+
+    //   // Thêm thuộc tính paymentMethod vào mỗi phần tử trong danh sách mới
+    //   for (var order in ordersFromDB) {
+    //     Map<String, dynamic> modifiedOrder = Map.from(order);
+    //     modifiedOrder['paymentMethod'] = 1; // Thay cashPayment bằng giá trị tương ứng của paymentMethod
+    //     orders.add(modifiedOrder);
+    //   }
+
+    //   return orders;
+
+      final db = await _databaseRepository.database;
+      List<Map<String, dynamic>> ordersFromDB = await db!.rawQuery('''
+        SELECT order_detail.*, orders.*, order_detail.id AS order_detail_id, product.name AS product_name, orders.paymentId AS paymentMethod
+        FROM order_detail
+        JOIN orders ON orders.id = order_detail.orderID
+        JOIN product ON product.id = order_detail.productId 
+        WHERE orders.status = 0
+      ''');
+
+        // Tạo danh sách mới để lưu trữ các đơn hàng với thuộc tính paymentMethod
+      List<Map<String, dynamic>> orders = [];
+
+      // Thêm thuộc tính paymentMethod vào mỗi phần tử trong danh sách mới
+      for (var order in ordersFromDB) {
+        Map<String, dynamic> modifiedOrder = Map.from(order);
+  
+        orders.add(modifiedOrder);
+      }
+
+       return orders;
   }
 
   Future<List<Map<String, dynamic>>> selectOrdersWithStatus1() async { // Status = 1 means paid

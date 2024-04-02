@@ -12,6 +12,9 @@ class _CartScreenState extends State<CartScreen> {
   final int cashPayment = 1;
   final int momoPayment = 2;
   final int transferPayment = 3;
+  final int orderStatusDefault = 0;
+  final int orderStatusSucess = 1;
+
   bool _isLoading = true; // Mặc định đang tải dữ liệu
 
   Map<int, List<Map<String, dynamic>>> groupedOrders = {};
@@ -24,12 +27,14 @@ class _CartScreenState extends State<CartScreen> {
 
   Future<void> fetchOrders() async {
     List<Map<String, dynamic>> orders = await orderService.selectOrdersWithStatus0();
+
     setState(() {
       groupedOrders.clear();
       for (var order in orders) {
         int orderId = order['orderId'];
         if (!groupedOrders.containsKey(orderId)) {
-          groupedOrders[orderId] = [order];
+          groupedOrders[orderId] = [order].toList(); // Chuyển danh sách sang một danh sách có thể sửa đổi
+          // groupedOrders[orderId]['paymentMethod'] = cashPayment; // Gán giá trị cho phần tử đó
         } else {
           groupedOrders[orderId]!.add(order);
         }
@@ -66,7 +71,18 @@ class _CartScreenState extends State<CartScreen> {
                 children: <Widget>[
                   ListTile(
                     leading: Icon(Icons.shopping_cart),
-                    title: Text("Mã đơn hàng: ${products[0]['orderId']}", style: TextStyle(color: Colors.green)),
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Mã đơn hàng: ${products[0]['orderId']}", style: TextStyle(color: Colors.green)),
+                           
+                          ],
+                        ),
+                      ],
+                    ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -86,39 +102,47 @@ class _CartScreenState extends State<CartScreen> {
                       );
                     },
                   ),
-                  ButtonBar(
-                    alignment: MainAxisAlignment.end,
-                    children: [
-                      DropdownButton<int>(
-                        value: 1, // Giá trị mặc định (tiền mặt)
-                        items: [
-                          DropdownMenuItem<int>(
-                            value: cashPayment,
-                            child: Text('Tiền mặt'),
-                          ),
-                          DropdownMenuItem<int>(
-                            value: momoPayment,
-                            child: Text('Momo'),
-                          ),
-                          DropdownMenuItem<int>(
-                            value: transferPayment,
-                            child: Text('Chuyển khoản'),
-                          ),
-                        ],
-                        onChanged: (value) {
-                          _handlePayment(context, products[0]['orderId'], value!);
-                        },
-                      ),
-                      IconButton(
-                        onPressed: () => _confirmDeleteOrder(context, products[0]['orderId']),
-                        icon: const Icon(Icons.highlight_remove),
-                      ),
-                      IconButton(
-                        onPressed: () => _editOrder(context, products[0]['orderId']),
-                        icon: const Icon(Icons.mode_edit),
-                      ),
-                    ],
+                  ElevatedButton(
+                    onPressed: () =>   _handlePayment(context, products[0]['orderId'], products[0]['orderId']!, 1, orderStatusSucess),
+                    child: const Text('Finish'),
                   ),
+                   ButtonBar(
+                              alignment: MainAxisAlignment.end,
+                              children: [
+                                DropdownButton<int?>(
+                                  value: products[0]['paymentMethod'], // Giá trị mặc định (tiền mặt)
+                                  items: [
+                                    DropdownMenuItem<int>(
+                                      value: cashPayment,
+                                      child: Text('Tiền mặt'),
+                                    ),
+                                    DropdownMenuItem<int>(
+                                      value: momoPayment,
+                                      child: Text('Momo'),
+                                    ),
+                                    DropdownMenuItem<int>(
+                                      value: transferPayment,
+                                      child: Text('Chuyển khoản'),
+                                    ),
+                                  ],
+                                  onChanged: (value) {
+                                    setState(() {
+                                       products[0]['paymentMethod'] = value; // Cập nhật giá trị paymentMethod cho đơn hàng cụ thể 
+                                    });
+                                   
+                                     _handlePayment(context, products[0]['orderId'], value!, 0, orderStatusDefault);
+                                  },
+                                ),
+                                IconButton(
+                                  onPressed: () => _confirmDeleteOrder(context, products[0]['orderId']),
+                                  icon: const Icon(Icons.highlight_remove),
+                                ),
+                                IconButton(
+                                  onPressed: () => _editOrder(context, products[0]['orderId']),
+                                  icon: const Icon(Icons.mode_edit),
+                                ),
+                              ],
+                            ),
                 ],
               ),
             );
@@ -129,12 +153,21 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Future<void> _handlePayment(BuildContext context, int orderId, int paymentMethod) async {
-    int resultUpdate = await orderService.updateOrderStatus(orderId, 1, paymentMethod);
+  Future<void> _handleFinish(BuildContext context, int orderId, int paymentMethod) async {
+    // Xử lý khi nhấn nút Finish
+    print('Order ID: $orderId - Payment Method: $paymentMethod');
+    // Thực hiện các thao tác cần thiết sau khi nhấn Finish
+  }
+
+  Future<void> _handlePayment(BuildContext context, int orderId, int paymentMethod, int removeShow, int statusOrder) async {
+    int resultUpdate = await orderService.updateOrderStatus(orderId, statusOrder, paymentMethod);
     if (resultUpdate > 0) {
-      setState(() {
-        groupedOrders.remove(orderId);
-      });
+      if( removeShow == 1) {
+        setState(() {
+                groupedOrders.remove(orderId);
+              });
+      }
+      
     } else {
       // Hiển thị hộp thoại thông báo lỗi
       showDialog(
@@ -210,9 +243,9 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   void _editOrder(BuildContext context, int orderId) {
-      Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => EditOrderScreen( orderId: orderId,)),
-      );
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => EditOrderScreen(orderId: orderId)),
+    );
   }
 }
