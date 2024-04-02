@@ -104,7 +104,7 @@ class _CartScreenState extends State<CartScreen> {
                     },
                   ),
                   ElevatedButton(
-                    onPressed: () =>   _handlePayment(context, products[0]['orderId'], products[0]['orderId']!, 1, orderStatusSucess),
+                    onPressed: () =>   _handlePayment(context, products[0]['orderId'], products[0]['paymentMethod']!, 1, orderStatusSucess),
                     child: const Text('Finish'),
                   ),
                    ButtonBar(

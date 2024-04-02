@@ -37,7 +37,10 @@ class _SplashScreenState extends State<SplashScreen> {
       // backgroundColor: AppColors.primaryColor, // SET COLOR BACKGROUND
       backgroundColor: Color.fromARGB(255, 140, 137, 240), // SET COLOR BACKGROUND
       body: Center(
+          child: Container(
+        constraints: BoxConstraints.expand(), // Đảm bảo rằng nội dung chiếm toàn bộ không gian màn hình
         child: splashScreenIcon(),
+      ),
       ),
     );
   }
