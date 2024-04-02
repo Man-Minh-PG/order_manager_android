@@ -187,17 +187,41 @@ class OrderService {
   }
 
   Future<List<Map<String, dynamic>>> selectOrdersWithStatus1() async { // Status = 1 means paid
-  final db = await _databaseRepository.database;
-   return await db!.rawQuery('''
-    SELECT order_detail.*, orders.*, order_detail.id AS order_detail_id,
-    product.name AS product_name, payment.name AS paymentName,
-    orders.status AS orderStatus
-    FROM order_detail
-    JOIN orders ON orders.id = order_detail.orderID
-    JOIN product ON product.id = order_detail.productId
-    JOIN payment ON payment.id = orders.paymentId
-    WHERE orders.status IN (1, 2)
-  ''');
+  // final db = await _databaseRepository.database;
+  //  return await db!.rawQuery('''
+  //   SELECT order_detail.*, orders.*, order_detail.id AS order_detail_id, orders.paymentId AS paymentMethod
+  //   product.name AS product_name, payment.name AS paymentName,
+  //   orders.status AS orderStatus
+  //   FROM order_detail
+  //   JOIN orders ON orders.id = order_detail.orderID
+  //   JOIN product ON product.id = order_detail.productId
+  //   JOIN payment ON payment.id = orders.paymentId
+  //   WHERE orders.status IN (1, 2)
+  // ''');
+
+       final db = await _databaseRepository.database;
+      List<Map<String, dynamic>> ordersFromDB = await db!.rawQuery('''
+       SELECT order_detail.*, orders.*, order_detail.id AS order_detail_id, orders.paymentId AS paymentMethod,
+            product.name AS product_name, payment.name AS paymentName,
+            orders.status AS orderStatus
+            FROM order_detail
+            JOIN orders ON orders.id = order_detail.orderID
+            JOIN product ON product.id = order_detail.productId
+            JOIN payment ON payment.id = orders.paymentId
+            WHERE orders.status IN (1, 2)
+      ''');
+
+        // Tạo danh sách mới để lưu trữ các đơn hàng với thuộc tính paymentMethod
+      List<Map<String, dynamic>> orders = [];
+
+      // Thêm thuộc tính paymentMethod vào mỗi phần tử trong danh sách mới
+      for (var order in ordersFromDB) {
+        Map<String, dynamic> modifiedOrder = Map.from(order);
+  
+        orders.add(modifiedOrder);
+      }
+
+       return orders;
 }
 
 

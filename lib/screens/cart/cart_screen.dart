@@ -12,6 +12,7 @@ class _CartScreenState extends State<CartScreen> {
   final int cashPayment = 1;
   final int momoPayment = 2;
   final int transferPayment = 3;
+  final int noPayment = 0;
   final int orderStatusDefault = 0;
   final int orderStatusSucess = 1;
 
@@ -123,6 +124,10 @@ class _CartScreenState extends State<CartScreen> {
                                     DropdownMenuItem<int>(
                                       value: transferPayment,
                                       child: Text('Chuyển khoản'),
+                                    ),
+                                     DropdownMenuItem<int>(
+                                      value: noPayment,
+                                      child: Text('Chưa TToán'),
                                     ),
                                   ],
                                   onChanged: (value) {

@@ -11,19 +11,19 @@ class _ExploreScreenState extends State<ExploreScreen> {
   final int cashPayment = 1;
   final int momoPayment = 2;
   final int transferPayment = 3;
+  final int noPayment = 0;
   bool _isLoading = true; // Mặc định đang tải dữ liệu
   int optionFilter = 0; // 0 là tất cả, 1 là thanh toán bằng tiền mặt, 2 là thanh toán bằng momo, 3 là chuyển khoản
+  final int orderStatusDefault = 0;
+  final int orderStatusSucess = 1;
+  
   Map<int, List<Map<String, dynamic>>> groupedOrders = {};
   Map<int, List<Map<String, dynamic>>> tempData = {};
   List<Map<String, dynamic>> orders = [];
 
   List<String> paymentMethods = ['Tiền mặt', 'Momo', 'Chuyển khoản']; // Danh sách phương thức thanh toán
 
-  // Function để xử lý sự kiện khi người dùng thay đổi phương thức thanh toán
-  void onPaymentMethodChanged(String? newValue) {
-    // Thực hiện xử lý dữ liệu tùy thuộc vào phương thức thanh toán đã chọn
-    // newValue chính là giá trị mới được chọn từ DropdownButton
-  }
+
 
   @override
   void initState() {
@@ -140,16 +140,40 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text("Order ID: $orderId", style: TextStyle(color: Colors.green)),
-                                      DropdownButton<String>(
-                                        value: paymentMethods.first, // Giá trị mặc định là phương thức thanh toán đầu tiên trong danh sách
-                                        onChanged: onPaymentMethodChanged, // Gán hàm xử lý sự kiện khi thay đổi giá trị
-                                        items: paymentMethods.map<DropdownMenuItem<String>>((String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Text(value),
-                                          );
-                                        }).toList(),
-                                      )
+                                      ButtonBar(
+                                        alignment: MainAxisAlignment.end,
+                                        children: [
+                                          DropdownButton<int?>(
+                                            value: products[0]['paymentMethod'], // Giá trị mặc định (tiền mặt)
+                                            items: [
+                                              DropdownMenuItem<int>(
+                                                value: cashPayment,
+                                                child: Text('Tiền mặt'),
+                                              ),
+                                              DropdownMenuItem<int>(
+                                                value: momoPayment,
+                                                child: Text('Momo'),
+                                              ),
+                                              DropdownMenuItem<int>(
+                                                value: transferPayment,
+                                                child: Text('Chuyển khoản'),
+                                              ),
+                                              DropdownMenuItem<int>(
+                                                value: noPayment,
+                                                child: Text('Chưa TToán'),
+                                              ),
+                                            ],
+                                            onChanged: (value) {
+                                              setState(() {
+                                                products[0]['paymentMethod'] = value; // Cập nhật giá trị paymentMethod cho đơn hàng cụ thể 
+                                              });
+                                            
+                                              _handlePayment(context, products[0]['orderId'], value!, 0, orderStatusSucess);
+                                            },
+                                          ),
+                                         
+                                        ],
+                                      ),
                                     ],
                                   )]),
                               subtitle: Column(
@@ -193,6 +217,38 @@ class _ExploreScreenState extends State<ExploreScreen> {
       ) 
       
     );
+
+    
+  }
+
+    // Function để xử lý sự kiện khi người dùng thay đổi phương thức thanh toán
+  Future<void> _handlePayment(BuildContext context, int orderId, int paymentMethod, int removeShow, int statusOrder) async {
+    int resultUpdate = await orderService.updateOrderStatus(orderId, statusOrder, paymentMethod);
+    if (resultUpdate > 0) {
+      if( removeShow == 1) {
+        setState(() {
+                groupedOrders.remove(orderId);
+              });
+      }
+      
+    } else {
+      // Hiển thị hộp thoại thông báo lỗi
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Notification'),
+          content: Text('Có lỗi xảy ra khi cập nhật đơn hàng - vui lòng thử lại sau.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Đóng'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 }
 
