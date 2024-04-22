@@ -13,22 +13,23 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  TextEditingController _searchBarController = TextEditingController(); // Tạo controller
+  TextEditingController _searchBarController =
+      TextEditingController(); // Tạo controller
   List<GroceryItem> selectedItems = [];
   String searchTerm = '';
 
   // Hàm callback để nhận giá trị tìm kiếm từ SearchBarWidget
   void updateSearchTerm(String value) {
-  setState(() {
-    searchTerm = value; // Cập nhật giá trị tìm kiếm
-    // value = '';
-    // Xóa giá trị của ô tìm kiếm bằng cách gán giá trị rỗng cho controller
-  });
-}
+    setState(() {
+      searchTerm = value; // Cập nhật giá trị tìm kiếm
+      // value = '';
+      // Xóa giá trị của ô tìm kiếm bằng cách gán giá trị rỗng cho controller
+    });
+  }
 
   void clearSearchBar() {
     setState(() {
-      _searchBarController.clear(); 
+      _searchBarController.clear();
     });
   }
 
@@ -52,9 +53,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(
                     height: 15,
                   ),
-                   padded(SearchBarWidget(
-                    onSearchChanged: updateSearchTerm, // Truyền hàm callback vào SearchBarWidget
-                    controller: _searchBarController, // Gọi biến sử dụng giữa 2 class 
+                  padded(SearchBarWidget(
+                    onSearchChanged:
+                        updateSearchTerm, // Truyền hàm callback vào SearchBarWidget
+                    controller:
+                        _searchBarController, // Gọi biến sử dụng giữa 2 class
                   )),
                   SizedBox(
                     height: 25,
@@ -63,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 25,
                   ),
                   padded(subTitle("Bánh")),
-                  getHorizontalItemSlider(exclusiveOffers), // Show list item1 
+                  getHorizontalItemSlider(exclusiveOffers), // Show list item1
                   SizedBox(
                     height: 15,
                   ),
@@ -79,52 +82,53 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-     floatingActionButton: FloatingActionButton(
-      onPressed: () {
-        setState(() {
-          // Lấy danh sách các sản phẩm được chọn
-          List<GroceryItem> selectedItems = exclusiveOffers.where((item) => item.orderQuantity > 0).toList();
-          List<GroceryItem> preOrderItems = preOrders.where((item) => item.orderQuantity > 0).toList();
-          if (selectedItems.isNotEmpty) {
-            // Gọi hàm xử lý khi nút được nhấn, truyền vào danh sách các sản phẩm đã chọn
-            onAddButtonSelected(selectedItems); 
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            setState(() {
+              // Lấy danh sách các sản phẩm được chọn
+              List<GroceryItem> selectedItems = exclusiveOffers
+                  .where((item) => item.orderQuantity > 0)
+                  .toList();
+              List<GroceryItem> preOrderItems =
+                  preOrders.where((item) => item.orderQuantity > 0).toList();
+              if (selectedItems.isNotEmpty) {
+                // Gọi hàm xử lý khi nút được nhấn, truyền vào danh sách các sản phẩm đã chọn
+                onAddButtonSelected(selectedItems);
 
-            // Đặt tất cả các giá trị orderQuantity về 0 cho các sản phẩm trong exclusiveOffers
-            for (var item in exclusiveOffers) {
-              item.orderQuantity = 0;
-            }
-          }else if(preOrderItems.isNotEmpty){
-            // Gọi hàm xử lý khi nút được nhấn, truyền vào danh sách các sản phẩm đã chọn
-            onAddButtonSelected(preOrderItems); 
+                // Đặt tất cả các giá trị orderQuantity về 0 cho các sản phẩm trong exclusiveOffers
+                for (var item in exclusiveOffers) {
+                  item.orderQuantity = 0;
+                }
+              } else if (preOrderItems.isNotEmpty) {
+                // Gọi hàm xử lý khi nút được nhấn, truyền vào danh sách các sản phẩm đã chọn
+                onAddButtonSelected(preOrderItems);
 
-            // Đặt tất cả các giá trị orderQuantity về 0 cho các sản phẩm trong exclusiveOffers
-            for (var item in preOrderItems) {
-              item.orderQuantity = 0;
-            }
-          }
-          else {
-            // Nếu không có dữ liệu, bạn có thể hiển thị một thông báo hoặc thực hiện một hành động khác ở đây
-            showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                title: Text('Thông báo'),
-                content: Text('Bạn chưa chọn sản phẩm nào.'),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text('Đóng'),
+                // Đặt tất cả các giá trị orderQuantity về 0 cho các sản phẩm trong exclusiveOffers
+                for (var item in preOrderItems) {
+                  item.orderQuantity = 0;
+                }
+              } else {
+                // Nếu không có dữ liệu, bạn có thể hiển thị một thông báo hoặc thực hiện một hành động khác ở đây
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Text('Thông báo'),
+                    content: Text('Bạn chưa chọn sản phẩm nào.'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text('Đóng'),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            );
-          }
-        });
-      }, 
-      // child: Text("Add")
-      child: Icon(Icons.add)
-    ),
+                );
+              }
+            });
+          },
+          // child: Text("Add")
+          child: Icon(Icons.add)),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
@@ -213,7 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget locationWidget() {
-    String locationIconPath = "assets/icons/location_icon.svg"; 
+    String locationIconPath = "assets/icons/location_icon.svg";
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -230,47 +234,60 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
- 
+
 // Assuming the selected grocery_item is available as groceryItem
 // void onAddButtonSelected(GroceryItem groceryItem) {
-    void onAddButtonSelected(List<GroceryItem> groceryItem) async {
-      List<Product> selectedProducts = []; // Danh sách các sản phẩm đã chọn
+  void onAddButtonSelected(List<GroceryItem> groceryItem) async {
+    List<Product> selectedProducts = []; // Danh sách các sản phẩm đã chọn
 
-      for (var item in groceryItem) {
-        if(item.orderQuantity > 0) {
-          Product product = Product( 
-            id : item.id,
-            description : item.description,
-            imagePath: item.imagePath,
-            orderQuantity: item.orderQuantity,
-            name: item.name,
-            price: (item.price * item.orderQuantity),
-            exclusiveOffers: item.exclusiveOffers, // Set the exclusiveOffers value
-          );
-          
-          selectedProducts.add(product); // Thêm sản phẩm vào danh sách đã chọn
-        }
+    for (var item in groceryItem) {
+      if (item.orderQuantity > 0) {
+        Product product = Product(
+          id: item.id,
+          description: item.description,
+          imagePath: item.imagePath,
+          orderQuantity: item.orderQuantity,
+          name: item.name,
+          price: (item.price * item.orderQuantity),
+          exclusiveOffers:
+              item.exclusiveOffers, // Set the exclusiveOffers value
+        );
+
+        selectedProducts.add(product); // Thêm sản phẩm vào danh sách đã chọn
       }
-
-      OrderService orderService = OrderService();
-      bool success = await orderService.createOrder(selectedProducts, searchTerm); // Chờ cho hàm createOrder hoàn thành
-      
-      if (success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Đã tạo đơn hàng thành công!'),
-            ),
-          );
-          setState(() {
-            clearSearchBar();
-          });
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Tạo đơn hàng thất bại!'),
-            ),
-          );
-        }
     }
 
+    OrderService orderService = OrderService();
+    bool success = await orderService.createOrder(
+        selectedProducts, searchTerm); // Chờ cho hàm createOrder hoàn thành
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Đã tạo đơn hàng thành công!'),
+          action: SnackBarAction(
+            label: 'X',
+            onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            },
+          ),
+        ),
+      );
+      setState(() {
+        clearSearchBar();
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Tạo đơn hàng thất bại!'),
+          action: SnackBarAction(
+            label: 'X',
+            onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            },
+          ),
+        ),
+      );
+    }
+  }
 }

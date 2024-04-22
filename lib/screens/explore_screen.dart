@@ -223,32 +223,63 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
     // Function để xử lý sự kiện khi người dùng thay đổi phương thức thanh toán
   Future<void> _handlePayment(BuildContext context, int orderId, int paymentMethod, int removeShow, int statusOrder) async {
-    int resultUpdate = await orderService.updateOrderStatus(orderId, statusOrder, paymentMethod);
-    if (resultUpdate > 0) {
-      if( removeShow == 1) {
-        setState(() {
-                groupedOrders.remove(orderId);
-              });
-      }
-      
-    } else {
-      // Hiển thị hộp thoại thông báo lỗi
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Notification'),
-          content: Text('Có lỗi xảy ra khi cập nhật đơn hàng - vui lòng thử lại sau.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('Đóng'),
-            ),
-          ],
-        ),
-      );
-    }
+
+      // Hiển thị cửa sổ xác nhận
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Notification"),
+              content: Text("Bạn có chắc chắn muốn đổi phương thức thanh toán?"),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () async {
+                    // Đóng cửa sổ xác nhận
+                    Navigator.of(context).pop();
+                    
+                    // Thực hiện thay đổi phương thức thanh toán 
+                    int resultUpdate = await orderService.updateOrderStatus(orderId, statusOrder, paymentMethod);
+                    if (resultUpdate > 0) {
+                      if( removeShow == 1) {
+                        setState(() {
+                                groupedOrders.remove(orderId);
+                              });
+                      }
+                      
+                    } else {
+                      // Hiển thị hộp thoại thông báo lỗi
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text('Notification'),
+                          content: Text('Có lỗi xảy ra khi cập nhật đơn hàng - vui lòng thử lại sau.'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text('Đóng'),
+                            ),
+                          ],
+                        ),
+                      );
+                      
+                    }
+                  },
+                  child: Text("Yes"),
+                ),
+                TextButton(
+                  onPressed: () {
+                    // Đóng cửa sổ xác nhận
+                    Navigator.of(context).pop();
+                  
+                  },
+                  child: Text("No"),
+                ),
+              ],
+            );
+          },
+        );
   }
 }
 
