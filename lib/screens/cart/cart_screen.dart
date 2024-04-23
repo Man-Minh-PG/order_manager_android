@@ -165,7 +165,23 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Future<void> _handlePayment(BuildContext context, int orderId, int paymentMethod, int removeShow, int statusOrder) async {
+    if(paymentMethod == noPayment) {
+       showDialog(context: context, builder: (context) => AlertDialog(
+        title: Text('Notification'),
+        content: Text('Phải thanh toán trước khi hoàn thành đơn.'),
+        actions: [
+          TextButton(
+            onPressed: (){
+              Navigator.pop(context);
+          }, 
+          child: Text('close')
+          )
+        ],
+       ));
+    }
+
     int resultUpdate = await orderService.updateOrderStatus(orderId, statusOrder, paymentMethod);
+    
     if (resultUpdate > 0) {
       if( removeShow == 1) {
         setState(() {
@@ -179,13 +195,13 @@ class _CartScreenState extends State<CartScreen> {
         context: context,
         builder: (context) => AlertDialog(
           title: Text('Notification'),
-          content: Text('Có lỗi xảy ra khi cập nhật đơn hàng - vui lòng thử lại sau.'),
+          content: Text('Có lỗi xảy ra - vui lòng thử lại sau.'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('Đóng'),
+              child: Text('close'),
             ),
           ],
         ),
