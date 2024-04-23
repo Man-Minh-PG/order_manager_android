@@ -55,7 +55,19 @@ class _ExploreScreenState extends State<ExploreScreen> {
     setState(() {
       if (optionFill == 0) {
         groupedOrders = Map.from(tempData); // Khôi phục dữ liệu ban đầu
-      } else {
+      } else if (optionFill == 13) { // case search những đơn hàng của khách
+        groupedOrders.clear();
+        for (var order in orders) {
+          if (order['productId'] < optionFill) {
+            int orderId = order['orderId'];
+            if (!groupedOrders.containsKey(orderId)) {
+              groupedOrders[orderId] = [order];
+            } else {
+              groupedOrders[orderId]!.add(order);
+            }
+          }
+        }
+      } else { // Fill ra những đơn hàng của bên thứ 3
         groupedOrders.clear();
         for (var order in orders) {
           if (order['productId'] == optionFill) {
@@ -88,6 +100,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
               DropdownMenuItem<int>(
                 value: 0,
                 child: Text('Tất cả'),
+              ),
+              DropdownMenuItem<int>(
+                value: 13,
+                child: Text('Đơn thường'),
               ),
               DropdownMenuItem<int>(
                 value: 14,
@@ -163,12 +179,38 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                                 child: Text('Chưa TToán'),
                                               ),
                                             ],
-                                            onChanged: (value) {
-                                              setState(() {
-                                                products[0]['paymentMethod'] = value; // Cập nhật giá trị paymentMethod cho đơn hàng cụ thể 
-                                              });
-                                            
-                                              _handlePayment(context, products[0]['orderId'], value!, 0, orderStatusSucess);
+                                            onChanged: (value) async {
+                                                bool confirmChange = await showDialog(
+                                                    context: context,
+                                                    builder: (BuildContext context) {
+                                                      return AlertDialog(
+                                                        title: Text("Notification"),
+                                                        content: Text("Bạn có chắc chắn muốn đổi phương thức thanh toán?"),
+                                                        actions: <Widget>[
+                                                          TextButton(
+                                                            onPressed: () {
+                                                              Navigator.of(context).pop(true); // Trả về true nếu người dùng đồng ý thay đổi
+                                                            },
+                                                            child: Text("Yes"),
+                                                          ),
+                                                          TextButton(
+                                                            onPressed: () {
+                                                              Navigator.of(context).pop(false); // Trả về false nếu người dùng không muốn thay đổi
+                                                            },
+                                                            child: Text("No"),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    },
+                                                  );
+
+                                                  if(confirmChange == true) {
+                                                  setState(() {
+                                                    products[0]['paymentMethod'] = value; // Cập nhật giá trị paymentMethod cho đơn hàng cụ thể 
+                                                  });
+                                                
+                                                  _handlePayment(context, products[0]['orderId'], value!, 0, orderStatusSucess);
+                                                } 
                                             },
                                           ),
                                          
@@ -224,20 +266,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
     // Function để xử lý sự kiện khi người dùng thay đổi phương thức thanh toán
   Future<void> _handlePayment(BuildContext context, int orderId, int paymentMethod, int removeShow, int statusOrder) async {
 
-      // Hiển thị cửa sổ xác nhận
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Notification"),
-              content: Text("Bạn có chắc chắn muốn đổi phương thức thanh toán?"),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () async {
-                    // Đóng cửa sổ xác nhận
-                    Navigator.of(context).pop();
-                    
-                    // Thực hiện thay đổi phương thức thanh toán 
+      // Thực hiện thay đổi phương thức thanh toán 
                     int resultUpdate = await orderService.updateOrderStatus(orderId, statusOrder, paymentMethod);
                     if (resultUpdate > 0) {
                       if( removeShow == 1) {
@@ -265,21 +294,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       );
                       
                     }
-                  },
-                  child: Text("Yes"),
-                ),
-                TextButton(
-                  onPressed: () {
-                    // Đóng cửa sổ xác nhận
-                    Navigator.of(context).pop();
-                  
-                  },
-                  child: Text("No"),
-                ),
-              ],
-            );
-          },
-        );
   }
 }
 
