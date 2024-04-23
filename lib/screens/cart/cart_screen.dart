@@ -130,38 +130,12 @@ class _CartScreenState extends State<CartScreen> {
                                       child: Text('Chưa TToán'),
                                     ),
                                   ],
-                                  onChanged: (value) async {
-                                     bool confirmChange = await showDialog(
-                                                  context: context,
-                                                  builder: (BuildContext context) {
-                                                    return AlertDialog(
-                                                        title: Text("Notification"),
-                                                        content: Text("Phải thanh toán trước khi hoàn thành đơn!"),
-                                                        actions: <Widget>[
-                                                          TextButton(
-                                                            onPressed: () {
-                                                              Navigator.of(context).pop(true); // Trả về true nếu người dùng đồng ý thay đổi
-                                                            },
-                                                            child: Text("Yes"),
-                                                          ),
-                                                          TextButton(
-                                                            onPressed: () {
-                                                              Navigator.of(context).pop(false); // Trả về false nếu người dùng không muốn thay đổi
-                                                            },
-                                                            child: Text("No"),
-                                                          ),
-                                                        ],
-                                                      );
-                                    },
-                                  );
-
-                                    if(confirmChange) {
-                                      setState(() {
-                                        products[0]['paymentMethod'] = value; // Cập nhật giá trị paymentMethod cho đơn hàng cụ thể 
-                                      });
-                                    
-                                      _handlePayment(context, products[0]['orderId'], value!, 0, orderStatusDefault);
-                                    }
+                                  onChanged: (value) {
+                                    setState(() {
+                                       products[0]['paymentMethod'] = value; // Cập nhật giá trị paymentMethod cho đơn hàng cụ thể 
+                                    });
+                                   
+                                     _handlePayment(context, products[0]['orderId'], value!, 0, orderStatusDefault);
                                   },
                                 ),
                                 IconButton(
@@ -191,7 +165,21 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Future<void> _handlePayment(BuildContext context, int orderId, int paymentMethod, int removeShow, int statusOrder) async {
-   
+    if(paymentMethod == noPayment) {
+       showDialog(context: context, builder: (context) => AlertDialog(
+        title: Text('Notification'),
+        content: Text('Phải thanh toán trước khi hoàn thành đơn.'),
+        actions: [
+          TextButton(
+            onPressed: (){
+              Navigator.pop(context);
+          }, 
+          child: Text('close')
+          )
+        ],
+       ));
+    }
+
     int resultUpdate = await orderService.updateOrderStatus(orderId, statusOrder, paymentMethod);
     
     if (resultUpdate > 0) {
