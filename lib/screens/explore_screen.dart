@@ -125,6 +125,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
             onChanged: (int? value) {
               if (value != null) {
                 filterOrders(value);
+                
+                 setState(() {
+                  optionFilter = value;
+                });
               }
             },
           ),
