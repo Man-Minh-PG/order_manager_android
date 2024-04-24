@@ -104,7 +104,24 @@ class _CartScreenState extends State<CartScreen> {
                     },
                   ),
                   ElevatedButton(
-                    onPressed: () =>   _handlePayment(context, products[0]['orderId'], products[0]['paymentMethod']!, 1, orderStatusSucess),
+                    onPressed: () =>  {
+                       if(products[0]['paymentMethod'] == noPayment) {
+                          showDialog(context: context, builder: (context) => AlertDialog(
+                          title: Text('Notification'),
+                          content: Text('Phải thanh toán trước khi hoàn thành đơn.'),
+                          actions: [
+                            TextButton(
+                              onPressed: (){
+                                Navigator.pop(context);
+                            }, 
+                            child: Text('close')
+                            )
+                          ],
+                        ))
+                       } else {
+                       _handlePayment(context, products[0]['orderId'], products[0]['paymentMethod']!, 1, orderStatusSucess),
+                       }
+                    },
                     child: const Text('Finish'),
                   ),
                    ButtonBar(
@@ -165,21 +182,6 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Future<void> _handlePayment(BuildContext context, int orderId, int paymentMethod, int removeShow, int statusOrder) async {
-    if(paymentMethod == noPayment) {
-       showDialog(context: context, builder: (context) => AlertDialog(
-        title: Text('Notification'),
-        content: Text('Phải thanh toán trước khi hoàn thành đơn.'),
-        actions: [
-          TextButton(
-            onPressed: (){
-              Navigator.pop(context);
-          }, 
-          child: Text('close')
-          )
-        ],
-       ));
-    }
-
     int resultUpdate = await orderService.updateOrderStatus(orderId, statusOrder, paymentMethod);
     
     if (resultUpdate > 0) {
