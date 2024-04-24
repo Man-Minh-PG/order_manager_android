@@ -225,6 +225,9 @@ class OrderService {
 }
 
 
+  /**
+   * Update order Status when finish order
+   */
   Future<int> updateOrderStatus(int orderId, int newStatus, int paymentId) async {
     final db = await _databaseRepository.database;
     int resultUpdate = 0;
@@ -242,21 +245,42 @@ class OrderService {
     return resultUpdate;
   }
 
+  /**
+   * Process update total in order
+   * Discount total price 30%
+   */
+  Future<int> updateDiscountInOrder(int orderId, int totalDiscount) async {
+    final db = await _databaseRepository.database;
+
+    int resultUpdate = 0;
+
+    resultUpdate = await db!.update(
+      'orders',
+      {
+        'total': totalDiscount,
+      },
+      where: 'id = ?',
+      whereArgs: [orderId],
+    );
+
+    return resultUpdate;
+  } 
+
   // Lấy tổng số sản phẩm bán được trong ngày
   // Lấy tổng số lượng sản phẩm được bán trong ngày
-Future<int> getTotalProductsSoldToday() async {
-  final db = await _databaseRepository.database;
-  final result = await db!.rawQuery('''
-    SELECT IFNULL(SUM(order_detail.amount), 0) AS totalProductsSold
-    FROM orders
-    JOIN order_detail ON order_detail.orderId = orders.id
-    JOIN product ON product.id = order_detail.productId
-    WHERE orders.status = 1;
-  ''');
-  return result.isNotEmpty ? result.first['totalProductsSold'] as int ?? 0 : 0;
-}
+  Future<int> getTotalProductsSoldToday() async {
+    final db = await _databaseRepository.database;
+    final result = await db!.rawQuery('''
+      SELECT IFNULL(SUM(order_detail.amount), 0) AS totalProductsSold
+      FROM orders
+      JOIN order_detail ON order_detail.orderId = orders.id
+      JOIN product ON product.id = order_detail.productId
+      WHERE orders.status = 1;
+    ''');
+    return result.isNotEmpty ? result.first['totalProductsSold'] as int ?? 0 : 0;
+  }
 
-// Lấy tổng doanh thu trong ngày
+  // Lấy tổng doanh thu trong ngày
     Future<int> getTotalRevenueToday() async {
       final db = await _databaseRepository.database;
       final result = await db!.rawQuery('''

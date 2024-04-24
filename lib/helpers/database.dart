@@ -84,6 +84,7 @@ class DatabaseRepository {
         note TEXT,
         paymentId INTEGER,
         status INTEGER DEFAULT 0,
+        isDiscount INTEGER DEFAULT 0,
         createdAt TIMESTAMP NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime')) ,
         FOREIGN KEY (paymentId) REFERENCES payment (id)
       )

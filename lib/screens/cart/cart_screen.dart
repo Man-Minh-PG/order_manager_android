@@ -105,63 +105,91 @@ class _CartScreenState extends State<CartScreen> {
                   ),
                   
                   ElevatedButton(
-                    onPressed: () =>  {
-                       if(products[0]['paymentMethod'] == noPayment) {
-                          showDialog(context: context, builder: (context) => AlertDialog(
+                  onPressed: () {
+                    if (products.isNotEmpty && products[0]['paymentMethod'] == noPayment) {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
                           title: Text('Notification'),
                           content: Text('Phải thanh toán trước khi hoàn thành đơn.'),
                           actions: [
                             TextButton(
-                              onPressed: (){
+                              onPressed: () {
                                 Navigator.pop(context);
-                            }, 
-                            child: Text('close')
+                              }, 
+                              child: Text('Close')
                             )
                           ],
-                        ))
-                       } else {
-                       _handlePayment(context, products[0]['orderId'], products[0]['paymentMethod']!, 1, orderStatusSucess),
-                       }
-                    },
-                    child: const Text('Finish'),
-                  ),
+                        )
+                      );
+                    } else {
+                      if (products.isNotEmpty) {
+                        if (products[0]['isDiscount'] == 1) {
+                          _handleDiscount(context, products[0]['orderId'], products[0]['total']);
+                        }
+
+                        _handlePayment(context, products[0]['orderId'], products[0]['paymentMethod']!, 1, orderStatusSucess);
+                      }
+                    }
+                  },
+                  child: const Text('Finish'),
+                ),
+
 
                   Row(
                     children: [
                       Checkbox(
-                        value: products[0]['isDiscount']!, 
-                        onChanged: ((value) async {
+                        value: products.isNotEmpty ? (products[0]['isDiscount'] == 1) ? true : false : false,
+                        onChanged: (value) async {
+                          bool confirmDiscount = await showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('Notification'),
+                                content: Text('Are you sure?'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop(true);
+                                    }, 
+                                    child: Text('Yes')
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop(false);
+                                    }, 
+                                    child: Text('No')
+                                  )
+                                ],
+                              );
+                            }
+                          );
 
-                            bool confirmDscount = await showDialog(
-                              context: context, 
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text('Notification'),
-                                  content: Text('Are you sure !!'),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      onPressed: (){
-                                        Navigator.of(context).pop(true);
-                                      }, 
-                                      child: Text('Yes')
-                                    ),
-                                    TextButton(
-                                      onPressed: (() => Navigator.of(context).pop(false)), 
-                                      child: Text('No')
-                                    )
-                                  ],
-                                );                                
-                              }
-                            );
-                        
-                          if(confirmDscount == true){
-                              setState(() {
-                                products[0]['isDiscount'] = value;
-                                totalAmount =  (totalAmount*0.3) as int; // update total in UI
+                          if (confirmDiscount == true) {
+                            setState(() {
+                              // Gán giá trị là 1 cho isDiscount khi xác nhận đồng ý
+                              products[0]['isDiscount'] = 1;
+                              // Cập nhật tổng số trong giao diện người dùng
+                              totalAmount = totalAmount - (totalAmount * 0.3).toInt(); // update total in UI
+                              // Chỉnh sửa dữ liệu cục bộ để chuẩn bị cập nhật
+                              products[0]['total'] = totalAmount;
+                            });
+                          }else {
+                             setState(() {
+                             if(products[0]['isDiscount'] == 1) { // cập nhật lại số tiền đã discount
+                                // Cập nhật tổng số trong giao diện người dùng
+                                totalAmount = totalAmount - (totalAmount * 0.3).toInt(); // update total in UI
+                                // Chỉnh sửa dữ liệu cục bộ để chuẩn bị cập nhật
+                                products[0]['total'] = totalAmount;
+                             }
+                            
+                               // Gán giá trị là 1 cho isDiscount khi xác nhận đồng ý
+                              products[0]['isDiscount'] = 0;
                             });
                           }
-                        }
-                      )),
+                        },
+                      ),
+
                       Text('Discount')
                     ],
                   ),
@@ -217,10 +245,30 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Future<void> _handleDiscount(BuildContext context, int orderId, int paymentMethod) async {
-    // Xử lý khi nhấn nút Finish
-    print('Order ID: $orderId - Payment Method: $paymentMethod');
-    // Thực hiện các thao tác cần thiết sau khi nhấn Finish
+  /**
+   * Process update total in order 
+   * Discount 30%
+   */
+  Future<void> _handleDiscount(BuildContext context, int orderId, int totalDiscount) async {
+    int resultUpdate = await orderService.updateDiscountInOrder(orderId, totalDiscount);
+
+    if(resultUpdate < 0)  {
+       showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Notification'),
+          content: Text('Error Update Fail !!'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('close'),
+            ),
+          ],
+        ));
+    }
+
   }
 
   Future<void> _handlePayment(BuildContext context, int orderId, int paymentMethod, int removeShow, int statusOrder) async {
