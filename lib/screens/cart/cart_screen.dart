@@ -103,6 +103,7 @@ class _CartScreenState extends State<CartScreen> {
                       );
                     },
                   ),
+                  
                   ElevatedButton(
                     onPressed: () =>  {
                        if(products[0]['paymentMethod'] == noPayment) {
@@ -124,6 +125,47 @@ class _CartScreenState extends State<CartScreen> {
                     },
                     child: const Text('Finish'),
                   ),
+
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: products[0]['isDiscount']!, 
+                        onChanged: ((value) async {
+
+                            bool confirmDscount = await showDialog(
+                              context: context, 
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('Notification'),
+                                  content: Text('Are you sure !!'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: (){
+                                        Navigator.of(context).pop(true);
+                                      }, 
+                                      child: Text('Yes')
+                                    ),
+                                    TextButton(
+                                      onPressed: (() => Navigator.of(context).pop(false)), 
+                                      child: Text('No')
+                                    )
+                                  ],
+                                );                                
+                              }
+                            );
+                        
+                          if(confirmDscount == true){
+                              setState(() {
+                                products[0]['isDiscount'] = value;
+                                totalAmount =  (totalAmount*0.3) as int; // update total in UI
+                            });
+                          }
+                        }
+                      )),
+                      Text('Discount')
+                    ],
+                  ),
+
                    ButtonBar(
                               alignment: MainAxisAlignment.end,
                               children: [
@@ -175,7 +217,7 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Future<void> _handleFinish(BuildContext context, int orderId, int paymentMethod) async {
+  Future<void> _handleDiscount(BuildContext context, int orderId, int paymentMethod) async {
     // Xử lý khi nhấn nút Finish
     print('Order ID: $orderId - Payment Method: $paymentMethod');
     // Thực hiện các thao tác cần thiết sau khi nhấn Finish
