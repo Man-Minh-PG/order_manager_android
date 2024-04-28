@@ -124,10 +124,6 @@ class _CartScreenState extends State<CartScreen> {
                       );
                     } else {
                       if (products.isNotEmpty) {
-                        if (products[0]['isDiscount'] == 1) {
-                          _handleDiscount(context, products[0]['orderId'], products[0]['total']);
-                        }
-
                         _handlePayment(context, products[0]['orderId'], products[0]['paymentMethod']!, 1, orderStatusSucess);
                       }
                     }
@@ -141,6 +137,7 @@ class _CartScreenState extends State<CartScreen> {
                       Checkbox(
                         value: products.isNotEmpty ? (products[0]['isDiscount'] == 1) ? true : false : false,
                         onChanged: (value) async {
+                       
                           bool confirmDiscount = await showDialog(
                             context: context,
                             builder: (BuildContext context) {
@@ -165,28 +162,41 @@ class _CartScreenState extends State<CartScreen> {
                             }
                           );
 
-                          if (confirmDiscount == true) {
+
+                         if(confirmDiscount == true) {
                             setState(() {
                               // Gán giá trị là 1 cho isDiscount khi xác nhận đồng ý
-                              products[0]['isDiscount'] = 1;
+                              products[0]['isDiscount'] = value == true ? 1 : 0;
+                              // products[0]['isDiscount'] = 1;
+                            });
+                         } 
+
+                         if (confirmDiscount == true && products[0]['isDiscount'] == 1) {
+                            setState(() {
+
                               // Cập nhật tổng số trong giao diện người dùng
                               totalAmount = totalAmount - (totalAmount * 0.3).toInt(); // update total in UI
-                              // Chỉnh sửa dữ liệu cục bộ để chuẩn bị cập nhật
+                              // Ch ỉnh sửa dữ liệu cục bộ để chuẩn bị cập nhật
                               products[0]['total'] = totalAmount;
+                                              
                             });
-                          }else {
-                             setState(() {
-                             if(products[0]['isDiscount'] == 1) { // cập nhật lại số tiền đã discount
+                             _handleDiscount(context, products[0]['orderId'], products[0]['total']);       
+                          }
+
+                          if (confirmDiscount == true && products[0]['isDiscount'] == 0) {
+                           setState(() {
+                            
                                 // Cập nhật tổng số trong giao diện người dùng
-                                totalAmount = totalAmount - (totalAmount * 0.3).toInt(); // update total in UI
+                                totalAmount = totalAmount + (totalAmount * 0.6).toInt(); // update total in UI
                                 // Chỉnh sửa dữ liệu cục bộ để chuẩn bị cập nhật
                                 products[0]['total'] = totalAmount;
-                             }
-                            
-                               // Gán giá trị là 1 cho isDiscount khi xác nhận đồng ý
-                              products[0]['isDiscount'] = 0;
+                                    
+                             
+                              
                             });
+                            _handleDiscount(context, products[0]['orderId'], products[0]['total']);      
                           }
+                            
                         },
                       ),
 
