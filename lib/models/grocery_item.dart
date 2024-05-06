@@ -126,7 +126,7 @@ var demoItems = [
       imagePath: "assets/images/grocery_images/bee.png", orderQuantity: 0, exclusiveOffers: false),
 ];
 
-var exclusiveOffers = [demoItems[0], demoItems[1], demoItems[2],demoItems[3], demoItems[4], demoItems[5], demoItems[6], demoItems[7], demoItems[8], demoItems[9], demoItems[10], demoItems[11], demoItems[12], ];
+var exclusiveOffers = [demoItems[0], demoItems[1], demoItems[2],demoItems[3], demoItems[4], demoItems[5], demoItems[6], demoItems[7], demoItems[8], demoItems[9], demoItems[10] ];
 
 var bestSelling = [demoItems[2], demoItems[3]];
 
