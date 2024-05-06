@@ -77,6 +77,7 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
     return Scaffold(
       body: SafeArea(
         child: Container(
+          color: Color.fromARGB(255, 126, 255, 154), // Đổi màu nền ở đây
           child: SingleChildScrollView(
             child: Center(
               child: Column(
@@ -163,7 +164,10 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
         });
       }, 
      // child: Text("Edit")
-      child: Icon(Icons.edit)
+      child: Icon(
+        Icons.edit,
+        color: Color.fromARGB(166, 250, 4, 66),  
+      )
     ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
@@ -194,7 +198,7 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
             // onTap: () => onItemClicked(context, items[index]),
             child: GroceryItemCardWidget(
               item: items[index],
-              heroSuffix: "home_screen",
+              heroSuffix: "edit_screen",
             ),
           );
         },
