@@ -87,6 +87,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false, // fix button back - edit order
         title: Text('History order'), // Tiêu đề của AppBar
         // Các thuộc tính khác của AppBar như backgroundColor, actions, v.v...
       ),

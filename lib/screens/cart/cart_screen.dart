@@ -51,8 +51,9 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false, // fix button back - edit order
         title: Text('List order'), // Tiêu đề của AppBar
-        // Các thuộc tính khác của AppBar như backgroundColor, actions, v.v...
+        // Các thuộc tính khác của AppBar như backgroundColor, actions, v.v... 
       ),
       body: _isLoading
        ? Center(child: CircularProgressIndicator()) // Hiển thị loader khi đang tải dữ liệu 
