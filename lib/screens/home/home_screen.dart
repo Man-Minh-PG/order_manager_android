@@ -217,7 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget locationWidget() {
-    String locationIconPath = "assets/icons/location_icon.svg";
+    String locationIconPath = "assets/icons/icons8-keroppi.svg";
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

@@ -85,7 +85,7 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
                   SizedBox(
                     height: 15,
                   ),
-                  SvgPicture.asset("assets/icons/app_icon_color.svg"),
+                  SvgPicture.asset("assets/icons/icons8-morty-smith.svg"),
                   SizedBox(
                     height: 5,
                   ),
@@ -103,7 +103,7 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
                   SizedBox(
                     height: 25,
                   ),
-                  padded(subTitle("Bánh")),
+                  padded(subTitle("EDIT Bánh")),
                   getHorizontalItemSlider(listProduct), // Show list item1 
                   SizedBox(
                     height: 15,
