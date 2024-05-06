@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(
                     height: 15,
                   ),
-                  SvgPicture.asset("assets/icons/app_icon_color.svg"),
+                  // SvgPicture.asset("assets/icons/app_icon_color.svg"),
                   SizedBox(
                     height: 5,
                   ),

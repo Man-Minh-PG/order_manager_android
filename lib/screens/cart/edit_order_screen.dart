@@ -85,7 +85,7 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
                   SizedBox(
                     height: 15,
                   ),
-                  SvgPicture.asset("assets/icons/icons8-morty-smith.svg"),
+                  // SvgPicture.asset("assets/icons/icons8-morty-smith.svg"),
                   SizedBox(
                     height: 5,
                   ),
@@ -121,6 +121,8 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
         ),
       ),
      floatingActionButton: FloatingActionButton(
+        backgroundColor: Color.fromARGB(255, 156, 127, 29),
+        foregroundColor: Colors.black, 
       onPressed: () {
         setState(() {
           // Lấy danh sách các sản phẩm được chọn
@@ -165,8 +167,7 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
       }, 
      // child: Text("Edit")
       child: Icon(
-        Icons.edit,
-        color: Color.fromARGB(166, 250, 4, 66),  
+        Icons.edit
       )
     ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -254,10 +255,11 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
         Spacer(),
       ],
     );
-  }
+  }       
 
   Widget locationWidget() {
-    String locationIconPath = "assets/icons/location_icon.svg"; 
+    String locationIconPath = "assets/icons/icons8-morty-smith.svg"; 
+    // assets/icons/icons8-morty-smith.svg
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
