@@ -81,6 +81,7 @@ class DatabaseRepository {
       CREATE TABLE orders (
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         total INTEGER NOT NULL,
+        discountDetail INTEGER DEFAULT 0,
         note TEXT,
         paymentId INTEGER,
         status INTEGER DEFAULT 0,

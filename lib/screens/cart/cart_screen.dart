@@ -78,7 +78,7 @@ class _CartScreenState extends State<CartScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Mã đơn hàng: ${products[0]['orderId']}", style: TextStyle(color: Colors.green)),
+                            Text("Mã đơn: ${products[0]['orderId']}", style: TextStyle(color: Colors.green)),
                            
                           ],
                         ),
@@ -130,81 +130,43 @@ class _CartScreenState extends State<CartScreen> {
                   },
                   child: const Text('Finish'),
                 ),
-
-
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text('Discount'), 
+                  ],),
+                  
                   Row(
                     children: [
+                      
                       Checkbox(
                         value: products.isNotEmpty ? (products[0]['isDiscount'] == 1) ? true : false : false,
-                        onChanged: (value) async {
-                       
-                          bool confirmDiscount = await showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text('Notification'),
-                                content: Text('Are you sure?'),
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop(true);
-                                    }, 
-                                    child: Text('Yes')
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop(false);
-                                    }, 
-                                    child: Text('No')
-                                  )
-                                ],
-                              );
-                            }
-                          );
-
-
-                         if(confirmDiscount == true) {
+                        onChanged: (value) {
+                          if(value == true) {
                             setState(() {
-                              // Gán giá trị là 1 cho isDiscount khi xác nhận đồng ý
-                              products[0]['isDiscount'] = value == true ? 1 : 0;
-                              // products[0]['isDiscount'] = 1;
+                              products[0]['isDiscount'] = 1; // update state
+                              products[0]['discountDetail'] = (totalAmount * 0.3).toInt();  // update discount detail
+                              totalAmount = totalAmount - (totalAmount * 0.3).toInt(); 
+                              products[0]['total'] = totalAmount; // update total in UI
                             });
-                         } 
 
-                         if (confirmDiscount == true && products[0]['isDiscount'] == 1) {
-                            setState(() {
+                            _handleDiscount(context, products[0]['orderId'], products[0]['total']);
+                          }else {
+                             setState(() {
+                              products[0]['isDiscount'] = 0; // update state
+                              int discountDetail = products[0]['discountDetail'];
+                              totalAmount = totalAmount + discountDetail; 
+                              products[0]['total'] = totalAmount; // update total in UI
 
-                              // Cập nhật tổng số trong giao diện người dùng
-                              totalAmount = totalAmount - (totalAmount * 0.3).toInt(); // update total in UI
-                              // Ch ỉnh sửa dữ liệu cục bộ để chuẩn bị cập nhật
-                              products[0]['total'] = totalAmount;
-                                              
+                              products[0]['discountDetail'] = 0;// update discount detail
                             });
-                             _handleDiscount(context, products[0]['orderId'], products[0]['total']);       
+
+                             _handleDiscount(context, products[0]['orderId'], products[0]['total']);
                           }
-
-                          if (confirmDiscount == true && products[0]['isDiscount'] == 0) {
-                           setState(() {
-                            
-                                // Cập nhật tổng số trong giao diện người dùng
-                                totalAmount = totalAmount + (totalAmount * 0.6).toInt(); // update total in UI
-                                // Chỉnh sửa dữ liệu cục bộ để chuẩn bị cập nhật
-                                products[0]['total'] = totalAmount;
-                                    
-                             
-                              
-                            });
-                            _handleDiscount(context, products[0]['orderId'], products[0]['total']);      
-                          }
-                            
-                        },
+                        }
                       ),
-
-                      Text('Discount')
-                    ],
-                  ),
-
-                   ButtonBar(
+                     
+                      ButtonBar(
                               alignment: MainAxisAlignment.end,
                               children: [
                                 DropdownButton<int?>(
@@ -220,7 +182,7 @@ class _CartScreenState extends State<CartScreen> {
                                     ),
                                     DropdownMenuItem<int>(
                                       value: transferPayment,
-                                      child: Text('Chuyển khoản'),
+                                      child: Text('Bank'),
                                     ),
                                      DropdownMenuItem<int>(
                                       value: noPayment,
@@ -245,6 +207,10 @@ class _CartScreenState extends State<CartScreen> {
                                 ),
                               ],
                             ),
+                    ],
+                  ),
+
+                   
                 ],
               ),
             );
@@ -288,7 +254,7 @@ class _CartScreenState extends State<CartScreen> {
       if( removeShow == 1) {
         setState(() {
                 groupedOrders.remove(orderId);
-              });
+          });
       }
       
     } else {
