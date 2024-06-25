@@ -179,10 +179,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                                 value: transferPayment,
                                                 child: Text('Chuyển khoản'),
                                               ),
-                                              DropdownMenuItem<int>(
-                                                value: noPayment,
-                                                child: Text('Chưa TToán'),
-                                              ),
+                                              // DropdownMenuItem<int>(
+                                              //   value: noPayment,
+                                              //   child: Text('Chưa TToán'),
+                                              // ),
                                             ],
                                             onChanged: (value) async {
                                                 bool confirmChange = await showDialog(
