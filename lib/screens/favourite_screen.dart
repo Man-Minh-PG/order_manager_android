@@ -52,8 +52,21 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
    @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // appBar: AppBar(
+      //   title: Text('Tổng kết doanh thu hôm nay'),
+      // ),
       appBar: AppBar(
-        title: Text('Tổng kết doanh thu hôm nay'),
+        backgroundColor: const Color.fromARGB(255, 82, 255, 246),
+        leading: const Icon(Icons.account_balance ),
+        title: const Text("Tổng kết doanh thu hôm nay"),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.add_circle_outline), 
+            onPressed: (){
+              // Call update totalProduct
+            }
+          )
+        ],
       ),
       body: _isLoading
         ? Center(child: CircularProgressIndicator()) // Hiển thị loader khi đang tải dữ liệu 

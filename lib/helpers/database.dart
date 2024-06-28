@@ -117,10 +117,15 @@ class DatabaseRepository {
     // Sample product data
     insertProduct(db);
     insertPayment(db);
+    insertGeneric(db);
     // Các lệnh insert khác ở đây...
 
   } // end function onCreate()
 
+
+  /**
+   * Function insert data default when load page
+   */
   Future<void> insertProduct(Database db) async {
       await db.insert('product', {
         'name': 'Sieu_Pham',
@@ -242,6 +247,10 @@ class DatabaseRepository {
       });
     }
 
+
+    /**
+     * Function insert data default when load page
+     */
     Future<void> insertPayment(Database db) async {
       await db.insert('payment', {
         'name': 'Tien_mat',
@@ -253,6 +262,19 @@ class DatabaseRepository {
 
       await db.insert('payment', {
         'name': 'Chuyen_Khoan',
+      });
+    }
+
+
+    /**
+    * Function insert data default when load page
+    *   name TEXT NOT NULL,
+    *   value TEXT,
+    */
+    Future<void> insertGeneric (Database db) async {
+      await db.insert('generic', {
+          'name' : 'totalProduct',
+          'value' : '0'
       });
     }
 
