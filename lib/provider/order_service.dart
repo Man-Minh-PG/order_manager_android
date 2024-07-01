@@ -354,4 +354,66 @@ class OrderService {
     ''', [idOrder]);
 }
 
+  /**
+   * Common get/select data with table name
+   * 
+   * Example call function:
+   *
+   * Call with conditions
+   * Map<String, dynamic> conditions = {
+      'orders.id': 1,
+      'order_detail.someColumn': 'someValue',
+      };
+
+      totalProduct = await orderService.getDataWithCondition('generic', conditions: conditions);
+
+      Call without conditions
+      totalProduct = await orderService.getDataWithCondition('generic');
+
+   *   
+   *  doc: /c/20d554d3-6893-48ad-a10b-6118630d7365
+   */
+  // Future<List<Map<String, dynamic>>> commonGetDataInTable(String tableName, {Map<String, dynamic> conditions = const {}}) async {
+  Future<List<Map<String, dynamic>>> getDataWithCondition(String tableName, Map<String, dynamic> conditionGetGeneric, {Map<String, dynamic>? conditions} ) async { 
+    final db = await _databaseRepository.database;
+    List<String> whereClauses = [];
+    List<dynamic> args = [];
+    String query = '''
+      SELECT *
+      FROM $tableName
+      ''';
+
+    // Add the WHERE clause only if idOrder is provided
+    if(conditions != null) {
+        conditions.forEach((key, value) {
+          whereClauses.add('$key = ?');
+          args.add(value);  
+        });
+
+        if(whereClauses.isNotEmpty) {
+          query += ' WHERE ' + whereClauses.join(' AND ');
+        }
+    }
+
+    return await db!.rawQuery(query, args);
+  }
+
+  /**
+   * Common function update data in table generic
+   */
+  Future<int> updateGenericData(int valueUpdate, String columnNameUpdate) async {
+      final db = await _databaseRepository.database;
+      int resultUpdate = 0;
+
+      resultUpdate = await db!.update(
+        'generic',
+        {
+          'value': valueUpdate,
+        },
+        where: 'name = ?',
+        whereArgs: [columnNameUpdate]
+      );
+      
+      return resultUpdate;
+  }
 }

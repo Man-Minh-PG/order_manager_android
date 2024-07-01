@@ -23,7 +23,10 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
   int? totalCashPayment;
   int? totalMomoPayment;
   int? totalTransferPayment;
-  Map<String, int>? productSales;
+  List<Map<String, dynamic>>? totalProduct;
+  String? totalProductConvert; 
+  Map<String, dynamic>? productSales;
+
 
   @override
   void initState() {
@@ -36,6 +39,10 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
     _isLoading = true; // Bắt đầu tải dữ liệu
   });
 
+    Map<String, dynamic> conditionTotalProduct = {
+      'generic.name': 'totalProduct',
+    };
+  
     totalProductsSold = await orderService.getTotalProductsSoldToday();
     totalRevenue = await orderService.getTotalRevenueToday();
     totalCancelledOrders = await orderService.getTotalCancelledOrdersToday();
@@ -43,6 +50,8 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
     totalMomoPayment = await orderService.getTotalPaymentToday('Momo');
     totalTransferPayment = await orderService.getTotalPaymentToday('Chuyen_Khoan');
     productSales = await orderService.getProductSalesToday();
+    totalProduct = await orderService.getDataWithCondition('generic', conditionTotalProduct );
+    totalProductConvert =  totalProduct != null ? totalProduct![0]['value'] ?? 0 : 0;
 
      setState(() {
     _isLoading = false; // Hoàn thành tải dữ liệu
@@ -57,13 +66,14 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
       // ),
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 82, 255, 246),
-        leading: const Icon(Icons.account_balance ),
-        title: const Text("Tổng kết doanh thu hôm nay"),
+        // leading: const Icon(Icons.account_balance ),
+        title: const Text("Data summary report"),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.add_circle_outline), 
             onPressed: (){
               // Call update totalProduct
+              _showInputUpdateTotalProduct(context);
             }
           )
         ],
@@ -79,6 +89,10 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16),
+            Text(
+              'Tổng bột hôm nay: ${totalProductConvert}',
+              style: TextStyle(fontSize: 16),
+            ),
             Text(
               'Tổng số sản phẩm bán được: ${totalProductsSold ?? 0}',
               style: TextStyle(fontSize: 16),
@@ -135,6 +149,8 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
     );
     
   }
+
+
   Future<void> _confirmDeleteOrder(BuildContext context) async {
   // Hiển thị hộp thoại xác nhận
   bool confirmDelete = await showDialog(
@@ -205,6 +221,66 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
     }
   }
 }
+
+  /**
+   * Function show dialog update totalProducts
+   */
+  Future<void> _showInputUpdateTotalProduct(BuildContext context) async {
+    TextEditingController _totalProductController = TextEditingController();
+   
+    showDialog(
+      context: context, 
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Nhập bột'),
+          content: TextField(
+            controller: _totalProductController,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(hintText: "100"), // placeholder
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: (){
+                Navigator.of(context).pop();
+              }, 
+              child: Text('Close'),
+            ),
+            TextButton(
+              onPressed: () async {
+                String inputTotalProductValue = _totalProductController.text;
+                int resultUpdate = await orderService.updateGenericData(int.parse(inputTotalProductValue), 'totalProduct');
+
+                if(resultUpdate < 0)  {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Text('Notification'),
+                    content: Text('Error Update Fail !!'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text('close'),
+                      ),
+                    ],
+                  ));
+              }
+              // Update UI if necessary
+                setState(() {
+                  totalProductConvert = inputTotalProductValue;
+                  //  totalProductConvert = (int.parse(inputTotalProductValue)).toString(); -- dont fix 
+                });
+
+                Navigator.of(context).pop();
+              }, 
+              child: Text('Ok')
+            )
+          ],
+        ); 
+      }
+    );
+  }
 
   }
 
