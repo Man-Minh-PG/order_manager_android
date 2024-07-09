@@ -79,28 +79,66 @@ class _CartScreenState extends State<CartScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Mã đơn: ${products[0]['orderId']}", style: TextStyle(color: Colors.green)),
-                           
+                            Text("Num ID: # ${products[0]['orderId']}", style: TextStyle(color: Color.fromARGB(255, 86, 90, 90), fontWeight: FontWeight.bold, fontSize: 15)),
+                            // SizedBox(height: 1),
+                            RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: 'Total: ',
+                                    style: TextStyle(color: Colors.black, fontSize: 16),
+                                  ),
+                                  TextSpan(
+                                    text: ' $totalAmount K',
+                                    style: TextStyle(color: Color.fromARGB(255, 248, 66, 42), fontSize: 16, fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            )
                           ],
                         ),
                       ],
                     ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Tổng: $totalAmount K", style: TextStyle(color: Colors.orangeAccent, fontSize: 16)),
-                        SizedBox(height: 8),
-                        Text("Ghi chú: ${products[0]['note'] ?? ''}", style: TextStyle(color: Colors.blue)),
+                      children: [       
+                        // SizedBox(height: 5),
+                        Text("Ghi chú: ${products[0]['note'] ?? ''}", style: TextStyle(color: const Color.fromARGB(255, 243, 33, 114))),
                       ],
                     ),
                   ),
+
+                  // Divider( // Thêm Divider để phân chia ListTile và phần còn lại của Card
+                  //   color: Colors.grey, // Màu của đường gạch
+                  //   thickness: 0.5, // Độ dày của đường gạch
+                  //   height: 0, // Chiều cao của đường gạch
+                  // ),
+                  
                   ListView.builder(
+                    padding: EdgeInsets.zero, // Không có padding
                     shrinkWrap: true,
                     itemCount: products.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return ListTile(
-                        title: Text("Tên sản phẩm: ${products[index]['product_name']}"),
-                        subtitle: Text("Số lượng: ${products[index]['amount']}"),
+                      // return ListTile(
+                      //   dense: true, // Sử dụng dense để làm cho ListTile gọn hơn
+                      //   // contentPadding: EdgeInsets.symmetric(vertical: 0), // Giảm padding bên trong ListTile - padding hướng ngang á
+                      //   title: Text(
+                      //     "Tên sản phẩm: ${products[index]['product_name']} - Số lượng: ${products[index]['amount']}",
+                      //     style: TextStyle(fontSize: 13),
+                      //   ),
+                      //   // subtitle: Text("Số lượng: ${products[index]['amount']}",
+                      //   //   style: TextStyle(fontSize: 13)
+                      //   // ),
+                      // );     
+                      return Padding(
+                        padding: EdgeInsets.symmetric(vertical: 3, horizontal: 18),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("${products[index]['product_name']}"),
+                            Text("Số lượng: ${products[index]['amount']}"),
+                          ],
+                        ),
                       );
                     },
                   ),
@@ -131,42 +169,49 @@ class _CartScreenState extends State<CartScreen> {
                   },
                   child: const Text('Finish'),
                 ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text('Discount'), 
-                  ],),
                   
                   Row(
                     children: [
-                      
-                      Checkbox(
-                        value: products.isNotEmpty ? (products[0]['isDiscount'] == 1) ? true : false : false,
-                        onChanged: (value) {
-                          if(value == true) {
-                            setState(() {
-                              products[0]['isDiscount'] = 1; // update state
-                              products[0]['discountDetail'] = (totalAmount * 0.3).toInt();  // update discount detail
-                              totalAmount = totalAmount - (totalAmount * 0.3).toInt(); 
-                              products[0]['total'] = totalAmount; // update total in UI
-                            });
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 0.5
+                          )
+                        ),
+                        child: Row(
+                          children: [
+                            Checkbox(
+                              value: products.isNotEmpty ? (products[0]['isDiscount'] == 1) ? true : false : false,
+                              onChanged: (value) {
+                                if(value == true) {
+                                  setState(() {
+                                    products[0]['isDiscount'] = 1; // update state
+                                    products[0]['discountDetail'] = (totalAmount * 0.3).toInt();  // update discount detail
+                                    totalAmount = totalAmount - (totalAmount * 0.3).toInt(); 
+                                    products[0]['total'] = totalAmount; // update total in UI
+                                  });
 
-                            _handleDiscount(context, products[0]['orderId'], products[0]['total']);
-                          }else {
-                             setState(() {
-                              products[0]['isDiscount'] = 0; // update state
-                              int discountDetail = products[0]['discountDetail'];
-                              totalAmount = totalAmount + discountDetail; 
-                              products[0]['total'] = totalAmount; // update total in UI
+                                  _handleDiscount(context, products[0]['orderId'], products[0]['total']);
+                                }else {
+                                  setState(() {
+                                    products[0]['isDiscount'] = 0; // update state
+                                    int discountDetail = products[0]['discountDetail'];
+                                    totalAmount = totalAmount + discountDetail; 
+                                    products[0]['total'] = totalAmount; // update total in UI
 
-                              products[0]['discountDetail'] = 0;// update discount detail
-                            });
+                                    products[0]['discountDetail'] = 0;// update discount detail
+                                  });
 
-                             _handleDiscount(context, products[0]['orderId'], products[0]['total']);
-                          }
-                        }
+                                  _handleDiscount(context, products[0]['orderId'], products[0]['total']);
+                                }
+                              },                        
+                            ),
+                            Icon(Icons.discount_sharp),
+                          ],
+                        ),
                       ),
-                     
+                      SizedBox(width: 10),
                       ButtonBar(
                               alignment: MainAxisAlignment.end,
                               children: [
