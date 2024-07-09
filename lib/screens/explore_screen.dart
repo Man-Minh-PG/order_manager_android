@@ -280,12 +280,17 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                 );
                               },
                             ),
+                           
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
+                                IconButton( // Copy logic delete from screen Cart - Button Delete
+                                  onPressed: () => _confirmDeleteOrder(context, products[0]['orderId']),
+                                  icon: const Icon(Icons.highlight_remove, color: Color.fromARGB(255, 212, 68, 16)),
+                                ),
                                 Text("Time: ${products[0]['createdAt'] ?? ''}", style: TextStyle(color: Colors.blue)),
                               ]
-                            )
+                            ),                 
                           ],
                         ),
                       );
@@ -300,6 +305,66 @@ class _ExploreScreenState extends State<ExploreScreen> {
     );
 
     
+  }
+
+
+  /**
+   * Function update status when delete order
+   * Copy from screen Cart
+   * 
+   */
+  Future<void> _confirmDeleteOrder(BuildContext context, int orderId) async {
+    // Hiển thị hộp thoại xác nhận
+    bool confirmDelete = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Notification"),
+          content: Text("Bạn có chắc chắn muốn xóa đơn hàng này không?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // Đóng hộp thoại và trả về giá trị false
+              },
+              child: Text("Không"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true); // Đóng hộp thoại và trả về giá trị true
+              },
+              child: Text("Có"),
+            ),
+          ],
+        );
+      },
+    );
+
+    // Nếu người dùng xác nhận muốn xóa đơn hàng
+    if (confirmDelete == true) {
+      int resultUpdate = await orderService.updateOrderStatus(orderId, 2, cashPayment);
+      if (resultUpdate > 0) {
+        setState(() {
+          groupedOrders.remove(orderId);
+        });
+      } else {
+        // Hiển thị hộp thoại thông báo lỗi
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Notification'),
+            content: Text('Có lỗi xảy ra khi xóa đơn hàng - vui lòng thử lại sau.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Đóng'),
+              ),
+            ],
+          ),
+        );
+      }
+    }
   }
 
     // Function để xử lý sự kiện khi người dùng thay đổi phương thức thanh toán
