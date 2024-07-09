@@ -247,7 +247,7 @@ class _CartScreenState extends State<CartScreen> {
                                 ),
                                 IconButton(
                                   onPressed: () => _confirmDeleteOrder(context, products[0]['orderId']),
-                                  icon: const Icon(Icons.highlight_remove),
+                                  icon: const Icon(Icons.highlight_remove, color: Color.fromARGB(255, 212, 68, 16)),
                                 ),
                                 IconButton(
                                   onPressed: () => _editOrder(context, products[0]['orderId']),
