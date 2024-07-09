@@ -59,6 +59,7 @@ class _CartScreenState extends State<CartScreen> {
        ? Center(child: CircularProgressIndicator()) // Hiển thị loader khi đang tải dữ liệu 
        : SafeArea(
         child: ListView.separated(
+          // physics: NeverScrollableScrollPhysics(), // Ngăn chặn cuộn của ListView bên ngoài
           shrinkWrap: true,
           padding: const EdgeInsets.all(8),
           itemCount: groupedOrders.length,
@@ -115,6 +116,7 @@ class _CartScreenState extends State<CartScreen> {
                   // ),
                   
                   ListView.builder(
+                    physics: NeverScrollableScrollPhysics(), // Ngăn chặn cuộn của ListView bên trong
                     padding: EdgeInsets.zero, // Không có padding
                     shrinkWrap: true,
                     itemCount: products.length,
