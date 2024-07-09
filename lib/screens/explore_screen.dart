@@ -237,6 +237,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                               ),
                             ),
                             ListView.builder(
+                              physics: NeverScrollableScrollPhysics(), // Ngăn chặn cuộn của ListView bên trong
                               shrinkWrap: true,
                               itemCount: products.length,
                               itemBuilder: (BuildContext context, int index) {
