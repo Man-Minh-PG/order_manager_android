@@ -55,7 +55,32 @@ class _ExploreScreenState extends State<ExploreScreen> {
     setState(() {
       if (optionFill == 0) {
         groupedOrders = Map.from(tempData); // Khôi phục dữ liệu ban đầu
-      } else if (optionFill == 13) { // case search những đơn hàng của khách
+      }else if (optionFill == 999) { // case fill theo PTTT
+         groupedOrders.clear();
+          for (var order in orders) {
+            if (order['paymentId'] == momoPayment) {
+              int orderId = order['paymentId'];
+              if (!groupedOrders.containsKey(orderId)) {
+                groupedOrders[orderId] = [order];
+              } else {
+                groupedOrders[orderId]!.add(order);
+              }
+            }
+          }
+      }else if (optionFill == 998) { // case fill theo PTTT
+           groupedOrders.clear();
+          for (var order in orders) {
+            if (order['paymentId'] == transferPayment) {
+              int orderId = order['paymentId'];
+              if (!groupedOrders.containsKey(orderId)) {
+                groupedOrders[orderId] = [order];
+              } else {
+                groupedOrders[orderId]!.add(order);
+              }
+            }
+          }
+      } 
+      else if (optionFill == 13) { // case search những đơn hàng của khách
         groupedOrders.clear();
         for (var order in orders) {
           if (order['productId'] < optionFill) {
@@ -121,6 +146,14 @@ class _ExploreScreenState extends State<ExploreScreen> {
               DropdownMenuItem<int>(
                 value: 17,
                 child: Text('Bee'),
+              ),
+              DropdownMenuItem<int>(
+                value: 999,
+                child: Text('Momo'),
+              ),
+              DropdownMenuItem<int>(
+                value: 998,
+                child: Text('Bank'),
               ),
             ],
             onChanged: (int? value) {
