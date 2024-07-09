@@ -193,7 +193,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text("Order ID: $orderId", style: TextStyle(color: Colors.green)),
+                                      Text("Num ID: #$orderId", style: TextStyle(color: Color.fromARGB(255, 86, 90, 90), fontWeight: FontWeight.bold, fontSize: 15)),
                                       ButtonBar(
                                         alignment: MainAxisAlignment.end,
                                         children: [
@@ -259,12 +259,25 @@ class _ExploreScreenState extends State<ExploreScreen> {
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text("Total Amount: $totalAmount", style: TextStyle(color: Colors.orangeAccent)),
+                                  Text("Total Amount: $totalAmount K ", style: TextStyle(color: Color.fromARGB(255, 36, 8, 195))),
                                   SizedBox(height: 8),
-                                  Text("payment: ${products[0]['paymentName'] ?? ''}", style: TextStyle(color: Colors.blue)),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                       Text("Payment: ${products[0]['paymentName'] ?? ''}", style: TextStyle(color: Color.fromARGB(255, 123, 7, 85))),
+                                       // SizedBox(height: 8),
+                                      //  Text("Status: ${products[0]['orderStatus'] == 1 ? 'Thành công' : 'Hủy đơn'}", style: TextStyle(color: Color.fromARGB(255, 23, 150, 31))),
+                                      Text(
+                                        "Status: ${products[0]['orderStatus'] == 1 ? 'Thành công' : 'Hủy đơn'}",
+                                        style: TextStyle(
+                                          color: products[0]['orderStatus'] == 1 ? Color.fromARGB(255, 23, 150, 31) : Colors.red,
+                                          fontWeight: products[0]['orderStatus'] == 1 ? FontWeight.normal : FontWeight.bold,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                 
                                   SizedBox(height: 8),
-                                  Text("Status: ${products[0]['orderStatus'] == 1 ? 'Thành công' : 'Hủy đơn'}", style: TextStyle(color: Color.fromARGB(255, 23, 150, 31))),
-                                   SizedBox(height: 8),
                                   Text("Note: ${products[0]['note']}")
                                 ],
                               ),
@@ -274,9 +287,19 @@ class _ExploreScreenState extends State<ExploreScreen> {
                               shrinkWrap: true,
                               itemCount: products.length,
                               itemBuilder: (BuildContext context, int index) {
-                                return ListTile(
-                                  title: Text("Name: ${products[index]['product_name']}"),
-                                  subtitle: Text("Amount: ${products[index]['amount']}"),
+                                // return ListTile(
+                                //   title: Text("Name: ${products[index]['product_name']}"),
+                                //   subtitle: Text("Amount: ${products[index]['amount']}"),
+                                // );
+                                 return Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 3, horizontal: 18),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text("${products[index]['product_name']}"),
+                                      Text("Số lượng: ${products[index]['amount']}"),
+                                    ],
+                                  ),
                                 );
                               },
                             ),
