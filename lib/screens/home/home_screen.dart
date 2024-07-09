@@ -265,12 +265,13 @@ class _HomeScreenState extends State<HomeScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Đã tạo đơn hàng thành công!'),
-          action: SnackBarAction(
-            label: 'X',
-            onPressed: () {
-              ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            },
-          ),
+          // action: SnackBarAction(
+          //   label: 'X',
+          //   onPressed: () {
+          //     ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          //   },
+          // ),
+          duration: Duration(milliseconds: 200), // fix err click button when change page
         ),
       );
       setState(() {
@@ -280,12 +281,13 @@ class _HomeScreenState extends State<HomeScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Tạo đơn hàng thất bại!'),
-          action: SnackBarAction(
-            label: 'X',
-            onPressed: () {
-              ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            },
-          ),
+          // action: SnackBarAction(
+          //   label: 'X',
+          //   onPressed: () {
+          //     ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          //   },
+          // ),
+          duration: Duration(milliseconds: 200), // fix err click button when change page
         ),
       );
     }
