@@ -268,7 +268,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                        // SizedBox(height: 8),
                                       //  Text("Status: ${products[0]['orderStatus'] == 1 ? 'Thành công' : 'Hủy đơn'}", style: TextStyle(color: Color.fromARGB(255, 23, 150, 31))),
                                       Text(
-                                        "Status: ${products[0]['orderStatus'] == 1 ? 'Thành công' : 'Hủy đơn'}",
+                                        "Status: ${products[0]['orderStatus'] == 1 ? 'Success' : 'Cancel'}",
                                         style: TextStyle(
                                           color: products[0]['orderStatus'] == 1 ? Color.fromARGB(255, 23, 150, 31) : Colors.red,
                                           fontWeight: products[0]['orderStatus'] == 1 ? FontWeight.normal : FontWeight.bold,
