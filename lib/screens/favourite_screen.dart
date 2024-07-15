@@ -67,6 +67,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 82, 255, 246),
         // leading: const Icon(Icons.account_balance ),
+        automaticallyImplyLeading: false, // fix button back - screen report
         title: const Text("Data summary report"),
         actions: <Widget>[
           IconButton(
