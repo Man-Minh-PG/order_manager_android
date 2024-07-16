@@ -59,7 +59,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
          groupedOrders.clear();
           for (var order in orders) {
             if (order['paymentMethod'] == momoPayment) {
-              int orderId = order['paymentMethod'];
+              int orderId = order['orderId'];
               if (!groupedOrders.containsKey(orderId)) {
                 groupedOrders[orderId] = [order];
               } else {
@@ -71,7 +71,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
            groupedOrders.clear();
           for (var order in orders) {
             if (order['paymentMethod'] == transferPayment) {
-              int orderId = order['paymentMethod'];
+              int orderId = order['orderId'];
               if (!groupedOrders.containsKey(orderId)) {
                 groupedOrders[orderId] = [order];
               } else {
