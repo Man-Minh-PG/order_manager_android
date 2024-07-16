@@ -58,8 +58,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
       }else if (optionFill == 999) { // case fill theo PTTT
          groupedOrders.clear();
           for (var order in orders) {
-            if (order['paymentId'] == momoPayment) {
-              int orderId = order['paymentId'];
+            if (order['paymentMethod'] == momoPayment) {
+              int orderId = order['paymentMethod'];
               if (!groupedOrders.containsKey(orderId)) {
                 groupedOrders[orderId] = [order];
               } else {
@@ -70,8 +70,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
       }else if (optionFill == 998) { // case fill theo PTTT
            groupedOrders.clear();
           for (var order in orders) {
-            if (order['paymentId'] == transferPayment) {
-              int orderId = order['paymentId'];
+            if (order['paymentMethod'] == transferPayment) {
+              int orderId = order['paymentMethod'];
               if (!groupedOrders.containsKey(orderId)) {
                 groupedOrders[orderId] = [order];
               } else {
