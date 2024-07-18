@@ -249,7 +249,7 @@ class OrderService {
    * Process update total in order
    * Discount total price 30%
    */
-  Future<int> updateDiscountInOrder(int orderId, int totalDiscount) async {
+  Future<int> updateDiscountInOrder(int orderId, int totalDiscount, int statusDiscount) async {
     final db = await _databaseRepository.database;
 
     int resultUpdate = 0;
@@ -258,6 +258,7 @@ class OrderService {
       'orders',
       {
         'total': totalDiscount,
+        'isDiscount' : statusDiscount
       },
       where: 'id = ?',
       whereArgs: [orderId],
@@ -289,6 +290,19 @@ class OrderService {
         WHERE orders.status = 1
       ''');
       return result.isNotEmpty ? result.first['totalRevenue'] as int ?? 0 : 0;
+    }
+
+
+    // Lấy tổng doanh thu trong ngày
+    Future<int> getTotalDiscountToday() async {
+      final db = await _databaseRepository.database;
+      final result = await db!.rawQuery('''
+        SELECT IFNULL(SUM(total), 0) AS totalRevenue
+        FROM orders
+        WHERE orders.status = 1
+        AND orders.isDiscount = 1
+      ''');
+      return result.isNotEmpty ? result.first['totalRevenue'] as int : 0;
     }
 
     // Lấy tổng số đơn hàng bị hủy trong ngày

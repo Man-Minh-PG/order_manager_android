@@ -23,6 +23,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
   int? totalCashPayment;
   int? totalMomoPayment;
   int? totalTransferPayment;
+  int? totalDiscount;
   List<Map<String, dynamic>>? totalProduct;
   String? totalProductConvert; 
   Map<String, dynamic>? productSales;
@@ -52,6 +53,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
     productSales = await orderService.getProductSalesToday();
     totalProduct = await orderService.getDataWithCondition('generic', conditionTotalProduct );
     totalProductConvert =  totalProduct != null ? totalProduct![0]['value'] ?? 0 : 0;
+    totalDiscount = await orderService.getTotalDiscountToday();
 
      setState(() {
     _isLoading = false; // Hoàn thành tải dữ liệu
@@ -117,6 +119,11 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
             ),
             Text(
               'Tổng số tiền chuyển khoản: ${totalTransferPayment ?? 0}',
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 16),
+            Text(
+              'Tổng số tiền discount: ${totalDiscount ?? 0}',
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 16),

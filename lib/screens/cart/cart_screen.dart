@@ -15,6 +15,8 @@ class _CartScreenState extends State<CartScreen> {
   final int noPayment = 0;
   final int orderStatusDefault = 0;
   final int orderStatusSucess = 1;
+  final int orderDiscount = 1;
+  final int orderNoDiscount = 0;
 
   bool _isLoading = true; // Mặc định đang tải dữ liệu
 
@@ -183,7 +185,7 @@ class _CartScreenState extends State<CartScreen> {
                         ),
                         child: Row(
                           children: [
-                            Checkbox(
+                            Checkbox( // note /c/6a19ca36-820e-4fcc-a6a3-35f016742571
                               value: products.isNotEmpty ? (products[0]['isDiscount'] == 1) ? true : false : false,
                               onChanged: (value) {
                                 if(value == true) {
@@ -194,7 +196,7 @@ class _CartScreenState extends State<CartScreen> {
                                     products[0]['total'] = totalAmount; // update total in UI
                                   });
 
-                                  _handleDiscount(context, products[0]['orderId'], products[0]['total']);
+                                  _handleDiscount(context, products[0]['orderId'], products[0]['total'], orderDiscount);
                                 }else {
                                   setState(() {
                                     products[0]['isDiscount'] = 0; // update state
@@ -205,7 +207,7 @@ class _CartScreenState extends State<CartScreen> {
                                     products[0]['discountDetail'] = 0;// update discount detail
                                   });
 
-                                  _handleDiscount(context, products[0]['orderId'], products[0]['total']);
+                                  _handleDiscount(context, products[0]['orderId'], products[0]['total'], orderNoDiscount);
                                 }
                               },                        
                             ),
@@ -273,8 +275,8 @@ class _CartScreenState extends State<CartScreen> {
    * Process update total in order 
    * Discount 30%
    */
-  Future<void> _handleDiscount(BuildContext context, int orderId, int totalDiscount) async {
-    int resultUpdate = await orderService.updateDiscountInOrder(orderId, totalDiscount);
+  Future<void> _handleDiscount(BuildContext context, int orderId, int totalDiscount, int statusDiscount) async {
+    int resultUpdate = await orderService.updateDiscountInOrder(orderId, totalDiscount, statusDiscount);
 
     if(resultUpdate < 0)  {
        showDialog(

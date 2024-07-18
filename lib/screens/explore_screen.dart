@@ -12,6 +12,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   final int momoPayment = 2;
   final int transferPayment = 3;
   final int noPayment = 0;
+  final int isDiscount = 1;
   bool _isLoading = true; // Mặc định đang tải dữ liệu
   int optionFilter = 0; // 0 là tất cả, 1 là thanh toán bằng tiền mặt, 2 là thanh toán bằng momo, 3 là chuyển khoản
   final int orderStatusDefault = 0;
@@ -79,7 +80,19 @@ class _ExploreScreenState extends State<ExploreScreen> {
               }
             }
           }
-      } 
+      }else if (optionFill == 997) { // hard code case fill theo order Discount
+           groupedOrders.clear();
+          for (var order in orders) {
+            if (order['isDiscount'] == isDiscount) {
+              int orderId = order['orderId'];
+              if (!groupedOrders.containsKey(orderId)) {
+                groupedOrders[orderId] = [order];
+              } else {
+                groupedOrders[orderId]!.add(order);
+              }
+            }
+          }
+      }
       else if (optionFill == 13) { // case search những đơn hàng của khách
         groupedOrders.clear();
         for (var order in orders) {
@@ -154,6 +167,10 @@ class _ExploreScreenState extends State<ExploreScreen> {
               DropdownMenuItem<int>(
                 value: 998,
                 child: Text('Bank'),
+              ),
+              DropdownMenuItem<int>(
+                value: 997,
+                child: Text('Order Discount'),
               ),
             ],
             onChanged: (int? value) {
