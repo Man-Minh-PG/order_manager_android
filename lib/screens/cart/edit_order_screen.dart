@@ -77,7 +77,8 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          color: Color.fromARGB(255, 126, 255, 154), // Đổi màu nền ở đây
+          color: Color.fromARGB(255, 248, 232, 220), // Màu be sữa đậm
+          //  color: Color.fromARGB(255, 160, 39, 140), // Đổi màu nền ở đây
           child: SingleChildScrollView(
             child: Center(
               child: Column(
@@ -103,7 +104,7 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
                   SizedBox(
                     height: 25,
                   ),
-                  padded(subTitle("EDIT Bánh")),
+                  padded(subTitle("EDIT Order")),
                   getHorizontalItemSlider(listProduct), // Show list item1 
                   SizedBox(
                     height: 15,
@@ -167,7 +168,8 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
       }, 
      // child: Text("Edit")
       child: Icon(
-        Icons.edit
+        Icons.edit,
+        color: Colors.white,
       )
     ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
