@@ -22,7 +22,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
   Map<int, List<Map<String, dynamic>>> tempData = {};
   List<Map<String, dynamic>> orders = [];
 
-  List<String> paymentMethods = ['Tiền mặt', 'Momo', 'Chuyển khoản']; // Danh sách phương thức thanh toán
+  List<String> paymentMethods = ['Tiền mặt', 'Momo', 'Bank']; // Danh sách phương thức thanh toán
 
 
 
@@ -227,7 +227,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                               ),
                                               DropdownMenuItem<int>(
                                                 value: transferPayment,
-                                                child: Text('Chuyển khoản'),
+                                                child: Text('Bank'),
                                               ),
                                               // DropdownMenuItem<int>(
                                               //   value: noPayment,
@@ -235,6 +235,29 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                               // ),
                                             ],
                                             onChanged: (value) async {
+                                              if (products[0]['orderStatus'] != 1) {
+                                                  await showDialog(
+                                                    context: context,
+                                                    builder: (BuildContext context) {
+                                                      return AlertDialog(
+                                                        title: Text("Notification"),
+                                                        content: Text("Đơn hàng đã bị hủy!"),
+                                                        actions: <Widget>[
+                                                          TextButton(
+                                                            onPressed: () {
+                                                              Navigator.of(context).pop(); // Đóng dialog
+                                                            },
+                                                            child: Text("OK"),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    },
+                                                  );
+                                                  
+                                                  // Sử dụng return để kết thúc hàm và không tiếp tục thực hiện các lệnh phía dưới
+                                                  return;
+                                                }
+
                                                 bool confirmChange = await showDialog(
                                                     context: context,
                                                     builder: (BuildContext context) {
@@ -276,12 +299,40 @@ class _ExploreScreenState extends State<ExploreScreen> {
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text("Total Amount: $totalAmount K ", style: TextStyle(color: Color.fromARGB(255, 36, 8, 195))),
+                                  // Text("Total Amount: $totalAmount K ", style: TextStyle(color: Color.fromARGB(255, 36, 8, 195))),
+                                  RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: 'Total: ',
+                                          style: TextStyle(color: Colors.black, fontSize: 14),
+                                        ),
+                                        TextSpan(
+                                          text: ' $totalAmount K',
+                                          style: TextStyle(color: Color.fromARGB(255, 248, 66, 42), fontSize: 14, fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                   SizedBox(height: 8),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                       Text("Payment: ${products[0]['paymentName'] ?? ''}", style: TextStyle(color: Color.fromARGB(255, 123, 7, 85))),
+                                      RichText(
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: 'Payment: ',
+                                              style: TextStyle(color: Colors.black, fontSize: 14),
+                                            ),
+                                            TextSpan(
+                                              text: ' ${products[0]['paymentName'] ?? ''} ',
+                                              style: TextStyle(color: Color.fromARGB(255, 37, 67, 220), fontSize: 14, fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      // Text("Payment: ${products[0]['paymentName'] ?? ''}", style: TextStyle(color: Color.fromARGB(255, 123, 7, 85))),
                                        // SizedBox(height: 8),
                                       //  Text("Status: ${products[0]['orderStatus'] == 1 ? 'Thành công' : 'Hủy đơn'}", style: TextStyle(color: Color.fromARGB(255, 23, 150, 31))),
                                       Text(
