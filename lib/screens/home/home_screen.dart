@@ -271,7 +271,7 @@ class _HomeScreenState extends State<HomeScreen> {
           //     ScaffoldMessenger.of(context).hideCurrentSnackBar();
           //   },
           // ),
-          duration: Duration(milliseconds: 200), // fix err click button when change page
+          duration: Duration(milliseconds: 150), // fix err click button when change page
         ),
       );
       setState(() {
@@ -287,7 +287,7 @@ class _HomeScreenState extends State<HomeScreen> {
           //     ScaffoldMessenger.of(context).hideCurrentSnackBar();
           //   },
           // ),
-          duration: Duration(milliseconds: 200), // fix err click button when change page
+          duration: Duration(milliseconds: 150), // fix err click button when change page
         ),
       );
     }

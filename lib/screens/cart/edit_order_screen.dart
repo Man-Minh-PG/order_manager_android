@@ -304,11 +304,23 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
       bool success = await orderService.editOrder(selectedProducts, searchTerm, orderDetailId); // Chờ cho hàm createOrder hoàn thành
       
       if (success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Đã edit thành công!'),
-            ),
-          );
+        ScaffoldMessenger.of(context).showSnackBar(
+          //   SnackBar(
+          //     content: Text('Đã edit thành công!'),
+          //   ),
+          // );
+        
+          SnackBar(
+            content: Text('Edit Success!'),
+            // action: SnackBarAction(
+            //   label: 'X',
+            //   onPressed: () {
+            //     ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            //   },
+            // ),
+            duration: Duration(milliseconds: 150), // fix err click button when change page
+          ),
+        );
 
           Navigator.push(
               context,
@@ -317,8 +329,18 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
 
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
+            // SnackBar(
+            //   content: Text('EditOrder thất bại!'),
+            // ),
             SnackBar(
-              content: Text('EditOrder thất bại!'),
+              content: Text('Edit Fail !'),
+              // action: SnackBarAction(
+              //   label: 'X',
+              //   onPressed: () {
+              //     ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              //   },
+              // ),
+              duration: Duration(milliseconds: 150), // fix err click button when change page
             ),
           );
         }
