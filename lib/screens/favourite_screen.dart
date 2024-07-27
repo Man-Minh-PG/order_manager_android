@@ -67,10 +67,16 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
       //   title: Text('Tổng kết doanh thu hôm nay'),
       // ),
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 82, 255, 246),
+        // backgroundColor: const Color.fromARGB(255, 82, 255, 246),
+        backgroundColor: const Color.fromRGBO(98, 0, 239, 10),
         // leading: const Icon(Icons.account_balance ),
         automaticallyImplyLeading: false, // fix button back - screen report
-        title: const Text("Data summary report"),
+        title: const Text(
+          "Data summary report" , 
+          style: TextStyle(
+            color: Colors.white
+          ),
+        ),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.add_circle_outline), 
