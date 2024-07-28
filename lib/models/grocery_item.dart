@@ -31,19 +31,19 @@ var demoItems = [
       name: "PM_Chui",
       description: "PM-C",
       price: 27,
-      imagePath: "assets/images/grocery_images/cheese.png", orderQuantity: 0, exclusiveOffers: false),
+      imagePath: "assets/images/grocery_images/pmc.png", orderQuantity: 0, exclusiveOffers: false),
   GroceryItem(
       id: 3,
       name: "PM_Trung",
       description: "PM_Trung",
       price: 27,
-      imagePath: "assets/images/grocery_images/cheese.png", orderQuantity: 0, exclusiveOffers: false),
+      imagePath: "assets/images/grocery_images/pmtr.png", orderQuantity: 0, exclusiveOffers: false),
    GroceryItem(
       id: 4,
       name: "PM_Bap",
       description: "PM_Bap",
       price: 27,
-      imagePath: "assets/images/grocery_images/cheese.png", orderQuantity: 0, exclusiveOffers: false),
+      imagePath: "assets/images/grocery_images/pmb.png", orderQuantity: 0, exclusiveOffers: false),
   GroceryItem(
       id: 5,
       name: "Pho_Mai",
