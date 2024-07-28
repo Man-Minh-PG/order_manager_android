@@ -267,8 +267,11 @@ class OrderService {
     return resultUpdate;
   } 
 
-  // Lấy tổng số sản phẩm bán được trong ngày
-  // Lấy tổng số lượng sản phẩm được bán trong ngày
+ /**
+  * Report sum total all order today
+  * Except [ 'isSpecialProduct' : 1]
+  *
+  */
   Future<int> getTotalProductsSoldToday() async {
     final db = await _databaseRepository.database;
     final result = await db!.rawQuery('''
@@ -276,7 +279,7 @@ class OrderService {
       FROM orders
       JOIN order_detail ON order_detail.orderId = orders.id
       JOIN product ON product.id = order_detail.productId
-      WHERE orders.status = 1;
+      WHERE orders.status = 1 AND product.isSpecialProduct = 0;
     ''');
     return result.isNotEmpty ? result.first['totalProductsSold'] as int ?? 0 : 0;
   }

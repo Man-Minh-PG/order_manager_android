@@ -86,6 +86,8 @@ var demoItems = [
       description: "CC",
       price: 17,
       imagePath: "assets/images/grocery_images/cacao.jpg", orderQuantity: 0, exclusiveOffers: false),
+
+    // Toppings
     GroceryItem(
       id: 12,
       name: "Pho_Mai_them",
@@ -128,11 +130,13 @@ var demoItems = [
 
 var exclusiveOffers = [demoItems[0], demoItems[1], demoItems[2],demoItems[3], demoItems[4], demoItems[5], demoItems[6], demoItems[7], demoItems[8], demoItems[9], demoItems[10] ];
 
-var bestSelling = [demoItems[2], demoItems[3]];
+// var bestSelling = [demoItems[2], demoItems[3]];
 
 var preOrders = [demoItems[13], demoItems[14], demoItems[15], demoItems[16]];
 
-var groceries = [demoItems[4], demoItems[5]];
+var lstTopping = [demoItems[11], demoItems[12]];
+
+// var groceries = [demoItems[4], demoItems[5]];
 
 var beverages = [
   GroceryItem(

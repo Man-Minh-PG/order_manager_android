@@ -64,6 +64,7 @@ class DatabaseRepository {
         price INTEGER NOT NULL,
         imagePath TEXT,
         orderQuantity INTEGER DEFAULT 0,
+        isSpecialProduct INTEGER DEFAULT 0,
         createdAt TIMESTAMP NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime')) 
       )
     ''');
@@ -209,6 +210,7 @@ class DatabaseRepository {
         'description': 'Topping +',
         'price': 8,
         'imagePath': 'assets/images/grocery_images/banana.png',
+        'isSpecialProduct' : 1
       });
 
         await db.insert('product', {
@@ -216,6 +218,7 @@ class DatabaseRepository {
         'description': 'Topping +',
         'price': 3,
         'imagePath': 'assets/images/grocery_images/banana.png',
+        'isSpecialProduct' : 1
       });
       
         await db.insert('product', {

@@ -25,7 +25,8 @@ class EditOrderScreen extends StatefulWidget {
 class _EditOrderScreenState extends State<EditOrderScreen> {
   TextEditingController _searchBarController = TextEditingController(); // Tạo controller
   final OrderService orderService = OrderService();
-  List<GroceryItem> listProduct = exclusiveOffers;
+  List<GroceryItem> listProduct = exclusiveOffers; // Limit item select
+  // List<GroceryItem> listProduct = demoItems; // Get all item - fix miss load data - screen edit
   List<int> orderDetailId = [];
   late int orderId;
 
@@ -115,6 +116,12 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
                   SizedBox(
                     height: 15,
                   ),
+
+                  padded(subTitle("Other")),
+                  getHorizontalItemSlider(lstTopping), // Show list Other
+                  SizedBox(
+                    height: 15,
+                  ),
                 ],
               ),
             ),
@@ -129,13 +136,26 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
           // Lấy danh sách các sản phẩm được chọn
           List<GroceryItem> selectedItems = exclusiveOffers.where((item) => item.orderQuantity > 0).toList();
           List<GroceryItem> preOrderItems = preOrders.where((item) => item.orderQuantity > 0).toList();
+          List<GroceryItem> listToppingItems = lstTopping
+                  .where((item) => item.orderQuantity > 0)
+                  .toList();
+
           if (selectedItems.isNotEmpty) {
             // Gọi hàm xử lý khi nút được nhấn, truyền vào danh sách các sản phẩm đã chọn
+            if(listToppingItems.isNotEmpty){
+              selectedItems += listToppingItems; // Gộp hai danh sách
+            }
             onAddButtonSelected(selectedItems); 
 
             // Đặt tất cả các giá trị orderQuantity về 0 cho các sản phẩm trong exclusiveOffers
             for (var item in exclusiveOffers) {
               item.orderQuantity = 0;
+            }
+
+            if(listToppingItems.isNotEmpty){
+              for (var item in listToppingItems) {
+                item.orderQuantity = 0;
+              } 
             }
           }else if(preOrderItems.isNotEmpty){
             // Gọi hàm xử lý khi nút được nhấn, truyền vào danh sách các sản phẩm đã chọn

@@ -84,20 +84,20 @@ class _CartScreenState extends State<CartScreen> {
                           children: [
                             Text("Num ID: # ${products[0]['orderId']}", style: TextStyle(color: Color.fromARGB(255, 86, 90, 90), fontWeight: FontWeight.bold, fontSize: 15)),
                             // SizedBox(height: 1),
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: 'Total: ',
-                                    style: TextStyle(color: Colors.black, fontSize: 16),
-                                  ),
-                                  TextSpan(
-                                    text: ' $totalAmount K',
-                                    style: TextStyle(color: Color.fromARGB(255, 248, 66, 42), fontSize: 16, fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                            )
+                              RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: 'Total: ',
+                                      style: TextStyle(color: Colors.black, fontSize: 16),
+                                    ),
+                                    TextSpan(
+                                      text: ' $totalAmount K',
+                                      style: TextStyle(color: Color.fromARGB(255, 248, 66, 42), fontSize: 16, fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                              )
                           ],
                         ),
                       ],
