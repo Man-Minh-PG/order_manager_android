@@ -297,15 +297,26 @@ class OrderService {
 
 
     // Lấy tổng doanh thu trong ngày
-    Future<int> getTotalDiscountToday() async {
-      final db = await _databaseRepository.database;
-      final result = await db!.rawQuery('''
-        SELECT IFNULL(SUM(total), 0) AS totalRevenue
+    /**
+     *   SELECT IFNULL(SUM(total), 0) AS totalRevenue
         FROM orders
         WHERE orders.status = 1
         AND orders.isDiscount = 1
+     */
+    Future<int> getTotalDiscountToday() async {
+      final db = await _databaseRepository.database;
+      final result = await db!.rawQuery('''
+        SELECT SUM((product.price * order_detail.amount) - (orders.total)) as totalRevenue
+        FROM orders
+        JOIN order_detail ON order_detail.orderId = orders.id
+        JOIN product ON product.id = order_detail.productId
+        WHERE orders.status = 1
+        AND orders.isDiscount = 1
       ''');
-      return result.isNotEmpty ? result.first['totalRevenue'] as int : 0;
+      return result.isNotEmpty
+      ? (result.first['totalRevenue'] as int?) ?? 0
+      : 0;
+      // return 1;
     }
 
     // Lấy tổng số đơn hàng bị hủy trong ngày
