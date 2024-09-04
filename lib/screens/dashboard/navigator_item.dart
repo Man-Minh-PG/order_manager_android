@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:grocery_app/screens/cart/cart_screen.dart';
 import 'package:grocery_app/screens/explore_screen.dart';
 import 'package:grocery_app/screens/home/home_screen.dart';
-
+import 'package:grocery_app/screens/payment_history/payment_history_screen.dart';
 import '../favourite_screen.dart';
 
 class NavigatorItem {
@@ -21,5 +21,5 @@ List<NavigatorItem> navigatorItems = [
 
   NavigatorItem(
       "Report", "assets/icons/favourite_icon.svg", 3, FavouriteScreen()),
-  // NavigatorItem("Account", "assets/icons/account_icon.svg", 4, AccountScreen()),
+  NavigatorItem("Money", "assets/icons/money_icon.svg", 4, PaymentHistoryScreen()),
 ];
