@@ -402,7 +402,7 @@ class OrderService {
    *  doc: /c/20d554d3-6893-48ad-a10b-6118630d7365
    */
   // Future<List<Map<String, dynamic>>> commonGetDataInTable(String tableName, {Map<String, dynamic> conditions = const {}}) async {
-  Future<List<Map<String, dynamic>>> getDataWithCondition(String tableName, Map<String, dynamic> conditionGetGeneric, {Map<String, dynamic>? conditions} ) async { 
+  Future<List<Map<String, dynamic>>> getDataWithCondition(String tableName, {Map<String, dynamic>? conditions} ) async { 
     final db = await _databaseRepository.database;
     List<String> whereClauses = [];
     List<dynamic> args = [];
@@ -428,8 +428,9 @@ class OrderService {
 
   /**
    * Common function update data in table generic
+   * As the column is of Text data type, we must input values as Strings. To use these values as integers, we'll need to perform a conversion.
    */
-  Future<int> updateGenericData(int valueUpdate, String columnNameUpdate) async {
+  Future<int> updateGenericData(String valueUpdate, String columnNameUpdate) async {
       final db = await _databaseRepository.database;
       int resultUpdate = 0;
 

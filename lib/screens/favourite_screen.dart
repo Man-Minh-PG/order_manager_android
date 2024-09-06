@@ -18,14 +18,17 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
   bool _isLoading = true; // Mặc định đang tải dữ liệu
 
   int? totalProductsSold;
-  int? totalRevenue;
+  // int? totalRevenue;
   int? totalCancelledOrders;
   int? totalCashPayment;
   int? totalMomoPayment;
   int? totalTransferPayment;
   int? totalDiscount;
   List<Map<String, dynamic>>? totalProduct;
-  String? totalProductConvert; 
+  List<Map<String, dynamic>>? initialCost;
+  String? totalProductConvert;
+  int initialCostConvert = 0;
+  int totalCashPaymentConvert = 0;
   Map<String, dynamic>? productSales;
 
 
@@ -33,7 +36,14 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
   void initState() {
     super.initState();
     fetchDailySummary();
+    sumInitialCost();
   }
+
+  Future<void> sumInitialCost() async {
+    setState(() {
+      initialCostConvert = ((initialCostConvert ) + totalCashPaymentConvert);
+    });
+  } 
 
   Future<void> fetchDailySummary() async {
     setState(() {
@@ -43,20 +53,26 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
     Map<String, dynamic> conditionTotalProduct = {
       'generic.name': 'totalProduct',
     };
+    Map<String, dynamic> conditionInitialCost = {
+      'generic.name': 'initialCost',
+    };
   
     totalProductsSold = await orderService.getTotalProductsSoldToday();
-    totalRevenue = await orderService.getTotalRevenueToday();
+    // totalRevenue = await orderService.getTotalRevenueToday();
     totalCancelledOrders = await orderService.getTotalCancelledOrdersToday();
     totalCashPayment = await orderService.getTotalPaymentToday('Tien_mat');
+    totalCashPaymentConvert = totalCashPayment != null ? totalCashPayment ?? 0 : 0;
     totalMomoPayment = await orderService.getTotalPaymentToday('Momo');
     totalTransferPayment = await orderService.getTotalPaymentToday('Chuyen_Khoan');
     productSales = await orderService.getProductSalesToday();
-    totalProduct = await orderService.getDataWithCondition('generic', conditionTotalProduct );
+    totalProduct = await orderService.getDataWithCondition('generic',conditions: conditionTotalProduct );
     totalProductConvert =  totalProduct != null ? totalProduct![0]['value'] ?? 0 : 0;
+    initialCost = await orderService.getDataWithCondition('generic',conditions: conditionInitialCost);
+    initialCostConvert = initialCost != null ? initialCost![0]['value_payment'] ?? 0 : 0;
     totalDiscount = await orderService.getTotalDiscountToday();
 
      setState(() {
-    _isLoading = false; // Hoàn thành tải dữ liệu
+      _isLoading = false; // Hoàn thành tải dữ liệu
     });
   }
 
@@ -78,6 +94,11 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
           ),
         ),
         actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.assignment_add),
+            onPressed: (){
+              _showInputUpdateInitialCost(context);
+            }),
           IconButton(
             icon: const Icon(Icons.add_circle_outline), 
             onPressed: (){
@@ -106,17 +127,22 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
               'Tổng số sản phẩm bán được: ${totalProductsSold ?? 0}',
               style: TextStyle(fontSize: 16),
             ),
-            Text(
-              'Tổng doanh thu: ${totalRevenue ?? 0}',
+            // Text(
+            //   'Tổng doanh thu: ${totalRevenue ?? 0}',
+            //   style: TextStyle(fontSize: 16),
+            // ),
+             Text(
+              'Tổng tiền mặt hiện hiện tại: ${initialCostConvert ?? 0}',
               style: TextStyle(fontSize: 16),
             ),
+
             Text(
               'Tổng số đơn hàng bị hủy: ${totalCancelledOrders ?? 0}',
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 16),
             Text(
-              'Tổng số tiền mặt: ${totalCashPayment ?? 0}',
+              'Tổng tiền mặt thu được: ${totalCashPayment ?? 0}',
               style: TextStyle(fontSize: 16),
             ),
             Text(
@@ -262,7 +288,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
             TextButton(
               onPressed: () async {
                 String inputTotalProductValue = _totalProductController.text;
-                int resultUpdate = await orderService.updateGenericData(int.parse(inputTotalProductValue), 'totalProduct');
+                int resultUpdate = await orderService.updateGenericData(inputTotalProductValue, 'totalProduct');
 
                 if(resultUpdate < 0)  {
                 showDialog(
@@ -296,5 +322,64 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
     );
   }
 
+  /**
+   * Function show dialog insert initial cost
+   */
+  Future<void> _showInputUpdateInitialCost(BuildContext context) async { 
+    TextEditingController _initialCostController = TextEditingController();
+
+    showDialog(
+      context: context, 
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Tổng tiền hom nay'),
+          content: TextField(
+            controller: _initialCostController,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(hintText: "600"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: (){
+                Navigator.pop(context);
+              }, 
+              child: Text('close')
+            ),
+            TextButton(
+              onPressed: () async {
+                String initialCostValue = _initialCostController.text;
+                int resultUpdate = await orderService.updateGenericData(initialCostValue ,'initialCost');
+
+                if(resultUpdate < 0) {
+                  showDialog(
+                    context: context, 
+                    builder: (context) => AlertDialog(
+                        title: Text('Notification'),
+                        content: Text('Error Update Fail !!'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text('close'),
+                          ),
+                        ],
+                    )
+                  );
+                }
+
+                setState(() { // update UI after Insert
+                  initialCostConvert = int.parse(initialCostValue);
+                });
+
+                 Navigator.of(context).pop();
+              }, 
+              child: Text('Save') 
+            )            
+          ],
+        );
+      } 
+    );
   }
+}
 

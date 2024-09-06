@@ -6,8 +6,7 @@ import 'package:sqflite/sqflite.dart';
 class DatabaseRepository { 
   DatabaseRepository.privateConstructor();
 
-  static final DatabaseRepository instance =
-    DatabaseRepository.privateConstructor();
+  static final DatabaseRepository instance = DatabaseRepository.privateConstructor();
   
   static Database? _database;
   final _databaseName    = 'bachutha';
@@ -111,7 +110,17 @@ class DatabaseRepository {
         name TEXT NOT NULL,
         value TEXT,
         status INTEGER DEFAULT 0,
-        createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        createdAt TIMESTAMP NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime'))
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE transaction_history(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        value_payment INTEGER DEFAULT 0,
+        type INTEGER DEFAULT 0,
+        note TEXT,
+        createdAt TIMESTAMP NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime'))
       )
     ''');
 
@@ -277,6 +286,11 @@ class DatabaseRepository {
     Future<void> insertGeneric (Database db) async {
       await db.insert('generic', {
           'name' : 'totalProduct',
+          'value' : '0'
+      });
+
+      await db.insert('generic', { // initial cost
+          'name' : 'initialCost',
           'value' : '0'
       });
     }
