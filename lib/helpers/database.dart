@@ -26,12 +26,13 @@ class DatabaseRepository {
     }
 
 
-  Future<String?> getDatabasePath() async {
-  // Lấy đường dẫn thư mục lưu trữ cơ sở dữ liệu
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    String databasePath = join(appDocDir.path, _databaseName);
-    print(databasePath) ;
-  }
+  // Future<String?> getDatabasePath() async {
+  // // Lấy đường dẫn thư mục lưu trữ cơ sở dữ liệu
+  //   Directory appDocDir = await getApplicationDocumentsDirectory();
+  //   String databasePath = join(appDocDir.path, _databaseName);
+  //   print(databasePath) ;
+  //   return null;
+  // }
 
 
 
@@ -40,13 +41,14 @@ class DatabaseRepository {
   if (_database != null) {
     return _database;
   } else {
-      // getDatabasePath();
+    // getDatabasePath();
     _database = await _initDatabase();
     return _database;
   }
 }
 
   _initDatabase() async {
+    // deleteOldDatabase();
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, _databaseName);
     return await openDatabase(path,
@@ -291,6 +293,16 @@ class DatabaseRepository {
 
       await db.insert('generic', { // initial cost
           'name' : 'initialCost',
+          'value' : '0'
+      });
+
+        await db.insert('generic', { // tranfer to momo
+          'name' : 'exchangeMomo',
+          'value' : '0'
+      });
+
+        await db.insert('generic', { // tranfer to bạnk
+          'name' : 'exchangeBank',
           'value' : '0'
       });
     }

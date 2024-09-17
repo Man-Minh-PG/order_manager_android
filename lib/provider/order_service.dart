@@ -434,6 +434,10 @@ class OrderService {
       final db = await _databaseRepository.database;
       int resultUpdate = 0;
 
+      if(valueUpdate.isEmpty) {
+        return resultUpdate;
+      }
+
       resultUpdate = await db!.update(
         'generic',
         {
