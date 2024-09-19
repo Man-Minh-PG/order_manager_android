@@ -5,6 +5,10 @@ class Generic {
   int status;
   String createdAt;
 
+  // Define variable
+  static const int  isExpenses = 0;
+  static const int  isRevenue = 1;
+
   Generic({
     required this.id,
     required this.name,

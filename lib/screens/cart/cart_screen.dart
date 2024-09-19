@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_app/common_widgets/app_widgets_common.dart';
+import 'package:grocery_app/models/order_model.dart';
 import 'package:grocery_app/provider/order_service.dart';
 import 'package:grocery_app/screens/cart/edit_order_screen.dart';
 
@@ -9,14 +11,6 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   final OrderService orderService = OrderService();
-  final int cashPayment = 1;
-  final int momoPayment = 2;
-  final int transferPayment = 3;
-  final int noPayment = 0;
-  final int orderStatusDefault = 0;
-  final int orderStatusSucess = 1;
-  final int orderDiscount = 1;
-  final int orderNoDiscount = 0;
 
   bool _isLoading = true; // Mặc định đang tải dữ liệu
 
@@ -149,7 +143,7 @@ class _CartScreenState extends State<CartScreen> {
                   
                   ElevatedButton(
                   onPressed: () {
-                    if (products.isNotEmpty && products[0]['paymentMethod'] == noPayment) {
+                    if (products.isNotEmpty && products[0]['paymentMethod'] == Order.noPayment) {
                       showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
@@ -167,7 +161,7 @@ class _CartScreenState extends State<CartScreen> {
                       );
                     } else {
                       if (products.isNotEmpty) {
-                        _handlePayment(context, products[0]['orderId'], products[0]['paymentMethod']!, 1, orderStatusSucess);
+                        _handlePayment(context, products[0]['orderId'], products[0]['paymentMethod']!, 1, Order.orderStatusSucess);
                       }
                     }
                   },
@@ -186,20 +180,20 @@ class _CartScreenState extends State<CartScreen> {
                         child: Row(
                           children: [
                             Checkbox( // note /c/6a19ca36-820e-4fcc-a6a3-35f016742571
-                              value: products.isNotEmpty ? (products[0]['isDiscount'] == 1) ? true : false : false,
+                              value: products.isNotEmpty ? (products[0]['isDiscount'] == Order.isDiscount) ? true : false : false,
                               onChanged: (value) {
                                 if(value == true) {
                                   setState(() {
-                                    products[0]['isDiscount'] = 1; // update state
+                                    products[0]['isDiscount'] = Order.isDiscount; // update state
                                     products[0]['discountDetail'] = (totalAmount * 0.3).toInt();  // update discount detail
                                     totalAmount = totalAmount - (totalAmount * 0.3).toInt(); 
                                     products[0]['total'] = totalAmount; // update total in UI
                                   });
 
-                                  _handleDiscount(context, products[0]['orderId'], products[0]['total'], orderDiscount);
+                                  _handleDiscount(context, products[0]['orderId'], products[0]['total'], Order.isDiscount);
                                 }else {
                                   setState(() {
-                                    products[0]['isDiscount'] = 0; // update state
+                                    products[0]['isDiscount'] = Order.orderNoDiscount; // update state
                                     int discountDetail = products[0]['discountDetail'];
                                     totalAmount = totalAmount + discountDetail; 
                                     products[0]['total'] = totalAmount; // update total in UI
@@ -207,7 +201,7 @@ class _CartScreenState extends State<CartScreen> {
                                     products[0]['discountDetail'] = 0;// update discount detail
                                   });
 
-                                  _handleDiscount(context, products[0]['orderId'], products[0]['total'], orderNoDiscount);
+                                  _handleDiscount(context, products[0]['orderId'], products[0]['total'], Order.orderNoDiscount);
                                 }
                               },                        
                             ),
@@ -223,19 +217,19 @@ class _CartScreenState extends State<CartScreen> {
                                   value: products[0]['paymentMethod'], // Giá trị mặc định (tiền mặt)
                                   items: [
                                     DropdownMenuItem<int>(
-                                      value: cashPayment,
+                                      value: Order.cashPayment,
                                       child: Text('Tiền mặt'),
                                     ),
                                     DropdownMenuItem<int>(
-                                      value: momoPayment,
+                                      value: Order.momoPayment,
                                       child: Text('Momo'),
                                     ),
                                     DropdownMenuItem<int>(
-                                      value: transferPayment,
+                                      value: Order.transferPayment,
                                       child: Text('Bank'),
                                     ),
                                      DropdownMenuItem<int>(
-                                      value: noPayment,
+                                      value: Order.noPayment,
                                       child: Text('Chưa TToán'),
                                     ),
                                   ],
@@ -244,7 +238,7 @@ class _CartScreenState extends State<CartScreen> {
                                        products[0]['paymentMethod'] = value; // Cập nhật giá trị paymentMethod cho đơn hàng cụ thể 
                                     });
                                    
-                                     _handlePayment(context, products[0]['orderId'], value!, 0, orderStatusDefault);
+                                     _handlePayment(context, products[0]['orderId'], value!, 0, Order.orderStatusDefault);
                                   },
                                 ),
                                 IconButton(
@@ -279,20 +273,8 @@ class _CartScreenState extends State<CartScreen> {
     int resultUpdate = await orderService.updateDiscountInOrder(orderId, totalDiscount, statusDiscount);
 
     if(resultUpdate < 0)  {
-       showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Notification'),
-          content: Text('Error Update Fail !!'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('close'),
-            ),
-          ],
-        ));
+      showDialog(context: context, builder: (context) => AppWidgetsCommon.generateDialog(context, "Update discount fail !!"));
+      return;
     }
 
   }
@@ -303,27 +285,14 @@ class _CartScreenState extends State<CartScreen> {
     if (resultUpdate > 0) {
       if( removeShow == 1) {
         setState(() {
-                groupedOrders.remove(orderId);
-          });
+          groupedOrders.remove(orderId);
+        });
       }
       
     } else {
       // Hiển thị hộp thoại thông báo lỗi
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Notification'),
-          content: Text('Có lỗi xảy ra - vui lòng thử lại sau.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('close'),
-            ),
-          ],
-        ),
-      );
+      showDialog(context: context, builder: (context) => AppWidgetsCommon.generateDialog(context, "Payment Err !!"));
+      return;
     }
   }
 
@@ -355,31 +324,18 @@ class _CartScreenState extends State<CartScreen> {
 
     // Nếu người dùng xác nhận muốn xóa đơn hàng
     if (confirmDelete == true) {
-      int resultUpdate = await orderService.updateOrderStatus(orderId, 2, cashPayment);
+      int resultUpdate = await orderService.updateOrderStatus(orderId, Order.orderStatusCancel, Order.cashPayment);
       if (resultUpdate > 0) {
         setState(() {
           groupedOrders.remove(orderId);
         });
       } else {
         // Hiển thị hộp thoại thông báo lỗi
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Notification'),
-            content: Text('Có lỗi xảy ra khi xóa đơn hàng - vui lòng thử lại sau.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text('Đóng'),
-              ),
-            ],
-          ),
-        );
+         showDialog(context: context, builder: (context) => AppWidgetsCommon.generateDialog(context, "Delete order Err!!"));
+        return;
       }
     }
-  }
+  } 
 
   void _editOrder(BuildContext context, int orderId) {
     Navigator.push(
