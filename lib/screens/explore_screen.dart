@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_app/models/order_model.dart';
 import 'package:grocery_app/provider/order_service.dart';
 
 class ExploreScreen extends StatefulWidget {
@@ -8,23 +9,15 @@ class ExploreScreen extends StatefulWidget {
 
 class _ExploreScreenState extends State<ExploreScreen> {
   final OrderService orderService = OrderService();
-  final int cashPayment = 1;
-  final int momoPayment = 2;
-  final int transferPayment = 3;
-  final int noPayment = 0;
-  final int isDiscount = 1;
+  
   bool _isLoading = true; // Mặc định đang tải dữ liệu
   int optionFilter = 0; // 0 là tất cả, 1 là thanh toán bằng tiền mặt, 2 là thanh toán bằng momo, 3 là chuyển khoản
-  final int orderStatusDefault = 0;
-  final int orderStatusSucess = 1;
   
   Map<int, List<Map<String, dynamic>>> groupedOrders = {};
   Map<int, List<Map<String, dynamic>>> tempData = {};
   List<Map<String, dynamic>> orders = [];
 
   List<String> paymentMethods = ['Tiền mặt', 'Momo', 'Bank']; // Danh sách phương thức thanh toán
-
-
 
   @override
   void initState() {
@@ -59,7 +52,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
       }else if (optionFill == 999) { // case fill theo PTTT
          groupedOrders.clear();
           for (var order in orders) {
-            if (order['paymentMethod'] == momoPayment) {
+            if (order['paymentMethod'] == Order.momoPayment) {
               int orderId = order['orderId'];
               if (!groupedOrders.containsKey(orderId)) {
                 groupedOrders[orderId] = [order];
@@ -71,7 +64,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
       }else if (optionFill == 998) { // case fill theo PTTT
            groupedOrders.clear();
           for (var order in orders) {
-            if (order['paymentMethod'] == transferPayment) {
+            if (order['paymentMethod'] == Order.transferPayment) {
               int orderId = order['orderId'];
               if (!groupedOrders.containsKey(orderId)) {
                 groupedOrders[orderId] = [order];
@@ -83,7 +76,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
       }else if (optionFill == 997) { // hard code case fill theo order Discount
            groupedOrders.clear();
           for (var order in orders) {
-            if (order['isDiscount'] == isDiscount) {
+            if (order['isDiscount'] == Order.isDiscount) {
               int orderId = order['orderId'];
               if (!groupedOrders.containsKey(orderId)) {
                 groupedOrders[orderId] = [order];
@@ -218,15 +211,15 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                             value: products[0]['paymentMethod'], // Giá trị mặc định (tiền mặt)
                                             items: [
                                               DropdownMenuItem<int>(
-                                                value: cashPayment,
+                                                value: Order.cashPayment,
                                                 child: Text('Tiền mặt'),
                                               ),
                                               DropdownMenuItem<int>(
-                                                value: momoPayment,
+                                                value: Order.momoPayment,
                                                 child: Text('Momo'),
                                               ),
                                               DropdownMenuItem<int>(
-                                                value: transferPayment,
+                                                value: Order.transferPayment,
                                                 child: Text('Bank'),
                                               ),
                                               // DropdownMenuItem<int>(
@@ -287,7 +280,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                                     products[0]['paymentMethod'] = value; // Cập nhật giá trị paymentMethod cho đơn hàng cụ thể 
                                                   });
                                                 
-                                                  _handlePayment(context, products[0]['orderId'], value!, 0, orderStatusSucess);
+                                                  _handlePayment(context, products[0]['orderId'], value!, 0, Order.orderStatusSucess);
                                                 } 
                                             },
                                           ),
@@ -432,7 +425,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
     // Nếu người dùng xác nhận muốn xóa đơn hàng
     if (confirmDelete == true) {
-      int resultUpdate = await orderService.updateOrderStatus(orderId, 2, cashPayment);
+      int resultUpdate = await orderService.updateOrderStatus(orderId, 2, Order.cashPayment);
       if (resultUpdate > 0) {
         setState(() {
           groupedOrders.remove(orderId);

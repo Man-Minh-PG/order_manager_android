@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_app/common_widgets/app_widgets_common.dart';
+import 'package:grocery_app/models/generic.dart';
 import 'package:grocery_app/provider/app_common_service.dart';
 
 class CreateTransactionPayment extends StatefulWidget {
@@ -104,10 +106,10 @@ Widget build(BuildContext context) {
             ),
             SizedBox(height: 16), // Add space between fields
 
-            // Show option if _optionNote == "Đổi tiền" -- after release - clean code
+            // Can change option 2 in doc /c/66ea83c4-4fe4-800a-ba0c-bb81c2fc7b01 
             if(_optionNote == "Đổi tiền")
             _buildInputField(
-              title: "Loại giao dịch",
+              title: "Đổi sang",
               child: Wrap(
                 spacing: 8.0,
                 children: _subOptionTypeLabel.map((String option) {
@@ -116,7 +118,7 @@ Widget build(BuildContext context) {
                     selected: _subOptionType == option,
                     onSelected: (bool selected) {
                       setState(() {
-                        _optionType = selected ? option : null;
+                        _subOptionType = selected ? option : null;
                       });
                     },
                   );
@@ -203,54 +205,38 @@ Widget build(BuildContext context) {
     );
   }
 
-  /*
-   * Custom UI dialog
-   * Common generate popup 
-   * temp  - after release - move funtion to class common_ui
-   * 
-   */
-  Widget _generateDialog(context, String message, {int? type}) {
-    return AlertDialog(
-      title: Text(message),
-      icon: Icon(
-        type == 1 ? Icons.notifications : Icons.error,
-        color: type == 1 ? Colors.green : Colors.red      
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Text('Close'),
-        ),
-      ],
-    );
-  }
-
   /**
    * Write function caculator rồi từ funtion xử lý này gọi vô
    */
   Future<void> _handelTransactionPayment(TextEditingController _inputMoneyValue, String optionType) async {
     int tempDataInitialCost = 0;
     int tempValueMoney = _convertInputToInt(_inputMoneyValue);
+    String noteTransaction = _finalNoteInsert;
    
    if ( optionType == '' || (_inputMoneyValue.text).isEmpty) {
-      showDialog(context: context, builder: (context) => _generateDialog(context, "Chưa nhập dữ lệu bạn êy , Error đó !!"));
+      showDialog(context: context, builder: (context) => AppWidgetsCommon.generateDialog(context, "Chưa nhập dữ lệu bạn êy , Error đó !!"));
       return;
     }
 
+    // Fix bug type exchange money
+    if(_finalNoteInsert == "Đổi tiền"){ 
+      optionType = 'Chi';
+      noteTransaction =  _finalNoteInsert + ' ' + _subOptionType.toString();
+    }
+
     // Handle data processing
+    // Insert data to transaction
     Map<String, dynamic> dataInsert = {
       'value_payment': _inputMoneyValue.text,
-      'type': (optionType == 'Chi') ? 0 : 1 ,
-      'note': _finalNoteInsert,
+      'type': (optionType == 'Chi') ? Generic.isExpenses : Generic.isRevenue ,
+      'note': noteTransaction
     };
 
     int insertResult =
         await commonService.insertData("transaction_history", dataInsert);
 
     if (insertResult < 0) {
-      showDialog(context: context, builder: (context) => _generateDialog(context, "Insert fail"));
+      showDialog(context: context, builder: (context) => AppWidgetsCommon.generateDialog(context, "Insert fail"));
       return;
     }
 
@@ -262,7 +248,7 @@ Widget build(BuildContext context) {
 
     // if get fail close form
     if(dataInitialCost.isEmpty){
-       showDialog(context: context, builder: (context) => _generateDialog(context, "Get data fail"));
+       showDialog(context: context, builder: (context) => AppWidgetsCommon.generateDialog(context, "Get data fail"));
        Navigator.pop(context);
     }
 
@@ -285,7 +271,7 @@ Widget build(BuildContext context) {
     int resultUpdate = await commonService.updateData("generic", updateCost, conditions: conditionUpdateCost);
 
     if (resultUpdate < 0) {
-      showDialog(context: context, builder: (context) => _generateDialog(context, "Update fail ! Err"));
+      showDialog(context: context, builder: (context) => AppWidgetsCommon.generateDialog(context, "Update fail ! Err"));
       return;
     }
 
@@ -294,6 +280,9 @@ Widget build(BuildContext context) {
     Navigator.pop(context, true); // return true if update sucess
   }
 
+  /**
+   * Function convert data input to Int
+   */
   int _convertInputToInt(TextEditingController _inputMoneyController) {
   // Kiểm tra giá trị đầu vào có phải là số hợp lệ không
     if (_inputMoneyController.text.isNotEmpty) {
@@ -304,7 +293,7 @@ Widget build(BuildContext context) {
         } catch (e) {
           print('Lỗi: Giá trị nhập không phải là số hợp lệ.');
         }
-      } else {
+      } else {  
         return 0;
       }
       return 0;
@@ -313,6 +302,7 @@ Widget build(BuildContext context) {
 
   /**
    * Process save data case money conversion
+   * Caculator add Money for momo Or Bank
    */
   Future<int> _processTypeExchangeMoney(int tempValueMoney, String typeExchange) async{
     int resultUpdate = 0;
@@ -320,7 +310,7 @@ Widget build(BuildContext context) {
     List<Map<String, dynamic>> valueUpdate = [];
 
     if(typeExchange.isEmpty) {
-      showDialog(context: context, builder: (context) => _generateDialog(context, "Param err !!"));
+      showDialog(context: context, builder: (context) => AppWidgetsCommon.generateDialog(context, "Param err !!"));
         Navigator.pop(context);
     }
     
@@ -331,10 +321,9 @@ Widget build(BuildContext context) {
 
       // if get fail close form
     if(valueUpdate.isEmpty){
-        showDialog(context: context, builder: (context) => _generateDialog(context, "Get data fail"));
+        showDialog(context: context, builder: (context) => AppWidgetsCommon.generateDialog(context, "Get data fail"));
         Navigator.pop(context);
     }
-
 
     // Process data case Bank
     if(typeExchange == _subOptionTypeLabel[1]){
@@ -346,7 +335,7 @@ Widget build(BuildContext context) {
 
       // if get fail close form
       if(valueUpdate.isEmpty){
-        showDialog(context: context, builder: (context) => _generateDialog(context, "Get data fail"));
+        showDialog(context: context, builder: (context) => AppWidgetsCommon.generateDialog(context, "Get data fail"));
         Navigator.pop(context);
       }
     }
@@ -363,7 +352,7 @@ Widget build(BuildContext context) {
     );
 
     if (resultUpdate < 0) {
-      showDialog(context: context, builder: (context) => _generateDialog(context, "Update fail ! Err"));
+      showDialog(context: context, builder: (context) => AppWidgetsCommon.generateDialog(context, "Update fail ! Err"));
       Navigator.pop(context);
     }
 

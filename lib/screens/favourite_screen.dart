@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:grocery_app/common_widgets/app_widgets_common.dart';
+import 'package:grocery_app/models/generic.dart';
 import 'package:grocery_app/provider/app_common_service.dart';
 
 import 'package:grocery_app/provider/order_service.dart';
@@ -24,25 +26,18 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
   int? totalMomoPayment;
   int? totalTransferPayment;
   int? totalDiscount;
-  List<Map<String, dynamic>>? totalProduct;
-  List<Map<String, dynamic>>? initialCost;
-
-  List<Map<String, dynamic>>? exchangeBank;
-  List<Map<String, dynamic>>? exchangeMomo;
 
   String? totalProductConvert;
-  int initialCostConvert = 0;
-  int totalCashPaymentConvert = 0;
   Map<String, dynamic>? productSales;
 
+  int initialCostConvert = 0;
+  int totalCashPaymentConvert = 0;
   int exchangeMomoConvert = 0;
   int exchangeBankConvert = 0;
-  final isExpenses = 0;
-  final isRevenue = 1; // after release - move to class define common
 
   int? sumMomo;
   int? sumBank;
-  int? sumCash;
+  int sumCash = 0;
 
   @override
   void initState() {
@@ -54,9 +49,30 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
   Future<void> sumDataExchange() async {
     setState(() {
       sumMomo = (totalMomoPayment ?? 0) + exchangeMomoConvert;
-      sumBank = totalTransferPayment ?? 0 + exchangeBankConvert;
+      sumBank = (totalTransferPayment ?? 0) + exchangeBankConvert;
       sumCash = totalCashPaymentConvert  + initialCostConvert;
     });
+  }
+
+  String formatDisplayMoney(int number) {
+    return formatNumberWithComma(number.toString() + '000');
+  }
+
+  String formatNumberWithComma(String number) {
+    // Chuyển chuỗi thành số và đảo ngược chuỗi để dễ dàng thêm dấu phẩy sau mỗi 3 chữ số
+    String reversed = number.split('').reversed.join('');
+    
+    // Thêm dấu phẩy sau mỗi 3 chữ số
+    String formatted = '';
+    for (int i = 0; i < reversed.length; i++) {
+      if (i != 0 && i % 3 == 0) {
+        formatted += ' ,';
+      }
+      formatted += reversed[i];
+    }
+    
+    // Đảo ngược lại chuỗi đã được định dạng và trả về kết quả
+    return formatted.split('').reversed.join('');
   }
 
   Future<void> sumInitialCost() async {
@@ -67,15 +83,8 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
 
   Future<void> fetchDailySummary() async {
     setState(() {
-    _isLoading = true; // Bắt đầu tải dữ liệu
-  });
-
-    Map<String, dynamic> conditionTotalProduct = {
-      'generic.name': 'totalProduct',
-    };
-    Map<String, dynamic> conditionInitialCost = {
-      'generic.name': 'initialCost',
-    };
+      _isLoading = true; // Bắt đầu tải dữ liệu
+    });
 
     totalProductsSold = await orderService.getTotalProductsSoldToday();
     // totalRevenue = await orderService.getTotalRevenueToday(); // temp open
@@ -86,29 +95,27 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
     totalMomoPayment = await orderService.getTotalPaymentToday('Momo');
     totalTransferPayment = await orderService.getTotalPaymentToday('Chuyen_Khoan');
     productSales = await orderService.getProductSalesToday();
-    totalProduct = await orderService.getDataWithCondition('generic',
-        conditions: conditionTotalProduct);
-    totalProductConvert =
-        totalProduct != null ? totalProduct![0]['value'] ?? 0 : 0;
-    initialCost = await orderService.getDataWithCondition('generic',
-        conditions: conditionInitialCost);
-    initialCostConvert =
-        initialCost != null ? int.parse(initialCost![0]['value']) : 0;
     totalDiscount = await orderService.getTotalDiscountToday();
 
-    exchangeMomo = await orderService.getDataWithCondition('generic',
+    totalProductConvert = commonService.convertReturnSingle(await orderService.getDataWithCondition('generic',
         conditions: {
-          'generic.name': 'exchangeMomo'
-        }); // after release write function convert common
-    exchangeMomoConvert =
-        exchangeMomo != null ? int.parse(exchangeMomo![0]['value']) : 0;
+        'generic.name': 'totalProduct',
+    }), 'value').toString();
 
-    exchangeBank = await orderService.getDataWithCondition('generic',
-        conditions: {
-          'generic.name': 'exchangeBank'
-        }); // after release write function convert common
-    exchangeBankConvert =
-        exchangeMomo != null ? int.parse(exchangeBank![0]['value']) : 0;
+    initialCostConvert = commonService.convertReturnSingle(await orderService.getDataWithCondition('generic',
+      conditions: {
+        'generic.name': 'initialCost',
+    }), 'value');
+
+    exchangeMomoConvert = commonService.convertReturnSingle(await orderService.getDataWithCondition('generic',
+      conditions: {
+        'generic.name': 'exchangeMomo'
+    }), 'value');
+
+    exchangeBankConvert = commonService.convertReturnSingle(await orderService.getDataWithCondition('generic',
+      conditions: {
+        'generic.name': 'exchangeBank'
+    }), 'value');
 
     setState(() {
       _isLoading = false; // Hoàn thành tải dữ liệu
@@ -150,7 +157,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
               child:
                   CircularProgressIndicator()) // Hiển thị loader khi đang tải dữ liệu
           : Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(13.5),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -172,7 +179,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                   //   style: TextStyle(fontSize: 16),
                   // ),
                   Text(
-                    'Tổng tiền mặt hiện có: ${sumCash}',
+                    'Tổng tiền mặt hiện có: ${formatDisplayMoney(sumCash)} ₫',
                     style: TextStyle(fontSize: 16),
                   ),
                   SizedBox(height: 16),
@@ -202,7 +209,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: 'Tổng tiền mặt thu được: ${totalCashPayment}',
+                          text: 'Tổng tiền mặt thu được: ${formatDisplayMoney(totalCashPaymentConvert)} ₫',
                           style: TextStyle(color: Colors.black, fontSize: 16, fontStyle: FontStyle.normal),
                         ),
                       ],
@@ -213,7 +220,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: 'Tổng momo: ${totalMomoPayment}',
+                          text: 'Tổng momo:  ${ exchangeMomoConvert != 0 ? totalMomoPayment : formatDisplayMoney(totalMomoPayment ?? 0) + ' ₫'}',
                           style: TextStyle(color: Colors.black, fontSize: 16, fontStyle: FontStyle.normal),
                         ),
                         
@@ -227,7 +234,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                         ),
                         if(exchangeMomoConvert != 0)
                         TextSpan(
-                          text: ' =  $sumMomo',
+                          text: ' =  ${formatDisplayMoney(sumMomo ?? 0)} ₫',
                           style: TextStyle(
                               color: Color.fromARGB(255, 50, 19, 226),
                               fontSize: 16,
@@ -241,7 +248,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: 'Tổng chuyển khoản: ${totalTransferPayment}',
+                          text: 'Tổng chuyển khoản: ${exchangeBankConvert != 0 ? totalTransferPayment : formatDisplayMoney(totalTransferPayment ?? 0) + ' ₫' } ',
                           style: TextStyle(color: Colors.black, fontSize: 16, fontStyle: FontStyle.normal),
                         ),
 
@@ -255,7 +262,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                         ),
                         if(exchangeBankConvert != 0)
                         TextSpan(
-                          text: ' =  $sumBank',
+                          text: ' =  ${formatDisplayMoney(sumBank ?? 0)} ₫',
                           style: TextStyle(
                               color: Color.fromARGB(255, 50, 19, 226),
                               fontSize: 16,
@@ -268,7 +275,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                   SizedBox(height: 16),
 
                   Text(
-                    'Tổng số tiền discount: ${totalDiscount ?? 0}',
+                    'Tổng số tiền discount: ${formatDisplayMoney(totalDiscount ?? 0)} ₫',
                     style: TextStyle(fontSize: 16),
                   ),
                   SizedBox(height: 16),
@@ -282,7 +289,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                       IconButton( 
                         onPressed: () async {
                           totalRevenue = await orderService.getTotalRevenueToday(); // temp open
-                          showDialog(context: context, builder: (context) => _generateDialog(context, 'Tổng tất cả sp bên dưới: ${totalRevenue}', type: 1));
+                          showDialog(context: context, builder: (context) => AppWidgetsCommon.generateDialog(context, 'Tổng tất cả sp bên dưới: ${formatDisplayMoney(totalRevenue ?? 0)} ₫ ', type: 1));
                         }, 
                         icon: Icon(Icons.archive_outlined)
                       )
@@ -404,7 +411,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
             content: TextField(
               controller: _totalProductController,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(hintText: "100"), // placeholder
+              decoration: InputDecoration(hintText: "XXX"), // placeholder
             ),
             actions: <Widget>[
               TextButton(
@@ -419,7 +426,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                         _totalProductController.text;
 
                     if(inputTotalProductValue == '') {
-                      showDialog(context: context, builder: (context) => _generateDialog(context, "Chưa nhập dữ lệu bạn êy , Error đó !!"));
+                      showDialog(context: context, builder: (context) => AppWidgetsCommon.generateDialog(context, "Chưa nhập dữ lệu bạn êy , Error đó !!"));
                       return;
                     }
                    
@@ -427,7 +434,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                         inputTotalProductValue, 'totalProduct');
 
                     if (resultUpdate < 0) {
-                      showDialog(context: context, builder: (context) => _generateDialog(context, "Đệt update fail !!"));
+                      showDialog(context: context, builder: (context) => AppWidgetsCommon.generateDialog(context, "Đệt update fail !!"));
                       return;
                     }
                     // Update UI if necessary
@@ -458,7 +465,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
             content: TextField(
               controller: _initialCostController,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(hintText: "600"),
+              decoration: InputDecoration(hintText: "600 K"),
             ),
             actions: <Widget>[
               TextButton(
@@ -471,7 +478,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                     String initialCostValue = _initialCostController.text;
 
                     if(initialCostValue == '') {
-                      showDialog(context: context, builder: (context) => _generateDialog(context, "Chưa nhập dữ lệu bạn êy , Error đó !!"));
+                      showDialog(context: context, builder: (context) => AppWidgetsCommon.generateDialog(context, "Chưa nhập dữ lệu bạn êy , Error đó !!"));
                       return;
                     } 
 
@@ -479,17 +486,16 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                         initialCostValue, 'initialCost');
 
                     if (resultUpdate < 0) {
-                      showDialog(context: context, builder: (context) => _generateDialog(context, "Đệt update fail !!"));
+                      showDialog(context: context, builder: (context) => AppWidgetsCommon.generateDialog(context, "Đệt update fail !!"));
                       return;
                     }
 
                     // after update generic - insert payment history
                     // copy process from _handelTransactionPayment()
                     // Handle data processing
-                    // Temp code - optimation after release
                     Map<String, dynamic> dataInsert = {
                       'value_payment': int.parse(initialCostValue),
-                      'type': isRevenue,
+                      'type': Generic.isRevenue,
                       'note': "Tiền đầu giờ",
                     };
 
@@ -497,7 +503,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                         "transaction_history", dataInsert);
 
                     if (insertResult < 0) {
-                      showDialog(context: context, builder: (context) => _generateDialog(context, "Mé Error insert ròi !!"));
+                      showDialog(context: context, builder: (context) => AppWidgetsCommon.generateDialog(context, "Mé Error insert ròi !!"));
                       return;
                     }
 
@@ -514,29 +520,4 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
           );
         });
   }
-
-  /*
-   * Custom UI dialog
-   * Common generate popup 
-   * temp  - after release - move funtion to class common_ui
-   * 
-   */
-  Widget _generateDialog(context, String message, {int? type}) {
-    return AlertDialog(
-      title: Text(message),
-      icon: Icon(
-        type == 1 ? Icons.notifications : Icons.error,
-        color: type == 1 ? Colors.green : Colors.red      
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Text('Close'),
-        ),
-      ],
-    );
-  }
-
 }

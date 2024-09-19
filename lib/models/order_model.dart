@@ -10,6 +10,18 @@ class Order {
   int status;
   String createdAt;
 
+  static const noPayment = 0; 
+  static const cashPayment = 1;
+  static const momoPayment = 2;
+  static const transferPayment = 3;
+
+  static const isDiscount = 1;
+  static const orderNoDiscount = 0;
+
+  static const orderStatusDefault = 0;
+  static const orderStatusSucess = 1;
+  static const orderStatusCancel = 2;
+
   Order({
     required this.id,
     required this.total,

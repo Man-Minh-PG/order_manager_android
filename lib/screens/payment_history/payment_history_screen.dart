@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_app/models/generic.dart';
 import 'package:grocery_app/provider/order_service.dart';
 import 'package:grocery_app/screens/payment_history/create_transaction_payment.dart';
 
@@ -9,14 +10,12 @@ class PaymentHistoryScreen extends StatefulWidget {
 
 class _PaymentHistoryScreenState extends State<PaymentHistoryScreen> {
   final OrderService orderService = OrderService();
-  final isExpenses = 0;
-  final isRevenue = 1;
 
   List<Map<String, dynamic>> listHistory = [];
-  List<Map<String, dynamic>> dataInitialCost = [];
-  Map<String, dynamic> conditionInitialCost = {
-      'generic.name': 'initialCost',
-  };
+  // List<Map<String, dynamic>> dataInitialCost = [];
+  // Map<String, dynamic> conditionInitialCost = {
+  //     'generic.name': 'initialCost',
+  // };
   bool _isLoading = true;
 
   @override
@@ -93,9 +92,15 @@ class _PaymentHistoryScreenState extends State<PaymentHistoryScreen> {
           // );
           _navigateToScreenCreateTransaction();
         },
-        backgroundColor: Color(0xFF897CEE),
-        child: Icon(Icons.attach_money_sharp),
+        // backgroundColor: Color(0xFF897CEE),
+        backgroundColor: Color.fromARGB(255, 240, 70, 28),
+        child: Icon(
+          Icons.post_add_sharp,
+          color: const Color.fromARGB(255, 233, 233, 43),        
+        ),
+        shape: CircleBorder(),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     ); 
   }
 
@@ -180,12 +185,12 @@ class _PaymentHistoryScreenState extends State<PaymentHistoryScreen> {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                     decoration: BoxDecoration(
-                      color:  listHistory[index]['type'] == isExpenses ? Colors.orange.withOpacity(0.2) : Color(0xFF897CEE).withOpacity(0.2),
+                      color:  listHistory[index]['type'] == Generic.isExpenses ? Colors.orange.withOpacity(0.2) : Color(0xFF897CEE).withOpacity(0.2),
                       borderRadius: BorderRadius.circular(12),
-                      border: listHistory[index]['type'] == isExpenses ? Border.all(color: Colors.orange) : Border.all(color: Color(0xFF897CEE)),
+                      border: listHistory[index]['type'] == Generic.isExpenses ? Border.all(color: Colors.orange) : Border.all(color: Color(0xFF897CEE)),
                     ),
                     child: 
-                    listHistory[index]['type'] == isExpenses ?
+                    listHistory[index]['type'] == Generic.isExpenses ?
                     Text(
                       'Tiền Chi',
                       style: TextStyle(color: Colors.orange),

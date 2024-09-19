@@ -112,4 +112,15 @@ class AppCommonService {
 
     return resultUpdate;
   }
+
+  /**
+   * Get return single
+   */
+  int convertReturnSingle(List<Map<String, dynamic>>? item, String columnName)  {
+    if(item == null){
+      return 0;
+    }
+
+    return int.parse(item[0][columnName]);
+  } 
 }
