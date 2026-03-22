@@ -70,17 +70,69 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
               icon: const Icon(Icons.edit, color: Colors.blue),
               onPressed: () => _showEditDialog(product),
             ),
-            IconButton(
-              icon: const Icon(Icons.delete, color: Colors.red),
-              onPressed: () async {
+           IconButton(
+            icon: const Icon(Icons.delete, color: Colors.red),
+            onPressed: () async {
+              final confirm = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Xác nhận xóa'),
+                  content: const Text('Bạn có chắc chắn muốn xóa sản phẩm này không?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false), // No
+                      child: const Text('Không'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, true), // Yes
+                      child: const Text('Có'),
+                    ),
+                  ],
+                ),
+              );
+
+              if (confirm == true) {
                 await productService.deleteProduct(product.id!);
-                fetchProducts();
-              },
-            ),
+                fetchProducts(); // reload lại danh sách
+                // ScaffoldMessenger.of(context).showSnackBar(
+                //   const SnackBar(content: Text('Đã xóa sản phẩm thành công!')),
+                // );
+              }
+            },
+          )
           ],
         ),
       ),
     );
+  }
+
+  Future<void> showCancelConfirmation(BuildContext context) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Xác nhận'),
+        content: const Text('Bạn có chắc chắn muốn xóa không?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false), // No
+            child: const Text('Không'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true), // Yes
+            child: const Text('Có'),
+          ),
+        ],
+      ),
+    );
+
+    // Xử lý kết quả
+    if (result == true) {
+      // Người dùng chọn Có → thực hiện hành động hủy
+      Navigator.pop(context); // ví dụ: đóng dialog hiện tại
+      // hoặc thêm logic xóa, reset,...
+    } else {
+      // Người dùng chọn Không → không làm gì
+    }
   }
 
   void _addProduct() {
