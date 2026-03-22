@@ -64,6 +64,8 @@ class DatabaseRepository {
         description TEXT,
         price INTEGER NOT NULL,
         imagePath TEXT,
+        exclusiveOffers INTEGER,
+        category TEXT,
         orderQuantity INTEGER DEFAULT 0,
         isSpecialProduct INTEGER DEFAULT 0,
         createdAt TIMESTAMP NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime')) 
@@ -143,56 +145,64 @@ class DatabaseRepository {
         'name': 'Sieu_Pham',
         'description': 'PM-TR-C',
         'price': 30,
-        'imagePath': 'assets/images/grocery_images/banana.png',
+        'imagePath': 'assets/images/grocery_images/premium.png',
+        'category': 'exclusive'
       });
 
       await db.insert('product', {
         'name': 'PM_Chui',
         'description': 'PM-C',
         'price': 27,
-        'imagePath': 'assets/images/grocery_images/banana.png',
+        'imagePath': 'assets/images/grocery_images/pmc.png',
+        'category': 'exclusive'
       });   
 
       await db.insert('product', {
         'name': 'PM_Trung',
         'description': 'PM-TR',
         'price': 27,
-        'imagePath': 'assets/images/grocery_images/banana.png',
+        'imagePath': 'assets/images/grocery_images/pmtr.png',
+        'category': 'exclusive',
       });
 
       await db.insert('product', {
         'name': 'PM_Bap',
         'description': 'PM-Bap',
         'price': 27,
-        'imagePath': 'assets/images/grocery_images/banana.png',
+        'imagePath': 'assets/images/grocery_images/pmtr.png',
+        'category': 'exclusive'
       });
 
       await db.insert('product', {
         'name': 'Pho_Mai',
         'description': 'Pho Mai',
         'price': 24,
-        'imagePath': 'assets/images/grocery_images/banana.png',
+        'imagePath': 'assets/images/grocery_images/cheese.png',
+        'category': 'exclusive'
       });
 
       await db.insert('product', {
         'name': 'Tr_Chui',
         'description': 'TR + C',
         'price': 22,
-        'imagePath': 'assets/images/grocery_images/banana.png',
+        'imagePath': 'assets/images/grocery_images/egg.jpg',
+        'category': 'exclusive'
       });
 
       await db.insert('product', {
         'name': 'Tr_Bap',
         'description': 'TR + Bap',
         'price': 22,
-        'imagePath': 'assets/images/grocery_images/banana.png',
+        'imagePath': 'assets/images/grocery_images/egg.jpg',
+        'category': 'exclusive'
       });
 
        await db.insert('product', {
         'name': 'Dua',
         'description': 'D',
         'price': 22,
-        'imagePath': 'assets/images/grocery_images/banana.png',
+        'imagePath': 'assets/images/grocery_images/coconut.jpg',
+        'category': 'exclusive'
       });
 
       await db.insert('product', {
@@ -200,28 +210,32 @@ class DatabaseRepository {
         'description': 'C',
         'price': 20,
         'imagePath': 'assets/images/grocery_images/banana.png',
+        'category': 'exclusive'
       });
 
       await db.insert('product', {
         'name': 'Trung',
         'description': 'TR',
         'price': 20,
-        'imagePath': 'assets/images/grocery_images/banana.png',
+        'imagePath': 'assets/images/grocery_images/egg.jpg',
+        'category': 'exclusive'
       });
 
       await db.insert('product', {
         'name': 'Ca_Cao',
         'description': 'CC',
         'price': 17,
-        'imagePath': 'assets/images/grocery_images/banana.png',
+        'imagePath': 'assets/images/grocery_images/cacao.jpg',
+        'category': 'exclusive'
       });
 
       await db.insert('product', {
         'name': 'Pho_Mai_them',
         'description': 'Topping +',
         'price': 8,
-        'imagePath': 'assets/images/grocery_images/banana.png',
-        'isSpecialProduct' : 1
+        'imagePath': 'assets/images/grocery_images/cheese.png',
+        'isSpecialProduct' : 1,
+        'category': 'topping'      
       });
 
         await db.insert('product', {
@@ -229,7 +243,8 @@ class DatabaseRepository {
         'description': 'Topping +',
         'price': 3,
         'imagePath': 'assets/images/grocery_images/banana.png',
-        'isSpecialProduct' : 1
+        'isSpecialProduct' : 1,
+        'category': 'topping'
       });
       
         await db.insert('product', {
@@ -237,6 +252,7 @@ class DatabaseRepository {
         'description': 'Pre order',
         'price': 0,
         'imagePath': 'assets/images/grocery_images/banana.png',
+        'category': 'preorder'
       });
 
         await db.insert('product', {
@@ -244,20 +260,23 @@ class DatabaseRepository {
         'description': 'Pre order',
         'price': 0,
         'imagePath': 'assets/images/grocery_images/banana.png',
+        'category': 'preorder'
       });
 
-      await db.insert('product', {
-        'name': 'Go',
-        'description': 'Pre order',
-        'price': 0,
-        'imagePath': 'assets/images/grocery_images/banana.png',
-      });
+      // await db.insert('product', {
+      //   'name': 'Go',
+      //   'description': 'Pre order',
+      //   'price': 0,
+      //   'imagePath': 'assets/images/grocery_images/banana.png',
+      //   'category': 'preorder'
+      // });
 
       await db.insert('product', {
         'name': 'Bee',
         'description': 'Pre order',
         'price': 0,
         'imagePath': 'assets/images/grocery_images/banana.png',
+        'category': 'preorder'
       });
     }
 

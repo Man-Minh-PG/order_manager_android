@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:grocery_app/models/grocery_item.dart';
 import 'package:grocery_app/provider/order_service.dart';
+import 'package:grocery_app/provider/product_service.dart';
 import 'package:grocery_app/widgets/grocery_item_card_widget.dart';
 import 'package:grocery_app/widgets/search_bar_widget.dart';
 import 'package:grocery_app/models/product.dart';
@@ -13,9 +13,35 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   TextEditingController _searchBarController =
-      TextEditingController(); // Tạo controller
-  List<GroceryItem> selectedItems = [];
+  TextEditingController(); // Tạo controller
   String searchTerm = '';
+  final ProductService productService = ProductService();
+  List<Product> allProducts = [];
+  List<Product> exclusiveOffers = [];
+  List<Product> preOrders = [];
+  List<Product> lstTopping = [];
+  bool isLoading = true;
+
+  // contructor as PHP
+  @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    final data = await productService.getProducts();
+
+    setState(() {
+      allProducts = data;
+
+      exclusiveOffers = allProducts.where((e) => e.category == 'exclusive').toList();
+      preOrders = allProducts.where((e) => e.category == 'preorder').toList();
+      lstTopping = allProducts.where((e) => e.category == 'topping').toList();
+
+      isLoading = false;
+    });
+  }
 
   // Hàm callback để nhận giá trị tìm kiếm từ SearchBarWidget
   void updateSearchTerm(String value) {
@@ -91,12 +117,12 @@ class _HomeScreenState extends State<HomeScreen> {
           onPressed: () {
             setState(() {
               // Lấy danh sách các sản phẩm được chọn
-              List<GroceryItem> selectedItems = exclusiveOffers
+              List<Product> selectedItems = exclusiveOffers
                   .where((item) => item.orderQuantity > 0)
                   .toList();
-              List<GroceryItem> preOrderItems =
+              List<Product> preOrderItems =
                   preOrders.where((item) => item.orderQuantity > 0).toList();
-              List<GroceryItem> listToppingItems = lstTopping
+              List<Product> listToppingItems = lstTopping
                   .where((item) => item.orderQuantity > 0)
                   .toList();
 
@@ -158,7 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget getHorizontalItemSlider(List<GroceryItem> items) {
+  Widget getHorizontalItemSlider(List<Product> items) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
       // height: 500, // Set an appropriate height for your container
@@ -181,32 +207,6 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         },
       ),
-      // child: SingleChildScrollView(
-      //   child: Column(
-      //     children: List.generate((items.length / 2).ceil(), (rowIndex) {
-      //       int startIndex = rowIndex * 2;
-      //       int endIndex = (rowIndex + 1) * 2;
-      //       if (endIndex > items.length) {
-      //         endIndex = items.length;
-      //       }
-
-      //       List<GroceryItem> rowItems = items.sublist(startIndex, endIndex);
-
-      //       return Row(
-      //         children: rowItems.map((item) {
-      //           return Expanded(
-      //             child: GestureDetector(
-      //               child: GroceryItemCardWidget( // call to class - generate info product
-      //                 item: item,
-      //                 heroSuffix: "home_screen",
-      //               ),
-      //             ),
-      //           );
-      //         }).toList(),
-      //       );
-      //     }),
-      //   ),
-      // ),
     );
   }
 
@@ -255,7 +255,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
 // Assuming the selected grocery_item is available as groceryItem
 // void onAddButtonSelected(GroceryItem groceryItem) {
-  void onAddButtonSelected(List<GroceryItem> groceryItem) async {
+  void onAddButtonSelected(List<Product> groceryItem) async {
     List<Product> selectedProducts = []; // Danh sách các sản phẩm đã chọn
 
     for (var item in groceryItem) {
@@ -268,7 +268,8 @@ class _HomeScreenState extends State<HomeScreen> {
           name: item.name,
           price: (item.price * item.orderQuantity),
           exclusiveOffers:
-              item.exclusiveOffers, // Set the exclusiveOffers value
+          item.exclusiveOffers, // Set the exclusiveOffers value
+          category: (item.category), // Set the exclusiveOffers value
         );
 
         selectedProducts.add(product); // Thêm sản phẩm vào danh sách đã chọn

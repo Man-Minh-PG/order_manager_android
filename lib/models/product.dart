@@ -6,6 +6,7 @@ class Product {
   String imagePath;
   int orderQuantity;
   bool exclusiveOffers;
+  String category;
 
   Product({
     this.id,
@@ -15,6 +16,7 @@ class Product {
     this.imagePath = '',
     this.orderQuantity = 0,
     this.exclusiveOffers = false,
+    required this.category,
   });
 
   factory Product.fromMap(Map<String, dynamic> map) {
@@ -26,6 +28,7 @@ class Product {
       imagePath: map['imagePath'] ?? '',
       orderQuantity: (map['orderQuantity'] ?? map['status'] ?? 0) as int,
       exclusiveOffers: (map['exclusiveOffers'] ?? 0) == 1,
+      category: map['category'] ?? '',
     );
   }
 
@@ -38,6 +41,7 @@ class Product {
       'imagePath': imagePath,
       'orderQuantity': orderQuantity,
       'exclusiveOffers': exclusiveOffers ? 1 : 0,
+      'category': category,
     };
   }
 }

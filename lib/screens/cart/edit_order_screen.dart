@@ -4,7 +4,7 @@ Class extends from home screen
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:grocery_app/models/grocery_item.dart';
+import 'package:grocery_app/provider/product_service.dart';
 import 'package:grocery_app/provider/order_service.dart';
 import 'package:grocery_app/widgets/grocery_item_card_widget.dart';
 import 'package:grocery_app/widgets/search_bar_widget.dart';
@@ -24,13 +24,40 @@ class EditOrderScreen extends StatefulWidget {
 class _EditOrderScreenState extends State<EditOrderScreen> {
   TextEditingController _searchBarController = TextEditingController(); // Tạo controller
   final OrderService orderService = OrderService();
-  List<GroceryItem> listProduct = exclusiveOffers; // Limit item select
   // List<GroceryItem> listProduct = demoItems; // Get all item - fix miss load data - screen edit
   List<int> orderDetailId = [];
   late int orderId;
-
-  List<GroceryItem> selectedItems = [];
   String searchTerm = '';
+
+  final ProductService productService = ProductService();
+  List<Product> allProducts = [];
+  List<Product> listProduct = [];
+  List<Product> exclusiveOffers = [];
+  List<Product> preOrders = [];
+  List<Product> lstTopping = [];
+  bool isLoading = true;
+
+   // contructor as PHP
+  @override
+  void initState() {
+    super.initState();
+    loadData();
+    fetchOrder();
+  }
+
+  Future<void> loadData() async {
+    final data = await productService.getProducts();
+
+    setState(() {
+      allProducts = data;
+
+      exclusiveOffers = allProducts.where((e) => e.category == 'exclusive').toList();
+      preOrders = allProducts.where((e) => e.category == 'preorder').toList();
+      lstTopping = allProducts.where((e) => e.category == 'topping').toList();
+      listProduct = allProducts;
+      isLoading = false;
+    });
+  }
 
   // Hàm callback để nhận giá trị tìm kiếm từ SearchBarWidget
   void updateSearchTerm(String value) {
@@ -66,11 +93,11 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
     }
   });
 }
-  @override
-  void initState() {
-    super.initState();
-    fetchOrder();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   fetchOrder();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -133,9 +160,9 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
       onPressed: () {
         setState(() {
           // Lấy danh sách các sản phẩm được chọn
-          List<GroceryItem> selectedItems = exclusiveOffers.where((item) => item.orderQuantity > 0).toList();
-          List<GroceryItem> preOrderItems = preOrders.where((item) => item.orderQuantity > 0).toList();
-          List<GroceryItem> listToppingItems = lstTopping
+          List<Product> selectedItems = exclusiveOffers.where((item) => item.orderQuantity > 0).toList();
+          List<Product> preOrderItems = preOrders.where((item) => item.orderQuantity > 0).toList();
+          List<Product> listToppingItems = lstTopping
                   .where((item) => item.orderQuantity > 0)
                   .toList();
 
@@ -202,7 +229,7 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
     );
   }
 
-  Widget getHorizontalItemSlider(List<GroceryItem> items) {
+  Widget getHorizontalItemSlider(List<Product> items) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
       // height: 500, // Set an appropriate height for your container
@@ -300,7 +327,7 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
  
 // Assuming the selected grocery_item is available as groceryItem
 // void onAddButtonSelected(GroceryItem groceryItem) {
-    void onAddButtonSelected(List<GroceryItem> groceryItem) async {
+    void onAddButtonSelected(List<Product> groceryItem) async {
       List<Product> selectedProducts = []; // Danh sách các sản phẩm đã chọn
 
       for (var item in groceryItem) {
@@ -313,6 +340,7 @@ class _EditOrderScreenState extends State<EditOrderScreen> {
             name: item.name,
             price: (item.price *item.orderQuantity),
             exclusiveOffers: item.exclusiveOffers, // Set the exclusiveOffers value
+            category: (item.category), // Set the exclusiveOffers value
           );
           
           selectedProducts.add(product); // Thêm sản phẩm vào danh sách đã chọn

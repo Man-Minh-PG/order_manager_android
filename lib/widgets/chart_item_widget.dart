@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_app/common_widgets/app_text.dart';
-import 'package:grocery_app/models/grocery_item.dart';
+//import 'package:grocery_app/models/grocery_item.dart';
 import 'package:grocery_app/styles/colors.dart';
+import 'package:grocery_app/models/product.dart';
 
 import 'item_counter_widget.dart';
 
 class ChartItemWidget extends StatefulWidget {
   ChartItemWidget({Key? key, required this.item}) : super(key: key);
-  final GroceryItem item;
+  final Product item;
 
   @override
   _ChartItemWidgetState createState() => _ChartItemWidgetState();

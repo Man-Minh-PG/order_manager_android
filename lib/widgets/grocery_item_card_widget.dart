@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_app/common_widgets/app_text.dart';
-import 'package:grocery_app/models/grocery_item.dart';
+//import 'package:grocery_app/models/grocery_item.dart';
 import 'package:grocery_app/styles/colors.dart';
+import 'package:grocery_app/models/product.dart';
+
 
 // class GroceryItemCardWidget extends StatelessWidget {
 // Set up widget UI for product 
@@ -9,7 +11,7 @@ class GroceryItemCardWidget extends StatefulWidget {
 
   GroceryItemCardWidget({Key? key, required this.item, this.heroSuffix})
       : super(key: key);
-  final GroceryItem item;
+  final Product item;
   final String? heroSuffix;
 
   final double width = 174;
@@ -55,10 +57,14 @@ class _GroceryItemCardWidget extends State<GroceryItemCardWidget> {
           children: [
             Expanded(
               child: Center(
+                // child: Hero(
+                //   tag: "GroceryItem:" + widget.item.name + "-" + (widget.heroSuffix ?? ""),
+                //   child: imageWidget(),
+                // ),
                 child: Hero(
-                  tag: "GroceryItem:" + widget.item.name + "-" + (widget.heroSuffix ?? ""),
+                  tag: "product_${widget.item.id}_${UniqueKey()}",
                   child: imageWidget(),
-                ),
+                )
               ),
             ),
             SizedBox(

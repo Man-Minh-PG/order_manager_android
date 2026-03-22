@@ -87,30 +87,71 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
     final nameController = TextEditingController();
     final priceController = TextEditingController();
 
+    String selectedCategory = 'exclusive'; // default
+
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: Text("Thêm sản phẩm"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(controller: nameController, decoration: InputDecoration(labelText: "Tên")),
-            TextField(controller: priceController, decoration: InputDecoration(labelText: "Giá"), keyboardType: TextInputType.number),
-          ],
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text("Hủy")),
-          ElevatedButton(
-            onPressed: () async {
-              await productService.insertProduct(
-                Product(name: nameController.text, price: int.parse(priceController.text)),
-              );
-              Navigator.pop(context);
-              fetchProducts();
-            },
-            child: Text("Thêm"),
-          ),
-        ],
+      builder: (_) => StatefulBuilder(
+        builder: (context, setStateDialog) {
+          return AlertDialog(
+            title: Text("Thêm sản phẩm"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: nameController,
+                  decoration: InputDecoration(labelText: "Tên"),
+                ),
+                TextField(
+                  controller: priceController,
+                  decoration: InputDecoration(labelText: "Giá"),
+                  keyboardType: TextInputType.number,
+                ),
+
+                SizedBox(height: 10),
+
+                // Dropdown category
+                DropdownButtonFormField<String>(
+                  value: selectedCategory,
+                  decoration: InputDecoration(labelText: "Category"),
+                  items: const [
+                    DropdownMenuItem(value: 'exclusive', child: Text('Product')),
+                    DropdownMenuItem(value: 'preorder', child: Text('App')),
+                    DropdownMenuItem(value: 'topping', child: Text('Topping')),
+                  ],
+                  onChanged: (value) {
+                    setStateDialog(() {
+                      selectedCategory = value!;
+                    });
+                  },
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text("Hủy"),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  if (nameController.text.isEmpty || priceController.text.isEmpty) return;
+
+                  await productService.insertProduct(
+                    Product(
+                      name: nameController.text,
+                      price: int.parse(priceController.text),
+                      category: selectedCategory,
+                    ),
+                  );
+
+                  Navigator.pop(context);
+                  fetchProducts();
+                },
+                child: Text("Thêm"),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
