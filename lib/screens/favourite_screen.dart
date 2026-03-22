@@ -353,7 +353,8 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
 
     // Nếu người dùng xác nhận muốn xóa đơn hàng
     if (confirmDelete == true) {
-      final db = await _databaseRepository.deleteOldDatabase();
+     // final db = await _databaseRepository.deleteOldDatabase();
+      final db = await _databaseRepository.clearOrdersAndResetId();
       if (db == true) {
         await _databaseRepository.database;
         showDialog(
@@ -411,7 +412,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
             content: TextField(
               controller: _totalProductController,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(hintText: "XXX"), // placeholder
+              decoration: InputDecoration(hintText: "XXX Cục"), // placeholder
             ),
             actions: <Widget>[
               TextButton(
@@ -465,7 +466,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
             content: TextField(
               controller: _initialCostController,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(hintText: "600 K"),
+              decoration: InputDecoration(hintText: "Nhập tiền dô !: XXX đồng"),
             ),
             actions: <Widget>[
               TextButton(

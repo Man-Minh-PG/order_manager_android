@@ -23,4 +23,3 @@ List<NavigatorItem> navigatorItems = [
   //NavigatorItem("Money", "assets/icons/money_icon.svg", 4, PaymentHistoryScreen()),
   NavigatorItem("Orther", "assets/icons/money_icon.svg", 4, MoreScreen()),
 ];
-  

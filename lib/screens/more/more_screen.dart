@@ -33,8 +33,10 @@ class MoreScreen extends StatelessWidget {
       ),
       body: ListView(
         children: [
-          _buildItem(context, Icons.add_circle_outline, "Create transaction", CreateTransactionScreen()),
-          _buildItem(context, Icons.inventory_2_outlined, "Product", ProductManagementScreen()),
+          _buildItem(context, Icons.add_circle_outline, "Add Bill", CreateTransactionScreen()),
+          _buildItem(context, Icons.inventory_2_outlined, "Bachutha edit", ProductManagementScreen()),
+          // _buildItem(context, Icons.invert_colors_sharp, "Check bill", ProductManagementScreen()),
+          // _buildItem(context, Icons.invert_colors_sharp, "Reset", ProductManagementScreen()),
         ],
       ),
     );

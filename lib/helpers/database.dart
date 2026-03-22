@@ -12,6 +12,84 @@ class DatabaseRepository {
   final _databaseName    = 'bachutha';
   final _databaseVersion = 1;  
 
+  Future<bool> clearOrdersAndResetId() async {
+    try {
+      final db = await database;
+
+      await db.transaction((txn) async {
+        await txn.delete('orders');
+        await txn.delete('order_detail');
+        await txn.delete('transaction_history');
+        await txn.delete('generic');
+        
+
+        await txn.execute("DELETE FROM sqlite_sequence WHERE name='orders'");
+        await txn.execute("DELETE FROM sqlite_sequence WHERE name='order_detail'");
+        await txn.execute("DELETE FROM sqlite_sequence WHERE name='transaction_history'");
+        await txn.execute("DELETE FROM sqlite_sequence WHERE name='generic'");
+      });
+
+      await db.execute('VACUUM');
+
+       await db.execute('''
+          CREATE TABLE orders (
+            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+            total INTEGER NOT NULL,
+            discountDetail INTEGER DEFAULT 0,
+            note TEXT,
+            paymentId INTEGER,
+            status INTEGER DEFAULT 0,
+            isDiscount INTEGER DEFAULT 0,
+            createdAt TIMESTAMP NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime')) ,
+            FOREIGN KEY (paymentId) REFERENCES payment (id)
+          )
+        ''');
+
+        await db.execute('''
+          CREATE TABLE order_detail (
+            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+            productId INTEGER,
+            orderId INTEGER,
+            amount INTEGER,
+            status INTEGER DEFAULT 0,
+            createdAt TIMESTAMP NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime')) ,
+            FOREIGN KEY (productId) REFERENCES product (id),
+            FOREIGN KEY (orderId) REFERENCES orders (id)
+          )
+        ''');
+
+        await db.execute('''
+          CREATE TABLE generic(
+            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+            name TEXT NOT NULL,
+            value TEXT,
+            status INTEGER DEFAULT 0,
+            createdAt TIMESTAMP NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime'))
+          )
+        ''');
+
+        await db.execute('''
+          CREATE TABLE transaction_history(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            value_payment INTEGER DEFAULT 0,
+            type INTEGER DEFAULT 0,
+            note TEXT,
+            createdAt TIMESTAMP NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime'))
+          )
+        ''');
+
+        // Sample product data
+        //insertProduct(db);
+        //insertPayment(db);
+        insertGeneric(db);
+
+      return true;
+    } catch (e) {
+      print("Error clearing orders: $e");
+      return false;
+    }
+  }
+
 
   // Hàm xóa cơ sở dữ liệu cũ
     Future<bool> deleteOldDatabase() async {
@@ -35,20 +113,30 @@ class DatabaseRepository {
   // }
 
 
+    // Get database old ( before add feature product manager)
+//   Future<Database?> get database async { // function check isset db
+//   // deleteOldDatabase();
+//   if (_database != null) {
+//     return _database;
+//   } else {
+//     // getDatabasePath();
+//     _database = await _initDatabase();
+//     return _database;
+//   }
+// }
 
-  Future<Database?> get database async { // function check isset db
-  // deleteOldDatabase();
-  if (_database != null) {
-    return _database;
-  } else {
-    // getDatabasePath();
+  Future<Database> get database async {
+    if (_database != null) return _database!;
     _database = await _initDatabase();
-    return _database;
+    return _database!;
   }
-}
+
+    Future<void> initDatabase() async {
+    _database = await _initDatabase();
+  }
 
   _initDatabase() async {
-    // deleteOldDatabase();
+ //    deleteOldDatabase();
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, _databaseName);
     return await openDatabase(path,
@@ -129,8 +217,8 @@ class DatabaseRepository {
     ''');
 
     // Sample product data
-    insertProduct(db);
-    insertPayment(db);
+    //insertProduct(db);
+    //insertPayment(db);
     insertGeneric(db);
     // Các lệnh insert khác ở đây...
 

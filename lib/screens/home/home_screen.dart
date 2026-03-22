@@ -7,26 +7,36 @@ import 'package:grocery_app/widgets/search_bar_widget.dart';
 import 'package:grocery_app/models/product.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  TextEditingController _searchBarController =
-  TextEditingController(); // Tạo controller
+  final TextEditingController _searchBarController = TextEditingController();
+
   String searchTerm = '';
   final ProductService productService = ProductService();
+
   List<Product> allProducts = [];
   List<Product> exclusiveOffers = [];
   List<Product> preOrders = [];
   List<Product> lstTopping = [];
+
   bool isLoading = true;
 
-  // contructor as PHP
   @override
   void initState() {
     super.initState();
-    loadData();
+     loadData();
+ 
+  }
+
+  @override
+  void dispose() {
+    _searchBarController.dispose();
+    super.dispose();
   }
 
   Future<void> loadData() async {
@@ -35,217 +45,113 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       allProducts = data;
 
-      exclusiveOffers = allProducts.where((e) => e.category == 'exclusive').toList();
-      preOrders = allProducts.where((e) => e.category == 'preorder').toList();
-      lstTopping = allProducts.where((e) => e.category == 'topping').toList();
+      exclusiveOffers =
+          allProducts.where((e) => e.category == 'exclusive').toList();
+
+      preOrders =
+          allProducts.where((e) => e.category == 'preorder').toList();
+
+      lstTopping =
+          allProducts.where((e) => e.category == 'topping').toList();
 
       isLoading = false;
     });
   }
 
-  // Hàm callback để nhận giá trị tìm kiếm từ SearchBarWidget
   void updateSearchTerm(String value) {
     setState(() {
-      searchTerm = value; // Cập nhật giá trị tìm kiếm
-      // value = '';
-      // Xóa giá trị của ô tìm kiếm bằng cách gán giá trị rỗng cho controller
+      searchTerm = value;
     });
   }
 
   void clearSearchBar() {
-    setState(() {
-      _searchBarController.clear();
-    });
+    _searchBarController.clear();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Container(
-          child: SingleChildScrollView(
-            child: Center(
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 15,
-                  ),
-                  // SvgPicture.asset("assets/icons/app_icon_color.svg"),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  padded(locationWidget()),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  padded(SearchBarWidget(
-                    onSearchChanged:
-                        updateSearchTerm, // Truyền hàm callback vào SearchBarWidget
-                    controller:
-                        _searchBarController, // Gọi biến sử dụng giữa 2 class
-                  )),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  padded(subTitle("Bánh")),
-                  getHorizontalItemSlider(exclusiveOffers), // Show list item1
-                  SizedBox(
-                    height: 15,
-                  ),
+        child: isLoading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : SingleChildScrollView(
+                child: Center(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 15),
+                      padded(locationWidget()),
+                      const SizedBox(height: 15),
 
-                  padded(subTitle("Đơn Hàng")),
-                  getHorizontalItemSlider(preOrders), // Show list pre order
-                  SizedBox(
-                    height: 15,
-                  ),
+                      padded(SearchBarWidget(
+                        onSearchChanged: updateSearchTerm,
+                        controller: _searchBarController,
+                      )),
 
-                  padded(subTitle("Other")),
-                  getHorizontalItemSlider(lstTopping), // Show list Other
-                  SizedBox(
-                    height: 15,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            setState(() {
-              // Lấy danh sách các sản phẩm được chọn
-              List<Product> selectedItems = exclusiveOffers
-                  .where((item) => item.orderQuantity > 0)
-                  .toList();
-              List<Product> preOrderItems =
-                  preOrders.where((item) => item.orderQuantity > 0).toList();
-              List<Product> listToppingItems = lstTopping
-                  .where((item) => item.orderQuantity > 0)
-                  .toList();
+                      const SizedBox(height: 25),
 
-              if (selectedItems.isNotEmpty) {
-                // Gọi hàm xử lý khi nút được nhấn, truyền vào danh sách các sản phẩm đã chọn
-                if(listToppingItems.isNotEmpty){
-                  selectedItems += listToppingItems; // Gộp hai danh sách
-                }
-                onAddButtonSelected(selectedItems);
+                      padded(subTitle("Bánh")),
+                      getHorizontalItemSlider(exclusiveOffers),
 
-                // Đặt tất cả các giá trị orderQuantity về 0 cho các sản phẩm trong exclusiveOffers
-                for (var item in exclusiveOffers) {
-                  item.orderQuantity = 0;
-                }
+                      const SizedBox(height: 15),
 
-                if(listToppingItems.isNotEmpty){
-                  for (var item in listToppingItems) {
-                      item.orderQuantity = 0;
-                  } 
-                }
-              } else if (preOrderItems.isNotEmpty) {
-                // Gọi hàm xử lý khi nút được nhấn, truyền vào danh sách các sản phẩm đã chọn
-                onAddButtonSelected(preOrderItems);
+                      padded(subTitle("Đơn Hàng")),
+                      getHorizontalItemSlider(preOrders),
 
-                // Đặt tất cả các giá trị orderQuantity về 0 cho các sản phẩm trong exclusiveOffers
-                for (var item in preOrderItems) {
-                  item.orderQuantity = 0;
-                }
-              } else {
-                // Nếu không có dữ liệu, bạn có thể hiển thị một thông báo hoặc thực hiện một hành động khác ở đây
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: Text('Thông báo'),
-                    content: Text('Bạn chưa chọn sản phẩm nào.'),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text('Đóng'),
-                      ),
+                      const SizedBox(height: 15),
+
+                      padded(subTitle("Other")),
+                      getHorizontalItemSlider(lstTopping),
+
+                      const SizedBox(height: 15),
                     ],
                   ),
-                );
-              }
-            });
-          },
-          // child: Text("Add")
-          child: Icon(Icons.add)),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+                ),
+              ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          handleSubmitOrder();
+        },
+        child: const Icon(Icons.add),
+      ),
+      floatingActionButtonLocation:
+          FloatingActionButtonLocation.centerDocked,
     );
   }
+
+  // ================= UI HELPERS =================
 
   Widget padded(Widget widget) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 25),
+      padding: const EdgeInsets.symmetric(horizontal: 25),
       child: widget,
     );
   }
-
-  Widget getHorizontalItemSlider(List<Product> items) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      // height: 500, // Set an appropriate height for your container
-      child: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-        ),
-        itemCount: items.length,
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        itemBuilder: (BuildContext context, int index) {
-          return GestureDetector(
-            // onTap: () => onItemClicked(context, items[index]),
-            child: GroceryItemCardWidget(
-              item: items[index],
-              heroSuffix: "home_screen",
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  // void onItemClicked(BuildContext context, GroceryItem groceryItem) {
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => ProductDetailsScreen(
-  //         groceryItem,
-  //         heroSuffix: "home_screen",
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Widget subTitle(String text) {
     return Row(
       children: [
         Text(
           text,
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        Spacer(),
+        const Spacer(),
       ],
     );
   }
 
   Widget locationWidget() {
-    String locationIconPath = "assets/icons/icons8-keroppi.svg";
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SvgPicture.asset(
-          locationIconPath,
-        ),
-        SizedBox(
-          width: 8,
-        ),
-        Text(
+        SvgPicture.asset("assets/icons/icons8-keroppi.svg"),
+        const SizedBox(width: 8),
+        const Text(
           "Note here",
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         )
@@ -253,60 +159,82 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-// Assuming the selected grocery_item is available as groceryItem
-// void onAddButtonSelected(GroceryItem groceryItem) {
-  void onAddButtonSelected(List<Product> groceryItem) async {
-    List<Product> selectedProducts = []; // Danh sách các sản phẩm đã chọn
+  Widget getHorizontalItemSlider(List<Product> items) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      child: GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+        ),
+        itemCount: items.length,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemBuilder: (BuildContext context, int index) {
+          return GroceryItemCardWidget(
+            item: items[index],
+            heroSuffix: "home_screen",
+          );
+        },
+      ),
+    );
+  }
 
-    for (var item in groceryItem) {
-      if (item.orderQuantity > 0) {
-        Product product = Product(
-          id: item.id,
-          description: item.description,
-          imagePath: item.imagePath,
-          orderQuantity: item.orderQuantity,
-          name: item.name,
-          price: (item.price * item.orderQuantity),
-          exclusiveOffers:
-          item.exclusiveOffers, // Set the exclusiveOffers value
-          category: (item.category), // Set the exclusiveOffers value
-        );
+  // ================= ORDER HANDLER =================
 
-        selectedProducts.add(product); // Thêm sản phẩm vào danh sách đã chọn
-      }
+  void handleSubmitOrder() async {
+    List<Product> selectedItems = [];
+
+    selectedItems.addAll(
+        exclusiveOffers.where((e) => e.orderQuantity > 0));
+
+    selectedItems.addAll(
+        preOrders.where((e) => e.orderQuantity > 0));
+
+    selectedItems.addAll(
+        lstTopping.where((e) => e.orderQuantity > 0));
+
+    if (selectedItems.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text('Thông báo'),
+          content: const Text('Bạn chưa chọn sản phẩm nào.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Đóng'),
+            ),
+          ],
+        ),
+      );
+      return;
     }
 
     OrderService orderService = OrderService();
     bool success = await orderService.createOrder(
-        selectedProducts, searchTerm); // Chờ cho hàm createOrder hoàn thành
+      selectedItems,
+      searchTerm,
+    );
 
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Đã tạo đơn hàng thành công!'),
-          // action: SnackBarAction(
-          //   label: 'X',
-          //   onPressed: () {
-          //     ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          //   },
-          // ),
-          duration: Duration(milliseconds: 150), // fix err click button when change page
         ),
       );
+
       setState(() {
+        for (var item in allProducts) {
+          item.orderQuantity = 0;
+        }
         clearSearchBar();
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Tạo đơn hàng thất bại!'),
-          // action: SnackBarAction(
-          //   label: 'X',
-          //   onPressed: () {
-          //     ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          //   },
-          // ),
-          duration: Duration(milliseconds: 150), // fix err click button when change page
         ),
       );
     }
