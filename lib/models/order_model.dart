@@ -1,4 +1,4 @@
-import 'package:grocery_app/models/product_model.dart';
+import 'package:grocery_app/models/product.dart';
 class Order {
   List<Product> _products = [];
   List<Product> get products => _products;

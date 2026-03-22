@@ -8,7 +8,7 @@ import 'package:grocery_app/models/grocery_item.dart';
 import 'package:grocery_app/provider/order_service.dart';
 import 'package:grocery_app/widgets/grocery_item_card_widget.dart';
 import 'package:grocery_app/widgets/search_bar_widget.dart';
-import 'package:grocery_app/models/product_model.dart';
+import 'package:grocery_app/models/product.dart';
 
 import '../dashboard/dashboard_screen.dart';
 

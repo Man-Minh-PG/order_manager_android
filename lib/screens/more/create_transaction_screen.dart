@@ -3,13 +3,14 @@ import 'package:grocery_app/models/generic.dart';
 import 'package:grocery_app/provider/order_service.dart';
 import 'package:grocery_app/screens/payment_history/create_transaction_payment.dart';
 
-class PaymentHistoryScreen extends StatefulWidget {
+
+class CreateTransactionScreen extends StatefulWidget {
   @override
-  _PaymentHistoryScreenState createState() => _PaymentHistoryScreenState();
+  _CreateTransactionScreenState createState() => _CreateTransactionScreenState();
 }
 
-class _PaymentHistoryScreenState extends State<PaymentHistoryScreen> {
-  final OrderService orderService = OrderService();
+class _CreateTransactionScreenState extends State<CreateTransactionScreen> {
+ final OrderService orderService = OrderService();
 
   List<Map<String, dynamic>> listHistory = [];
   // List<Map<String, dynamic>> dataInitialCost = [];
@@ -58,7 +59,7 @@ class _PaymentHistoryScreenState extends State<PaymentHistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: true, // turn on back
         backgroundColor: Colors.white,
         elevation: 0,
         title: Text('History transaction'),
