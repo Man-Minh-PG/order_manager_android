@@ -365,6 +365,11 @@ class DatabaseRepository {
           'name' : 'exchangeBank',
           'value' : '0'
       });
+
+         await db.insert('generic', { // Cash default 
+          'name' : 'actualCash',
+          'value' : '0'
+      });
     }
 
   // Create function insert - update - delete

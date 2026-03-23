@@ -466,7 +466,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
             content: TextField(
               controller: _initialCostController,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(hintText: "Nhập tiền dô !: XXX đồng"),
+              decoration: InputDecoration(hintText: "Nhập tiền dô !: XXX K"),
             ),
             actions: <Widget>[
               TextButton(

@@ -2,7 +2,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:grocery_app/screens/more/create_transaction_screen.dart';
 import 'package:grocery_app/screens/more/product_management_screen.dart';
+import 'package:grocery_app/screens/more/check_bill_screen.dart';
 import 'package:grocery_app/helpers/database.dart';
+
 class MoreScreen extends StatefulWidget {
   const MoreScreen({super.key});
 
@@ -142,6 +144,7 @@ class _MoreScreenState extends State<MoreScreen> {
             children: [
               _buildItem(context, Icons.add_circle_outline, "Add Bill", CreateTransactionScreen()),
               _buildItem(context, Icons.inventory_2_outlined, "Bachutha edit", ProductManagementScreen()),
+              _buildItem(context,Icons.receipt_long,"Check Bill", CheckBillScreen()),
               _buildResetButton(context), 
             ],
           ),
