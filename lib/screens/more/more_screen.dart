@@ -139,6 +139,7 @@ class _MoreScreenState extends State<MoreScreen> {
           appBar: AppBar(
             title: const Text("More"),
             centerTitle: true,
+            automaticallyImplyLeading: false, // Ẩn nút back
           ),
           body: ListView(
             children: [

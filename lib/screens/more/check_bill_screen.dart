@@ -4,7 +4,6 @@ import 'package:grocery_app/provider/report_service.dart';
 import 'package:grocery_app/helpers/database.dart';
 
 class CheckBillScreen extends StatefulWidget {
-  
   const CheckBillScreen({super.key});
 
   @override
@@ -27,10 +26,11 @@ class _CheckBillScreenState extends State<CheckBillScreen> {
     loadData();
   }
 
+  /// Load dữ liệu từ DB và report
   Future<void> loadData() async {
     report = await _reportService.getDailyReport();
 
-    // load actualCash từ DB (generic)
+    // Load actualCash từ generic
     final db = await _dbRepo.database;
     final result = await db.query(
       'generic',
@@ -51,9 +51,9 @@ class _CheckBillScreenState extends State<CheckBillScreen> {
     });
   }
 
-  /// update actualCash trong generic nếu khác
+  /// Update giá trị actualCash nếu có thay đổi
   Future<void> updateCashIfChanged(int value) async {
-    if (lastSavedCash == value) return; // không thay đổi
+    if (lastSavedCash == value) return;
 
     final db = await _dbRepo.database;
     await db.update(
@@ -70,10 +70,16 @@ class _CheckBillScreenState extends State<CheckBillScreen> {
     setState(() {});
   }
 
+  /// Hàm format số thành tiền (number * 1000 -> "30.000 ₫")
+  String formatCurrency(int number) {
+    final amount = number * 1000;
+    final str = amount.toString().replaceAllMapped(
+        RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.');
+    return '$str ₫';
+  }
+
   int get actualCash => int.tryParse(cashController.text) ?? 0;
-
   int get bankMoney => (report?.totalRevenue ?? 0) - actualCash;
-
   int get diff => actualCash - (report?.totalCash ?? 0);
 
   Widget _row(String label, String value, {Color? color}) {
@@ -116,14 +122,6 @@ class _CheckBillScreenState extends State<CheckBillScreen> {
     );
   }
 
-  String formatCurrency(int number) {
-    // number = 30 → hiển thị 30.000 ₫
-    final amount = number * 1000;
-    final str = amount.toString().replaceAllMapped(
-        RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.');
-    return '$str ₫';
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,9 +135,9 @@ class _CheckBillScreenState extends State<CheckBillScreen> {
               children: [
                 /// 💰 DOANH THU
                 _section("Doanh thu", [
-                  _row("Tổng", "${report?.totalRevenue ?? 0} ₫"),
-                  _row("Tiền mặt", "${report?.totalCash ?? 0} ₫"),
-                  _row("Chuyển khoản", "${report?.totalBank ?? 0} ₫"),
+                  _row("Tổng", formatCurrency(report?.totalRevenue ?? 0)),
+                  _row("Tiền mặt", formatCurrency(report?.totalCash ?? 0)),
+                  _row("Chuyển khoản", formatCurrency(report?.totalBank ?? 0)),
                 ]),
 
                 const Divider(),
@@ -150,14 +148,14 @@ class _CheckBillScreenState extends State<CheckBillScreen> {
                     controller: cashController,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
-                      labelText: "Tiền mặt thực tế",
+                      labelText: "Tiền mặt thực tế (nghìn ₫)",
                       border: OutlineInputBorder(),
                     ),
                     onChanged: (value) {
-                      // chỉ cho nhập số
+                      // chỉ cho nhập số nguyên
                       if (RegExp(r'^\d*$').hasMatch(value)) {
                         int v = int.tryParse(value) ?? 0;
-                        updateCashIfChanged(v); // update nếu khác
+                        updateCashIfChanged(v);
                       } else {
                         // remove ký tự không phải số
                         cashController.text = value.replaceAll(RegExp(r'\D'), '');
@@ -170,11 +168,11 @@ class _CheckBillScreenState extends State<CheckBillScreen> {
 
                   const SizedBox(height: 10),
 
-                  _row("Tiền ngân hàng", "$bankMoney ₫"),
+                  _row("Tiền ngân hàng", formatCurrency(bankMoney)),
 
                   _row(
                     "Chênh lệch",
-                    "$diff ₫",
+                    formatCurrency(diff),
                     color: diff == 0
                         ? Colors.green
                         : (diff < 0 ? Colors.red : Colors.orange),
@@ -185,9 +183,9 @@ class _CheckBillScreenState extends State<CheckBillScreen> {
 
                 /// 📦 SẢN PHẨM
                 _section("Sản phẩm", [
-                  _row("Tổng", "${report?.totalProduct ?? 0}"),
-                  _row("Đã bán", "${report?.totalSold ?? 0}"),
-                  _row("Tồn kho", "${report?.theoreticalStock ?? 0}"),
+                  _row("Tổng", report?.totalProduct.toString() ?? "0"),
+                  _row("Đã bán", report?.totalSold.toString() ?? "0"),
+                  _row("Tồn kho", report?.theoreticalStock.toString() ?? "0"),
                 ]),
 
                 const SizedBox(height: 20),
