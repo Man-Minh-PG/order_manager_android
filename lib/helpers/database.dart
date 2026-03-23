@@ -31,56 +31,9 @@ class DatabaseRepository {
 
       await db.execute('VACUUM');
 
-       await db.execute('''
-          CREATE TABLE orders (
-            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-            total INTEGER NOT NULL,
-            discountDetail INTEGER DEFAULT 0,
-            note TEXT,
-            paymentId INTEGER,
-            status INTEGER DEFAULT 0,
-            isDiscount INTEGER DEFAULT 0,
-            createdAt TIMESTAMP NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime')) ,
-            FOREIGN KEY (paymentId) REFERENCES payment (id)
-          )
-        ''');
-
-        await db.execute('''
-          CREATE TABLE order_detail (
-            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-            productId INTEGER,
-            orderId INTEGER,
-            amount INTEGER,
-            status INTEGER DEFAULT 0,
-            createdAt TIMESTAMP NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime')) ,
-            FOREIGN KEY (productId) REFERENCES product (id),
-            FOREIGN KEY (orderId) REFERENCES orders (id)
-          )
-        ''');
-
-        await db.execute('''
-          CREATE TABLE generic(
-            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-            name TEXT NOT NULL,
-            value TEXT,
-            status INTEGER DEFAULT 0,
-            createdAt TIMESTAMP NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime'))
-          )
-        ''');
-
-        await db.execute('''
-          CREATE TABLE transaction_history(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            value_payment INTEGER DEFAULT 0,
-            type INTEGER DEFAULT 0,
-            note TEXT,
-            createdAt TIMESTAMP NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now', 'localtime'))
-          )
-        ''');
-
         // Sample product data
         //insertProduct(db);
-        //insertPayment(db);
+        insertPayment(db);
         insertGeneric(db);
 
       return true;
@@ -217,8 +170,8 @@ class DatabaseRepository {
     ''');
 
     // Sample product data
-    //insertProduct(db);
-    //insertPayment(db);
+    insertProduct(db);
+    insertPayment(db);
     insertGeneric(db);
     // Các lệnh insert khác ở đây...
 

@@ -193,6 +193,8 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                       name: nameController.text,
                       price: int.parse(priceController.text),
                       category: selectedCategory,
+                      description: 'Hard code',
+                      imagePath: 'assets/images/grocery_images/premium.png',
                     ),
                   );
 
