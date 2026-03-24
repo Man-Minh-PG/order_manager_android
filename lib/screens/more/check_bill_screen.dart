@@ -49,7 +49,7 @@ class _CheckBillScreenState extends State<CheckBillScreen> {
     setState(() => isLoading = false);
   }
 
-  /// ✅ FIX: insert hoặc update luôn
+    /// ✅ FIX: insert hoặc update luôn
   Future<void> updateCashIfChanged(int value) async {
     if (lastSavedCash == value) return;
 
@@ -80,8 +80,102 @@ class _CheckBillScreenState extends State<CheckBillScreen> {
   }
 
   int get actualCash => int.tryParse(cashController.text) ?? 0;
-  int get bankMoney => (report?.totalRevenue ?? 0) - actualCash;
-  int get diff => actualCash - (report?.totalCash ?? 0);
+  int get systemCash => report?.totalCash ?? 0;
+  int get systemBank => report?.totalBank ?? 0;
+
+  int get diff => actualCash - systemCash;
+
+  /// 🔥 BOX PHÂN TÍCH
+  Widget _analysisBox() {
+    if (report == null) return const SizedBox();
+
+    /// ✅ KHỚP TIỀN
+    if (diff == 0) {
+      return _infoBox(
+        color: Colors.green,
+        icon: Icons.check_circle,
+        title: "Tiền đã khớp",
+        message: "Số tiền thực tế trùng với hệ thống 👍",
+      );
+    }
+
+    final isMissing = diff < 0;
+
+    /// ❌ THIẾU TIỀN
+    if (isMissing) {
+      final missingBuns = report!.missingProduct.floor(); // làm tròn xuống
+      String message =
+          "Thiếu ${formatCurrency(diff.abs())} (~$missingBuns bánh)";
+
+      String sub = "";
+
+      /// 🔥 PHÂN TÍCH THÔNG MINH
+      if (systemBank == 0) {
+        sub = "Có khả năng đơn chuyển khoản bị nhập nhầm thành tiền mặt";
+      } else {
+        sub = "Kiểm tra lại tiền mặt hoặc có thể thất thoát tiền/bánh";
+      }
+
+      return _infoBox(
+        color: Colors.red,
+        icon: Icons.warning_amber,
+        title: message,
+        message: sub,
+      );
+    }
+
+    /// ⚠️ DƯ TIỀN
+    return _infoBox(
+      color: Colors.orange,
+      icon: Icons.info_outline,
+      title: "Dư ${formatCurrency(diff)}",
+      message: "Có thể nhập dư tiền hoặc ghi nhận sai đơn hàng",
+    );
+  }
+
+  Widget _infoBox({
+    required Color color,
+    required IconData icon,
+    required String title,
+    required String message,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(top: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: color),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: color,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  message,
+                  style: TextStyle(
+                    color: Colors.grey[700],
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _row(String label, String value, {Color? color}) {
     return Padding(
@@ -123,72 +217,11 @@ class _CheckBillScreenState extends State<CheckBillScreen> {
     );
   }
 
-  Widget _warningBox() {
-    if (diff == 0) {
-      return Container(
-        margin: const EdgeInsets.only(top: 12),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.green.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          children: [
-            const Icon(Icons.check_circle, color: Colors.green),
-            const SizedBox(width: 10),
-            const Expanded(
-              child: Text(
-                "Khớp tiền 👍",
-                style: TextStyle(
-                  color: Colors.green,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    final isMissing = diff < 0;
-
-    return Container(
-      margin: const EdgeInsets.only(top: 12),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: isMissing
-            ? Colors.red.withOpacity(0.1)
-            : Colors.orange.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            isMissing ? Icons.warning_amber : Icons.info_outline,
-            color: isMissing ? Colors.red : Colors.orange,
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              isMissing
-                  ? "Thiếu ${formatCurrency(diff.abs())} (~${report?.missingProduct.toStringAsFixed(1)} bánh)"
-                  : "Dư ${formatCurrency(diff)}",
-              style: TextStyle(
-                color: isMissing ? Colors.red : Colors.orange,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Check Bill"),
+        title: const Text("Phân tích"),
         centerTitle: true,
       ),
       body: isLoading
@@ -197,20 +230,20 @@ class _CheckBillScreenState extends State<CheckBillScreen> {
               children: [
                 /// 💰 DOANH THU
                 _section("Doanh thu", [
-                  _row("Tổng", formatCurrency(report?.totalRevenue ?? 0)),
-                  _row("Tiền mặt", formatCurrency(report?.totalCash ?? 0)),
-                  _row("Chuyển khoản", formatCurrency(report?.totalBank ?? 0)),
+                  _row("Tổng doanh thu", formatCurrency(report?.totalRevenue ?? 0)),
+                  _row("Tiền mặt (hệ thống)", formatCurrency(systemCash)),
+                  _row("Chuyển khoản (hệ thống)", formatCurrency(systemBank)),
                 ]),
 
                 const Divider(),
 
                 /// 💵 KIỂM TIỀN
-                _section("Kiểm kê tiền", [
+                _section("Tiền thực tế", [
                   TextField(
                     controller: cashController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      labelText: "Tiền mặt thực tế",
+                      labelText: "Nhập tiền mặt thực tế",
                       suffixText: "₫",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -225,8 +258,7 @@ class _CheckBillScreenState extends State<CheckBillScreen> {
                             value.replaceAll(RegExp(r'\D'), '');
                         cashController.selection =
                             TextSelection.fromPosition(
-                          TextPosition(
-                              offset: cashController.text.length),
+                          TextPosition(offset: cashController.text.length),
                         );
                       }
                     },
@@ -234,7 +266,8 @@ class _CheckBillScreenState extends State<CheckBillScreen> {
 
                   const SizedBox(height: 10),
 
-                  _row("Tiền ngân hàng", formatCurrency(bankMoney)),
+                  _row("Tiền mặt (thực tế)", formatCurrency(actualCash)),
+                  _row("Tiền ngân hàng (ước tính)", formatCurrency((report?.totalRevenue ?? 0) - actualCash)),
 
                   _row(
                     "Chênh lệch",
@@ -244,16 +277,16 @@ class _CheckBillScreenState extends State<CheckBillScreen> {
                         : (diff < 0 ? Colors.red : Colors.orange),
                   ),
 
-                  _warningBox(),
+                  _analysisBox(),
                 ]),
 
                 const Divider(),
 
                 /// 📦 SẢN PHẨM
                 _section("Sản phẩm", [
-                  _row("Tổng", report?.totalProduct.toString() ?? "0"),
+                  _row("Tổng nhập", report?.totalProduct.toString() ?? "0"),
                   _row("Đã bán", report?.totalSold.toString() ?? "0"),
-                  _row("Tồn kho", report?.theoreticalStock.toString() ?? "0"),
+                  _row("Tồn kho (lý thuyết)", report?.theoreticalStock.toString() ?? "0"),
                 ]),
 
                 const SizedBox(height: 20),

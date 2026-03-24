@@ -145,7 +145,7 @@ class _MoreScreenState extends State<MoreScreen> {
             children: [
               _buildItem(context, Icons.add_circle_outline, "Add Bill", CreateTransactionScreen()),
               _buildItem(context, Icons.inventory_2_outlined, "Bachutha edit", ProductManagementScreen()),
-              _buildItem(context,Icons.receipt_long,"Check Bill", CheckBillScreen()),
+              _buildItem(context,Icons.receipt_long,"Check report", CheckBillScreen()),
               _buildResetButton(context), 
             ],
           ),

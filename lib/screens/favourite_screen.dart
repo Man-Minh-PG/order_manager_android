@@ -167,11 +167,11 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                   ),
                   SizedBox(height: 16),
                   Text(
-                    'Tổng bột hôm nay: ${totalProductConvert}',
+                    'Tổng bột: ${totalProductConvert}',
                     style: TextStyle(fontSize: 16),
                   ),
                   Text(
-                    'Tổng số sản phẩm bán được: ${totalProductsSold ?? 0}',
+                    'Hôm nay bán được: ${totalProductsSold ?? 0}',
                     style: TextStyle(fontSize: 16),
                   ),
                   // Text(
@@ -185,7 +185,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                   SizedBox(height: 16),
 
                   Text(
-                    'Tổng số đơn hàng bị hủy: ${totalCancelledOrders ?? 0}',
+                    'Tổng đơn đã hủy: ${totalCancelledOrders ?? 0}',
                     style: TextStyle(fontSize: 16),
                   ),
                   SizedBox(height: 16),
@@ -275,7 +275,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                   SizedBox(height: 16),
 
                   Text(
-                    'Tổng số tiền discount: ${formatDisplayMoney(totalDiscount ?? 0)} ₫',
+                    'Tổng tiền đã discount: ${formatDisplayMoney(totalDiscount ?? 0)} ₫',
                     style: TextStyle(fontSize: 16),
                   ),
                   SizedBox(height: 16),
@@ -283,7 +283,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                     children: [
                       //archive_outlined
                       Text(
-                        'Thống kê số lượng:',
+                        'Thống kê theo sản phẩm:',
                         style: TextStyle(fontSize: 16),
                       ),
                       IconButton( 
@@ -408,11 +408,11 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Nhập bột'),
+            title: Text('Thêm bột'),
             content: TextField(
               controller: _totalProductController,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(hintText: "XXX Cục"), // placeholder
+              decoration: InputDecoration(hintText: "XXX Bột"), // placeholder
             ),
             actions: <Widget>[
               TextButton(
@@ -462,7 +462,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Tổng tiền hom nay'),
+            title: Text('Bao nhiêu nà!'),
             content: TextField(
               controller: _initialCostController,
               keyboardType: TextInputType.number,

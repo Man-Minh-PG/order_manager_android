@@ -289,7 +289,7 @@ class DatabaseRepository {
       });
       
         await db.insert('product', {
-        'name': 'Now',
+        'name': 'Shoppe',
         'description': 'Pre order',
         'price': 0,
         'imagePath': 'assets/images/grocery_images/banana.png',

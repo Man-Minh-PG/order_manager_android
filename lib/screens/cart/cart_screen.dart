@@ -23,14 +23,16 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Future<void> fetchOrders() async {
-    List<Map<String, dynamic>> orders = await orderService.selectOrdersWithStatus0();
+    List<Map<String, dynamic>> orders =
+        await orderService.selectOrdersWithStatus0();
 
     setState(() {
       groupedOrders.clear();
       for (var order in orders) {
         int orderId = order['orderId'];
         if (!groupedOrders.containsKey(orderId)) {
-          groupedOrders[orderId] = [order].toList(); // Chuyển danh sách sang một danh sách có thể sửa đổi
+          groupedOrders[orderId] = [order]
+              .toList(); // Chuyển danh sách sang một danh sách có thể sửa đổi
           // groupedOrders[orderId]['paymentMethod'] = cashPayment; // Gán giá trị cho phần tử đó
         } else {
           groupedOrders[orderId]!.add(order);
@@ -49,172 +51,229 @@ class _CartScreenState extends State<CartScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false, // fix button back - edit order
         title: Text('List order'), // Tiêu đề của AppBar
-        // Các thuộc tính khác của AppBar như backgroundColor, actions, v.v... 
+        // Các thuộc tính khác của AppBar như backgroundColor, actions, v.v...
       ),
       body: _isLoading
-       ? Center(child: CircularProgressIndicator()) // Hiển thị loader khi đang tải dữ liệu 
-       : SafeArea(
-        child: ListView.separated(
-          // physics: NeverScrollableScrollPhysics(), // Ngăn chặn cuộn của ListView bên ngoài
-          shrinkWrap: true,
-          padding: const EdgeInsets.all(8),
-          itemCount: groupedOrders.length,
-          itemBuilder: (BuildContext context, int index) {
-            List<Map<String, dynamic>> products = groupedOrders.values.elementAt(index);
-            int totalAmount = products[0]['total'];
-            return Card(
-              color: Colors.white,
-              elevation: 2,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  ListTile(
-                    leading: Icon(Icons.shopping_cart),
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+          ? Center(
+              child:
+                  CircularProgressIndicator()) // Hiển thị loader khi đang tải dữ liệu
+          : SafeArea(
+              child: ListView.separated(
+                // physics: NeverScrollableScrollPhysics(), // Ngăn chặn cuộn của ListView bên ngoài
+                shrinkWrap: true,
+                padding: const EdgeInsets.all(8),
+                itemCount: groupedOrders.length,
+                itemBuilder: (BuildContext context, int index) {
+                  List<Map<String, dynamic>> products =
+                      groupedOrders.values.elementAt(index);
+                  int totalAmount = products[0]['total'];
+                  return Card(
+                    color: Colors.white,
+                    elevation: 2,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        ListTile(
+                          leading: Icon(Icons.shopping_cart),
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("Num ID: # ${products[0]['orderId']}",
+                                      style: TextStyle(
+                                          color:
+                                              Color.fromARGB(255, 86, 90, 90),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15)),
+                                  // SizedBox(height: 1),
+                                  RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: 'Total: ',
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 16),
+                                        ),
+                                        TextSpan(
+                                          text: ' $totalAmount K',
+                                          style: TextStyle(
+                                              color: Color.fromARGB(
+                                                  255, 248, 66, 42),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // SizedBox(height: 5),
+                              Text("Ghi chú: ${products[0]['note'] ?? ''}",
+                                  style: TextStyle(
+                                      color: const Color.fromARGB(
+                                          255, 243, 33, 114))),
+                            ],
+                          ),
+                        ),
+
+                        // Divider( // Thêm Divider để phân chia ListTile và phần còn lại của Card
+                        //   color: Colors.grey, // Màu của đường gạch
+                        //   thickness: 0.5, // Độ dày của đường gạch
+                        //   height: 0, // Chiều cao của đường gạch
+                        // ),
+
+                        ListView.builder(
+                          physics:
+                              NeverScrollableScrollPhysics(), // Ngăn chặn cuộn của ListView bên trong
+                          padding: EdgeInsets.zero, // Không có padding
+                          shrinkWrap: true,
+                          itemCount: products.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            // return ListTile(
+                            //   dense: true, // Sử dụng dense để làm cho ListTile gọn hơn
+                            //   // contentPadding: EdgeInsets.symmetric(vertical: 0), // Giảm padding bên trong ListTile - padding hướng ngang á
+                            //   title: Text(
+                            //     "Tên sản phẩm: ${products[index]['product_name']} - Số lượng: ${products[index]['amount']}",
+                            //     style: TextStyle(fontSize: 13),
+                            //   ),
+                            //   // subtitle: Text("Số lượng: ${products[index]['amount']}",
+                            //   //   style: TextStyle(fontSize: 13)
+                            //   // ),
+                            // );
+                            return Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 3, horizontal: 18),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("${products[index]['product_name']}"),
+                                  Text(
+                                    "Số lượng: ${products[index]['amount']}",
+                                    style: TextStyle(
+                                      fontWeight:
+                                          FontWeight.bold, // vừa phải nổi bật
+                                      color: Colors.blueAccent, // màu nổi bật
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+
+                        ElevatedButton(
+                          onPressed: () {
+                            if (products.isNotEmpty &&
+                                products[0]['paymentMethod'] ==
+                                    Order.noPayment) {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                        title: Text('Notification'),
+                                        content: Text(
+                                            'Phải thanh toán trước khi hoàn thành đơn.'),
+                                        actions: [
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text('Close'))
+                                        ],
+                                      ));
+                            } else {
+                              if (products.isNotEmpty) {
+                                _handlePayment(
+                                    context,
+                                    products[0]['orderId'],
+                                    products[0]['paymentMethod']!,
+                                    1,
+                                    Order.orderStatusSucess);
+                              }
+                            }
+                          },
+                          child: const Text('Finish'),
+                        ),
+
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Num ID: # ${products[0]['orderId']}", style: TextStyle(color: Color.fromARGB(255, 86, 90, 90), fontWeight: FontWeight.bold, fontSize: 15)),
-                            // SizedBox(height: 1),
-                              RichText(
-                                text: TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: 'Total: ',
-                                      style: TextStyle(color: Colors.black, fontSize: 16),
-                                    ),
-                                    TextSpan(
-                                      text: ' $totalAmount K',
-                                      style: TextStyle(color: Color.fromARGB(255, 248, 66, 42), fontSize: 16, fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                              )
-                          ],
-                        ),
-                      ],
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [       
-                        // SizedBox(height: 5),
-                        Text("Ghi chú: ${products[0]['note'] ?? ''}", style: TextStyle(color: const Color.fromARGB(255, 243, 33, 114))),
-                      ],
-                    ),
-                  ),
+                            Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Colors.black, width: 0.5)),
+                              child: Row(
+                                children: [
+                                  Checkbox(
+                                    // note /c/6a19ca36-820e-4fcc-a6a3-35f016742571
+                                    value: products.isNotEmpty
+                                        ? (products[0]['isDiscount'] ==
+                                                Order.isDiscount)
+                                            ? true
+                                            : false
+                                        : false,
+                                    onChanged: (value) {
+                                      if (value == true) {
+                                        setState(() {
+                                          products[0]['isDiscount'] =
+                                              Order.isDiscount; // update state
+                                          products[0][
+                                              'discountDetail'] = (totalAmount *
+                                                  0.3)
+                                              .toInt(); // update discount detail
+                                          totalAmount = totalAmount -
+                                              (totalAmount * 0.3).toInt();
+                                          products[0]['total'] =
+                                              totalAmount; // update total in UI
+                                        });
 
-                  // Divider( // Thêm Divider để phân chia ListTile và phần còn lại của Card
-                  //   color: Colors.grey, // Màu của đường gạch
-                  //   thickness: 0.5, // Độ dày của đường gạch
-                  //   height: 0, // Chiều cao của đường gạch
-                  // ),
-                  
-                  ListView.builder(
-                    physics: NeverScrollableScrollPhysics(), // Ngăn chặn cuộn của ListView bên trong
-                    padding: EdgeInsets.zero, // Không có padding
-                    shrinkWrap: true,
-                    itemCount: products.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      // return ListTile(
-                      //   dense: true, // Sử dụng dense để làm cho ListTile gọn hơn
-                      //   // contentPadding: EdgeInsets.symmetric(vertical: 0), // Giảm padding bên trong ListTile - padding hướng ngang á
-                      //   title: Text(
-                      //     "Tên sản phẩm: ${products[index]['product_name']} - Số lượng: ${products[index]['amount']}",
-                      //     style: TextStyle(fontSize: 13),
-                      //   ),
-                      //   // subtitle: Text("Số lượng: ${products[index]['amount']}",
-                      //   //   style: TextStyle(fontSize: 13)
-                      //   // ),
-                      // );     
-                      return Padding(
-                        padding: EdgeInsets.symmetric(vertical: 3, horizontal: 18),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("${products[index]['product_name']}"),
-                            Text("Số lượng: ${products[index]['amount']}"),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                  
-                  ElevatedButton(
-                  onPressed: () {
-                    if (products.isNotEmpty && products[0]['paymentMethod'] == Order.noPayment) {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text('Notification'),
-                          content: Text('Phải thanh toán trước khi hoàn thành đơn.'),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              }, 
-                              child: Text('Close')
-                            )
-                          ],
-                        )
-                      );
-                    } else {
-                      if (products.isNotEmpty) {
-                        _handlePayment(context, products[0]['orderId'], products[0]['paymentMethod']!, 1, Order.orderStatusSucess);
-                      }
-                    }
-                  },
-                  child: const Text('Finish'),
-                ),
-                  
-                  Row(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 0.5
-                          )
-                        ),
-                        child: Row(
-                          children: [
-                            Checkbox( // note /c/6a19ca36-820e-4fcc-a6a3-35f016742571
-                              value: products.isNotEmpty ? (products[0]['isDiscount'] == Order.isDiscount) ? true : false : false,
-                              onChanged: (value) {
-                                if(value == true) {
-                                  setState(() {
-                                    products[0]['isDiscount'] = Order.isDiscount; // update state
-                                    products[0]['discountDetail'] = (totalAmount * 0.3).toInt();  // update discount detail
-                                    totalAmount = totalAmount - (totalAmount * 0.3).toInt(); 
-                                    products[0]['total'] = totalAmount; // update total in UI
-                                  });
+                                        _handleDiscount(
+                                            context,
+                                            products[0]['orderId'],
+                                            products[0]['total'],
+                                            Order.isDiscount);
+                                      } else {
+                                        setState(() {
+                                          products[0]['isDiscount'] = Order
+                                              .orderNoDiscount; // update state
+                                          int discountDetail =
+                                              products[0]['discountDetail'];
+                                          totalAmount =
+                                              totalAmount + discountDetail;
+                                          products[0]['total'] =
+                                              totalAmount; // update total in UI
 
-                                  _handleDiscount(context, products[0]['orderId'], products[0]['total'], Order.isDiscount);
-                                }else {
-                                  setState(() {
-                                    products[0]['isDiscount'] = Order.orderNoDiscount; // update state
-                                    int discountDetail = products[0]['discountDetail'];
-                                    totalAmount = totalAmount + discountDetail; 
-                                    products[0]['total'] = totalAmount; // update total in UI
+                                          products[0]['discountDetail'] =
+                                              0; // update discount detail
+                                        });
 
-                                    products[0]['discountDetail'] = 0;// update discount detail
-                                  });
-
-                                  _handleDiscount(context, products[0]['orderId'], products[0]['total'], Order.orderNoDiscount);
-                                }
-                              },                        
+                                        _handleDiscount(
+                                            context,
+                                            products[0]['orderId'],
+                                            products[0]['total'],
+                                            Order.orderNoDiscount);
+                                      }
+                                    },
+                                  ),
+                                  Icon(Icons.discount_sharp),
+                                ],
+                              ),
                             ),
-                            Icon(Icons.discount_sharp),
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      ButtonBar(
+                            SizedBox(width: 10),
+                            ButtonBar(
                               alignment: MainAxisAlignment.end,
                               children: [
                                 DropdownButton<int?>(
-                                  value: products[0]['paymentMethod'], // Giá trị mặc định (tiền mặt)
+                                  value: products[0][
+                                      'paymentMethod'], // Giá trị mặc định (tiền mặt)
                                   items: [
                                     DropdownMenuItem<int>(
                                       value: Order.cashPayment,
@@ -228,40 +287,48 @@ class _CartScreenState extends State<CartScreen> {
                                       value: Order.transferPayment,
                                       child: Text('Bank'),
                                     ),
-                                     DropdownMenuItem<int>(
+                                    DropdownMenuItem<int>(
                                       value: Order.noPayment,
                                       child: Text('Chưa TToán'),
                                     ),
                                   ],
                                   onChanged: (value) {
                                     setState(() {
-                                       products[0]['paymentMethod'] = value; // Cập nhật giá trị paymentMethod cho đơn hàng cụ thể 
+                                      products[0]['paymentMethod'] =
+                                          value; // Cập nhật giá trị paymentMethod cho đơn hàng cụ thể
                                     });
-                                   
-                                     _handlePayment(context, products[0]['orderId'], value!, 0, Order.orderStatusDefault);
+
+                                    _handlePayment(
+                                        context,
+                                        products[0]['orderId'],
+                                        value!,
+                                        0,
+                                        Order.orderStatusDefault);
                                   },
                                 ),
                                 IconButton(
-                                  onPressed: () => _confirmDeleteOrder(context, products[0]['orderId']),
-                                  icon: const Icon(Icons.highlight_remove, color: Color.fromARGB(255, 212, 68, 16)),
+                                  onPressed: () => _confirmDeleteOrder(
+                                      context, products[0]['orderId']),
+                                  icon: const Icon(Icons.highlight_remove,
+                                      color: Color.fromARGB(255, 212, 68, 16)),
                                 ),
                                 IconButton(
-                                  onPressed: () => _editOrder(context, products[0]['orderId']),
+                                  onPressed: () => _editOrder(
+                                      context, products[0]['orderId']),
                                   icon: const Icon(Icons.mode_edit),
                                 ),
                               ],
                             ),
-                    ],
-                  ),
-
-                   
-                ],
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                separatorBuilder: (BuildContext context, int index) =>
+                    const Divider(),
               ),
-            );
-          },
-          separatorBuilder: (BuildContext context, int index) => const Divider(),
-        ),
-      ),
+            ),
     );
   }
 
@@ -269,29 +336,37 @@ class _CartScreenState extends State<CartScreen> {
    * Process update total in order 
    * Discount 30%
    */
-  Future<void> _handleDiscount(BuildContext context, int orderId, int totalDiscount, int statusDiscount) async {
-    int resultUpdate = await orderService.updateDiscountInOrder(orderId, totalDiscount, statusDiscount);
+  Future<void> _handleDiscount(BuildContext context, int orderId,
+      int totalDiscount, int statusDiscount) async {
+    int resultUpdate = await orderService.updateDiscountInOrder(
+        orderId, totalDiscount, statusDiscount);
 
-    if(resultUpdate < 0)  {
-      showDialog(context: context, builder: (context) => AppWidgetsCommon.generateDialog(context, "Update discount fail !!"));
+    if (resultUpdate < 0) {
+      showDialog(
+          context: context,
+          builder: (context) => AppWidgetsCommon.generateDialog(
+              context, "Update discount fail !!"));
       return;
     }
-
   }
 
-  Future<void> _handlePayment(BuildContext context, int orderId, int paymentMethod, int removeShow, int statusOrder) async {
-    int resultUpdate = await orderService.updateOrderStatus(orderId, statusOrder, paymentMethod);
-    
+  Future<void> _handlePayment(BuildContext context, int orderId,
+      int paymentMethod, int removeShow, int statusOrder) async {
+    int resultUpdate = await orderService.updateOrderStatus(
+        orderId, statusOrder, paymentMethod);
+
     if (resultUpdate > 0) {
-      if( removeShow == 1) {
+      if (removeShow == 1) {
         setState(() {
           groupedOrders.remove(orderId);
         });
       }
-      
     } else {
       // Hiển thị hộp thoại thông báo lỗi
-      showDialog(context: context, builder: (context) => AppWidgetsCommon.generateDialog(context, "Payment Err !!"));
+      showDialog(
+          context: context,
+          builder: (context) =>
+              AppWidgetsCommon.generateDialog(context, "Payment Err !!"));
       return;
     }
   }
@@ -307,13 +382,15 @@ class _CartScreenState extends State<CartScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(false); // Đóng hộp thoại và trả về giá trị false
+                Navigator.of(context)
+                    .pop(false); // Đóng hộp thoại và trả về giá trị false
               },
               child: Text("Không"),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(true); // Đóng hộp thoại và trả về giá trị true
+                Navigator.of(context)
+                    .pop(true); // Đóng hộp thoại và trả về giá trị true
               },
               child: Text("Có"),
             ),
@@ -324,23 +401,28 @@ class _CartScreenState extends State<CartScreen> {
 
     // Nếu người dùng xác nhận muốn xóa đơn hàng
     if (confirmDelete == true) {
-      int resultUpdate = await orderService.updateOrderStatus(orderId, Order.orderStatusCancel, Order.cashPayment);
+      int resultUpdate = await orderService.updateOrderStatus(
+          orderId, Order.orderStatusCancel, Order.cashPayment);
       if (resultUpdate > 0) {
         setState(() {
           groupedOrders.remove(orderId);
         });
       } else {
         // Hiển thị hộp thoại thông báo lỗi
-         showDialog(context: context, builder: (context) => AppWidgetsCommon.generateDialog(context, "Delete order Err!!"));
+        showDialog(
+            context: context,
+            builder: (context) =>
+                AppWidgetsCommon.generateDialog(context, "Delete order Err!!"));
         return;
       }
     }
-  } 
+  }
 
   void _editOrder(BuildContext context, int orderId) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => EditOrderScreen(orderId: orderId)),
+      MaterialPageRoute(
+          builder: (context) => EditOrderScreen(orderId: orderId)),
     );
   }
 }
