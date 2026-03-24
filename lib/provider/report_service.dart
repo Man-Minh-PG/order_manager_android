@@ -6,88 +6,96 @@ class ReportService {
 
   Future<DailyReport> getDailyReport() async {
     final db = await _dbRepo.database;
-
-    /// 🗓 Lọc theo ngày hôm nay
     final today = DateTime.now().toString().substring(0, 10);
 
     /// 💰 Tổng doanh thu
-    final revenueResult = await db.rawQuery('''
-      SELECT SUM(total) as totalRevenue
+    final revenue = await db.rawQuery('''
+      SELECT IFNULL(SUM(total), 0) as totalRevenue
       FROM orders
-      WHERE DATE(createdAt) = ? AND orders.status = 1
-    ''', [today]);
+      WHERE status = 1
+    ''');
 
-    int totalRevenue = (revenueResult.first['totalRevenue'] ?? 0) as int;
+    final totalRevenue = (revenue.first['totalRevenue'] ?? 0) as int;
 
     /// 💵 Tiền mặt
-    final cashResult = await db.rawQuery('''
-      SELECT SUM(o.total) as totalCash
+    final cash = await db.rawQuery('''
+      SELECT IFNULL(SUM(o.total), 0) as totalCash
       FROM orders o
       JOIN payment p ON o.paymentId = p.id
-      WHERE p.name = 'Tien_mat'
-      AND o.status = 1
-      AND DATE(o.createdAt) = ?
-    ''', [today]);
+      WHERE p.name = 'Tien_mat' AND o.status = 1
+    ''');
 
-    int totalCash = (cashResult.first['totalCash'] ?? 0) as int;
+    final totalCash = (cash.first['totalCash'] ?? 0) as int;
 
-    /// 🏦 Chuyển khoản
-    final bankResult = await db.rawQuery('''
-      SELECT SUM(o.total) as totalBank
+    /// 🏦 Bank
+    final bank = await db.rawQuery('''
+      SELECT IFNULL(SUM(o.total), 0) as totalBank
       FROM orders o
       JOIN payment p ON o.paymentId = p.id
-      WHERE p.name = 'Chuyen_Khoan'
-      AND o.status = 1
-      AND DATE(o.createdAt) = ?
-    ''', [today]);
+      WHERE p.name = 'Chuyen_Khoan' AND o.status = 1
+    ''');
 
-    int totalBank = (bankResult.first['totalBank'] ?? 0) as int;
+    final totalBank = (bank.first['totalBank'] ?? 0) as int;
 
-    /// 📦 Tổng sản phẩm bán
-    final soldResult = await db.rawQuery('''
-      SELECT SUM(amount) as totalSold
-      FROM order_detail
-      WHERE DATE(createdAt) = ? AND order_detail.status = 1
-    ''', [today]);
+    /// 📦 Đã bán
+    final sold = await db.rawQuery('''
+      SELECT IFNULL(SUM(order_detail.amount), 0) AS totalProductsSold
+      FROM orders
+      JOIN order_detail ON order_detail.orderId = orders.id
+      JOIN product ON product.id = order_detail.productId
+      WHERE orders.status = 1 AND product.isSpecialProduct = 0
+    ''');
 
-    int totalSold = (soldResult.first['totalSold'] ?? 0) as int;
+    final totalSold = sold.first['totalProductsSold'] as int;
 
-    /// 📦 Tổng sản phẩm (generic)
+    /// 📦 Tổng sản phẩm
     final totalProductResult = await db.query(
       'generic',
       where: 'name = ?',
       whereArgs: ['totalProduct'],
     );
 
-    int totalProduct = int.tryParse(
+    final totalProduct = int.tryParse(
           totalProductResult.isNotEmpty
               ? totalProductResult.first['value'].toString()
               : '0',
         ) ??
         0;
 
-    /// 📦 tồn lý thuyết
-    int theoreticalStock = totalProduct - totalSold;
+    final theoreticalStock = totalProduct - totalSold;
 
-    /// 💵 Tiền mặt thực tế (nếu có lưu)
+    /// 💵 actual cash (fix lỗi insert/update)
     final actualCashResult = await db.query(
       'generic',
       where: 'name = ?',
       whereArgs: ['actualCash'],
     );
 
-    int actualCash = int.tryParse(
+    final actualCash = int.tryParse(
           actualCashResult.isNotEmpty
               ? actualCashResult.first['value'].toString()
-              : '0',
+              : totalCash.toString(),
         ) ??
         totalCash;
 
-    /// 🏦 tiền bank tính toán
-    int bankCalculated = totalRevenue - actualCash;
+    /// 💸 chênh lệch
+    final diffCash = actualCash - totalCash;
 
-    /// ⚖️ chênh lệch tiền
-    int diffCash = actualCash - totalCash;
+    /// 💡 Giá trung bình
+    final avgPriceResult = await db.rawQuery('''
+      SELECT AVG(p.price) as avgPrice
+      FROM order_detail od
+      JOIN product p ON od.productId = p.id
+      WHERE DATE(od.createdAt) = DATE(?)
+    ''', [today]);
+
+    final avgPrice = (avgPriceResult.first['avgPrice'] as num?)?.toDouble() ?? 0.0;
+
+    /// 🔥 suy ra bánh thiếu
+    double missingProduct = 0;
+    if (diffCash < 0 && avgPrice > 0) {
+      missingProduct = diffCash.abs() / avgPrice;
+    }
 
     return DailyReport(
       totalRevenue: totalRevenue,
@@ -97,8 +105,9 @@ class ReportService {
       totalSold: totalSold,
       theoreticalStock: theoreticalStock,
       actualCash: actualCash,
-      bankCalculated: bankCalculated,
+      bankCalculated: totalRevenue - actualCash,
       diffCash: diffCash,
+      missingProduct: missingProduct,
     );
   }
 }

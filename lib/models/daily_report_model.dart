@@ -1,6 +1,3 @@
-/**
- * 2026: Man note < class mapping data not add DB >
- */
 class DailyReport {
   final int totalRevenue;
   final int totalCash;
@@ -14,6 +11,8 @@ class DailyReport {
   final int bankCalculated;
   final int diffCash;
 
+  final double missingProduct;
+
   DailyReport({
     required this.totalRevenue,
     required this.totalCash,
@@ -24,5 +23,6 @@ class DailyReport {
     required this.actualCash,
     required this.bankCalculated,
     required this.diffCash,
+    required this.missingProduct,
   });
 }

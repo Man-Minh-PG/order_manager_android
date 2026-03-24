@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:grocery_app/models/daily_report_model.dart';
 import 'package:grocery_app/provider/report_service.dart';
 import 'package:grocery_app/helpers/database.dart';
+import 'package:sqflite/sqflite.dart';
 
 class CheckBillScreen extends StatefulWidget {
   const CheckBillScreen({super.key});
@@ -26,11 +27,9 @@ class _CheckBillScreenState extends State<CheckBillScreen> {
     loadData();
   }
 
-  /// Load dữ liệu từ DB và report
   Future<void> loadData() async {
     report = await _reportService.getDailyReport();
 
-    // Load actualCash từ generic
     final db = await _dbRepo.database;
     final result = await db.query(
       'generic',
@@ -39,6 +38,7 @@ class _CheckBillScreenState extends State<CheckBillScreen> {
     );
 
     int actualCash = report!.actualCash;
+
     if (result.isNotEmpty) {
       actualCash = int.tryParse(result.first['value'].toString()) ?? actualCash;
     }
@@ -46,35 +46,36 @@ class _CheckBillScreenState extends State<CheckBillScreen> {
     cashController.text = actualCash.toString();
     lastSavedCash = actualCash;
 
-    setState(() {
-      isLoading = false;
-    });
+    setState(() => isLoading = false);
   }
 
-  /// Update giá trị actualCash nếu có thay đổi
+  /// ✅ FIX: insert hoặc update luôn
   Future<void> updateCashIfChanged(int value) async {
     if (lastSavedCash == value) return;
 
     final db = await _dbRepo.database;
-    await db.update(
+
+    await db.insert(
       'generic',
-      {'value': value.toString()},
-      where: 'name = ?',
-      whereArgs: ['actualCash'],
+      {
+        'name': 'actualCash',
+        'value': value.toString(),
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
     lastSavedCash = value;
 
-    // reload report để update bank / diff
     report = await _reportService.getDailyReport();
     setState(() {});
   }
 
-  /// Hàm format số thành tiền (number * 1000 -> "30.000 ₫")
   String formatCurrency(int number) {
     final amount = number * 1000;
     final str = amount.toString().replaceAllMapped(
-        RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.');
+      RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+      (Match m) => '${m[1]}.',
+    );
     return '$str ₫';
   }
 
@@ -122,6 +123,67 @@ class _CheckBillScreenState extends State<CheckBillScreen> {
     );
   }
 
+  Widget _warningBox() {
+    if (diff == 0) {
+      return Container(
+        margin: const EdgeInsets.only(top: 12),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.green.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.check_circle, color: Colors.green),
+            const SizedBox(width: 10),
+            const Expanded(
+              child: Text(
+                "Khớp tiền 👍",
+                style: TextStyle(
+                  color: Colors.green,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final isMissing = diff < 0;
+
+    return Container(
+      margin: const EdgeInsets.only(top: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: isMissing
+            ? Colors.red.withOpacity(0.1)
+            : Colors.orange.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            isMissing ? Icons.warning_amber : Icons.info_outline,
+            color: isMissing ? Colors.red : Colors.orange,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              isMissing
+                  ? "Thiếu ${formatCurrency(diff.abs())} (~${report?.missingProduct.toStringAsFixed(1)} bánh)"
+                  : "Dư ${formatCurrency(diff)}",
+              style: TextStyle(
+                color: isMissing ? Colors.red : Colors.orange,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -147,20 +209,24 @@ class _CheckBillScreenState extends State<CheckBillScreen> {
                   TextField(
                     controller: cashController,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      labelText: "Tiền mặt thực tế (nghìn ₫)",
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: "Tiền mặt thực tế",
+                      suffixText: "₫",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                     onChanged: (value) {
-                      // chỉ cho nhập số nguyên
                       if (RegExp(r'^\d*$').hasMatch(value)) {
                         int v = int.tryParse(value) ?? 0;
                         updateCashIfChanged(v);
                       } else {
-                        // remove ký tự không phải số
-                        cashController.text = value.replaceAll(RegExp(r'\D'), '');
-                        cashController.selection = TextSelection.fromPosition(
-                          TextPosition(offset: cashController.text.length),
+                        cashController.text =
+                            value.replaceAll(RegExp(r'\D'), '');
+                        cashController.selection =
+                            TextSelection.fromPosition(
+                          TextPosition(
+                              offset: cashController.text.length),
                         );
                       }
                     },
@@ -177,6 +243,8 @@ class _CheckBillScreenState extends State<CheckBillScreen> {
                         ? Colors.green
                         : (diff < 0 ? Colors.red : Colors.orange),
                   ),
+
+                  _warningBox(),
                 ]),
 
                 const Divider(),
