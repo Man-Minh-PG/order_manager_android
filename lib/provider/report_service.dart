@@ -14,7 +14,7 @@ class ReportService {
     final revenueResult = await db.rawQuery('''
       SELECT SUM(total) as totalRevenue
       FROM orders
-      WHERE DATE(createdAt) = ?
+      WHERE DATE(createdAt) = ? AND orders.status = 1
     ''', [today]);
 
     int totalRevenue = (revenueResult.first['totalRevenue'] ?? 0) as int;
@@ -25,6 +25,7 @@ class ReportService {
       FROM orders o
       JOIN payment p ON o.paymentId = p.id
       WHERE p.name = 'Tien_mat'
+      AND o.status = 1
       AND DATE(o.createdAt) = ?
     ''', [today]);
 
@@ -36,6 +37,7 @@ class ReportService {
       FROM orders o
       JOIN payment p ON o.paymentId = p.id
       WHERE p.name = 'Chuyen_Khoan'
+      AND o.status = 1
       AND DATE(o.createdAt) = ?
     ''', [today]);
 
@@ -45,7 +47,7 @@ class ReportService {
     final soldResult = await db.rawQuery('''
       SELECT SUM(amount) as totalSold
       FROM order_detail
-      WHERE DATE(createdAt) = ?
+      WHERE DATE(createdAt) = ? AND order_detail.status = 1
     ''', [today]);
 
     int totalSold = (soldResult.first['totalSold'] ?? 0) as int;

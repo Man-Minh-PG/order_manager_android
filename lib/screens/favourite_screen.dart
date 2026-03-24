@@ -162,7 +162,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Ngày hôm nay: ${DateTime.now().toString().substring(0, 10)}',
+                    'Thời gian report: ${DateTime.now().toString().substring(0, 10)}',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 16),
@@ -283,15 +283,15 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
                     children: [
                       //archive_outlined
                       Text(
-                        'Số lượng bán được theo từng sản phẩm:',
+                        'Thống kê số lượng:',
                         style: TextStyle(fontSize: 16),
                       ),
                       IconButton( 
                         onPressed: () async {
                           totalRevenue = await orderService.getTotalRevenueToday(); // temp open
-                          showDialog(context: context, builder: (context) => AppWidgetsCommon.generateDialog(context, 'Tổng tất cả sp bên dưới: ${formatDisplayMoney(totalRevenue ?? 0)} ₫ ', type: 1));
+                          showDialog(context: context, builder: (context) => AppWidgetsCommon.generateDialog(context, 'Tổng tiền:\n ${formatDisplayMoney(totalRevenue ?? 0)} ₫ ', type: 1));
                         }, 
-                        icon: Icon(Icons.archive_outlined)
+                        icon: Icon(Icons.monetization_on_outlined)
                       )
                     ],
                   ),
