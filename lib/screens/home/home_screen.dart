@@ -183,17 +183,88 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // ================= ORDER HANDLER =================
 
+  // void handleSubmitOrder() async {
+  //   List<Product> selectedItems = [];
+
+  //   selectedItems.addAll(
+  //       exclusiveOffers.where((e) => e.orderQuantity > 0));
+
+  //   selectedItems.addAll(
+  //       preOrders.where((e) => e.orderQuantity > 0));
+
+  //   selectedItems.addAll(
+  //       lstTopping.where((e) => e.orderQuantity > 0));
+
+  //   if (selectedItems.isEmpty) {
+  //     showDialog(
+  //       context: context,
+  //       builder: (_) => AlertDialog(
+  //         title: const Text('Thông báo'),
+  //         content: const Text('Bạn chưa chọn sản phẩm nào.'),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () => Navigator.pop(context),
+  //             child: const Text('Đóng'),
+  //           ),
+  //         ],
+  //       ),
+  //     );
+  //     return;
+  //   }
+
+  //   OrderService orderService = OrderService();
+  //   bool success = await orderService.createOrder(
+  //     selectedItems,
+  //     searchTerm,
+  //   );
+
+  //   if (success) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(
+  //         content: Text('Đã tạo đơn hàng thành công!'),
+  //       ),
+  //     );
+
+  //     setState(() {
+  //       for (var item in allProducts) {
+  //         item.orderQuantity = 0;
+  //       }
+  //       clearSearchBar();
+  //     });
+  //   } else {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(
+  //         content: Text('Tạo đơn hàng thất bại!'),
+  //       ),
+  //     );
+  //   }
+  // }
+
   void handleSubmitOrder() async {
     List<Product> selectedItems = [];
 
-    selectedItems.addAll(
-        exclusiveOffers.where((e) => e.orderQuantity > 0));
+    List<Product> allSelected = [
+      ...exclusiveOffers,
+      ...preOrders,
+      ...lstTopping,
+    ];
 
-    selectedItems.addAll(
-        preOrders.where((e) => e.orderQuantity > 0));
-
-    selectedItems.addAll(
-        lstTopping.where((e) => e.orderQuantity > 0));
+    for (var item in allSelected) {
+      if (item.orderQuantity > 0) {
+        selectedItems.add(
+          Product(
+            id: item.id,
+            name: item.name,
+            description: item.description,
+            imagePath: item.imagePath,
+            orderQuantity: item.orderQuantity,
+            exclusiveOffers: item.exclusiveOffers,
+            category: item.category,
+            price: item.price * item.orderQuantity,
+          ),
+        );
+      }
+    }
 
     if (selectedItems.isEmpty) {
       showDialog(
